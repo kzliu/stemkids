@@ -1,0 +1,19 @@
+{
+  "name": "stemkids",
+  "version": "1.0.0",
+  "description": "\"cs132 implementation of sample stemkids course pages for online learning\"",
+  "main": "loader.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kzliu/stemkids.git"
+  },
+  "author": "group 22",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kzliu/stemkids/issues"
+  },
+  "homepage": "https://github.com/kzliu/stemkids#readme"
+}
