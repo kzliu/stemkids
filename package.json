@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/kzliu/stemkids/issues"
   },
-  "homepage": "https://github.com/kzliu/stemkids#readme"
+  "homepage": "https://github.com/kzliu/stemkids#readme",
+  "dependencies": {
+    "any-db": "^2.1.0",
+    "any-db-sqlite3": "^2.1.4"
+  }
 }
