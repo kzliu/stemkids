@@ -11,6 +11,6 @@ conn.query('CREATE TABLE IF NOT EXISTS courses (course_id INTEGER PRIMARY KEY AU
 	console.log('courses table successfully created');
 });
 // create course information table
-conn.query('CREATE TABLE IF NOT EXISTS course_info (user_id INTEGER, course_id INTEGER, active INTEGER, PRIMARY KEY (user_id, course_id), FOREIGN KEY (course_id) REFERENCES courses(course_id), FOREIGN KEY (user_id) REFERENCES user_info(id));').on('error', console.error).on('end', function(){
+conn.query('CREATE TABLE IF NOT EXISTS course_attendance (user_id INTEGER, course_id INTEGER, active INTEGER, PRIMARY KEY (user_id, course_id), FOREIGN KEY (course_id) REFERENCES courses(course_id), FOREIGN KEY (user_id) REFERENCES user_info(id));').on('error', console.error).on('end', function(){
 	console.log('course_info table successfully created');
 });
