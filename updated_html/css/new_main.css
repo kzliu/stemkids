@@ -1,0 +1,148 @@
+/* Fonts */
+@font-face
+{
+	font-family: 'Bebas Neue';
+	font-style: normal;
+	font-weight: 400;
+	src: local('Bebas Neue'), local('BebasNeue'), url('fonts/BebasNeue.woff2') format('woff2');
+}
+
+@font-face
+{
+	font-family: 'Lato';
+	font-style: normal;
+	font-weight: 700;
+	src: local('Lato Bold'), local('Lato-Bold'), url('fonts/Lato-Bold.woff2') format('woff2');
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+
+/* Common */
+/* necessary to center everything vertically and horizontally */
+.main {
+	height: 100%;
+	width: 100%;
+	display: table;
+}
+
+.wrapper {
+	display: table-cell;
+	vertical-align: middle;
+	height: 100%;
+}
+
+html, body
+{
+	background: #fff;
+	color: #333;
+	font-family: 'Bebas Neue';
+	font-size: 12px;
+	font-weight: 400;
+	line-height: 16px;
+	width: 100%;
+	height: 100%;
+	padding: 0;
+	margin: 0;
+	text-align: center;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+a
+{
+	transition: all 0.2s ease;
+}
+
+a,
+input
+{
+	outline: none;
+}
+
+ul, ol, li,
+h1, h2, h3, h4, h5,
+p
+{
+	margin: 0;
+	padding: 0;
+}
+
+li
+{
+	list-style: none;
+}
+
+
+/*buttons*/
+.btn
+{
+	display: block;
+	text-decoration: none;
+	border: 0;
+	border-radius: 9px;
+	padding: 0 0 9px;
+	cursor: pointer;
+
+}
+
+.btn p
+{
+	display: block;
+	color: #fff;
+	font-family: 'Lato';
+	font-size: 30px;
+	font-weight: 700;
+	line-height: 71px;
+	border-radius: 9px;
+	width: 100%;
+	height: 100%;
+	transition: all 0.2s ease;
+	text-align: center;
+}
+
+.btn.small p
+{
+	font-size: 20px;
+	line-height: 36px;
+}
+
+.btn:hover p
+{
+	color: #fbddbb;
+}
+
+.btn.yellow
+{
+	background: #fea623;
+}
+
+.btn.yellow p
+{
+	background: #feb831;
+}
+
+.btn.orange
+{
+	background: #ef7914;
+	/*width: 100% !important;*/
+}
+
+.btn.orange p
+{
+	background: #f38f1d;
+}
+
+.btn.disabled
+{
+	background: #707070;
+}
+
+.btn.disabled p
+{
+	background: #9b9a9b;
+	color: #e2e2e2;
+}
+
+.buttons
+{
+	display: inline-block;
+}

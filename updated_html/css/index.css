@@ -1,0 +1,31 @@
+h1
+{
+	color: #da5215;
+	font-size: 72px;
+	font-weight: 400;
+	line-height: 70px;
+	height: 50px;
+	text-transform: uppercase;
+	margin: 20px 0 0;
+}
+
+h3
+{
+	color: #f38f1d;
+	font-size: 62px;
+	font-weight: 400;
+	line-height: 60px;
+	height: 70px;
+	text-transform: uppercase;
+	margin: 1.25% 0 3.5%;
+}
+
+.buttons
+{
+	width: 265px;
+}
+
+.buttons .btn
+{
+	margin: 0 0 4%;
+}

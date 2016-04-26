@@ -1,0 +1,313 @@
+/* Header */
+.header
+{
+	height: 75px;
+	position: relative;
+	padding-bottom: 0.5%;
+}
+
+.header .logo
+{
+	float: left;
+	display: block;
+	height: 70px;
+	margin-left: 2%;
+	margin-top: 2px;
+}
+
+.header .user
+{
+	display: block;
+	position: absolute;
+	right: 80px;
+}
+
+.header .user #username
+{
+	color: #f7c263;
+	font-size: 22px;
+	line-height: 75px;
+	margin-right: 25px;
+}
+
+.header .user .userpic
+{
+	float: right;
+	display: block;
+	margin: 2.5px 15px 0 0;
+}
+
+.header #nav-btn
+{
+	float: right;
+	display: block;
+	width: 75px;
+	height: 75px;
+	position: absolute;
+	right: 0;
+}
+
+.header #nav-btn:before
+{
+	background: #fcb829;
+	display: block;
+	content: '';
+	width: 5px;
+	position: absolute;
+	left: -5px;
+	top: 5px;
+	bottom: 5px;
+}
+
+.header #nav-btn:after
+{
+	display: block;
+	content: '';
+	width: 0;
+	height: 0;
+	border-style: solid;
+	border-width: 20px 14px 0 14px;
+	border-color: #fcb829 transparent transparent transparent;
+	margin: -10px 0 0 -14px;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+}
+
+.header .nav
+{
+	display: none;
+	background: #fff;
+	border: 4px solid #fcb829;
+	position: absolute;
+	right: 0;
+	top: 75px;
+	z-index: 9999;
+}
+
+.header .nav.show
+{
+	display: block;
+}
+
+.header .nav a
+{
+	display: block;
+	color: #f7c263;
+	font-family: 'Lato';
+	font-size: 16px;
+	font-weight: 700;
+	line-height: 50px;
+	text-align: center;
+	text-decoration: none;
+	width: 110px;
+}
+
+.header .nav .sep
+{
+	display: block;
+	background: #fcb829;
+	height: 4px;
+	width: 110px;
+}
+
+/* UI */
+.wrap1, html {
+	background: #da5215;
+}
+
+.panel,  {
+	background-color: white; 
+	overflow-y: scroll;
+}
+
+.row
+{
+	display: table;
+	width: 100%;
+}
+
+.col
+{
+	display: table-cell;
+	vertical-align: top;
+}
+
+.row.c2 .col
+{
+	width: 50%;
+}
+
+/* Profile */
+.container
+{
+	display: inline-block;
+}
+
+.col.left
+{
+	padding-top: 45px;
+}
+
+.col.left
+{
+	width: 35%;
+	/*padding-right: 10%;*/
+}
+
+.col.left h1
+{
+	color: #f0a852;
+	font-size: 42px;
+	font-weight: 400;
+	line-height: 42px;
+	text-transform: capitalize;
+	height: 35px;
+	margin: 0 0 35px;
+}
+
+.col.left .buttons
+{
+	width: 60%;
+	min-width: 200px;
+	padding-left: 1.5%;
+	padding-right: 1.5%;
+}
+
+.col.left .buttons .btn
+{
+	margin: 25px 0 0;
+}
+
+.col.left .avatar #change_pic
+{
+	display: inline-block;
+	color: #f7c263;
+	font-size: 16px;
+	font-weight: 400;
+	text-transform: capitalize;
+	text-decoration: none;
+	margin: 5px 0 0;
+}
+
+.col.left #username
+{
+	display: inline-block;
+	color: #f7c263;
+	font-size: 30px;
+	font-weight: 400;
+	line-height: 30px;
+	height: 25px;
+	margin: 75px 0 0;
+}
+
+.col.left .avatar #change_pic:hover
+{
+	color: #fff;
+}
+
+.col.right
+{
+	width: 65%;
+	padding-right: 2%;
+}
+
+.col.right h3
+{
+	color: #f7c263;
+	font-size: 46px;
+	font-weight: 400;
+	line-height: 46px;
+	text-transform: capitalize;
+	height: 35px;
+	margin: 60px 0 20px;
+}
+
+.col.right .panel
+{
+	background: #fff;
+	border: 10px solid #fcb829;
+	padding: 20px 30px 15px;
+	overflow-y: scroll;
+	min-width: 645px;
+}
+
+.col.right .panel .wrap
+{
+	max-height: 450px;
+	width: 100%
+}
+
+.col.right .panel .line
+{
+	display: inline-block;
+	width: 100%;
+	margin: 0 0 35px;
+}
+
+.col.right .panel .line:last-child
+{
+	margin: 0;
+}
+
+.col.right .panel .pic
+{
+	float: left;
+	padding-top: 10px;
+}
+
+.col.right .panel .description
+{
+	float: right;
+	text-align: center;
+	width: 350px;
+	padding-left: 15px;
+}
+
+.col.right .panel .description .title
+{
+	color: #f7c263;
+	font-size: 28px;
+	font-weight: 400;
+	line-height: 28px;
+	text-transform: capitalize;
+	height: 28px;
+	margin: 0 0 15px;
+}
+
+.col.right .panel .description .title.blue
+{
+	color: #61b6e0;
+}
+
+.col.right .panel .description .title.purple
+{
+	color: #9862dd;
+}
+
+.col.right .panel .description .title.green
+{
+	color: #6ac689;
+}
+
+.col.right .panel.disabled .description .title
+{
+	color: #707070;
+}
+
+.col.right .panel.disabled
+{
+	background: #bbb;
+}
+
+.col.right .panel .description .brief
+{
+	text-align: left;
+}
+
+.col.right .panel .description .btn
+{
+	display: inline-block;
+	width: 200px;
+	margin: 20px 0 0;
+}

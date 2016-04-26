@@ -1,0 +1,95 @@
+html, body {
+	background: #da5215;
+}
+
+.main {
+	padding-bottom: 1%;
+}
+
+/* input fields */
+.main .fields .col
+{
+	padding: 0 30px;
+}
+
+.main .buttons
+{
+	width: 30%;
+	margin: 3% 0 0;
+}
+
+.fields
+{
+	display: inline-block;
+}
+
+.fields .title
+{
+	color: #fff;
+	font-size: 65px;
+	font-weight: 400;
+	line-height: 65px;
+	text-transform: uppercase;
+	height: 52px;
+	margin: 0 0 70px;
+}
+
+.field
+{
+	margin: 0 0 20px;
+}
+
+.field .wrap
+{
+	display: block;
+	background: #fea623;
+	border-radius: 10px;
+	padding: 0 0 10px;
+}
+
+.field input[type="text"]
+{
+	background: #feb831;
+	color: #fff;
+	font-family: 'Lato';
+	font-size: 30px;
+	font-weight: 700;
+	line-height: 60px;
+	height: 60px;
+	border: 0;
+	border-radius: 10px;
+	padding: 0 15px;
+}
+
+.field input::-moz-placeholder
+{
+	color: #ffeac1;
+}
+
+.field input::-webkit-input-placeholder
+{
+	color: #ffeac1;
+}
+
+.fields .buttons .btn
+{
+	width: 100%;
+}
+
+/* aligning input fields */
+.row
+{
+	display: table;
+	width: 100%;
+}
+
+.col
+{
+	display: table-cell;
+	vertical-align: top;
+}
+
+.row.c2 .col
+{
+	width: 50%;
+}

@@ -1,0 +1,900 @@
+
+/* Fonts */
+@font-face
+{
+	font-family: 'Bebas Neue';
+	font-style: normal;
+	font-weight: 400;
+	src: local('Bebas Neue'), local('BebasNeue'), url('/fonts/BebasNeue.woff2') format('woff2');
+}
+
+@font-face
+{
+	font-family: 'Lato';
+	font-style: normal;
+	font-weight: 700;
+	src: local('Lato Bold'), local('Lato-Bold'), url('/fonts/Lato-Bold.woff2') format('woff2');
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+
+/* Common */
+html, body
+{
+	background: #fff;
+	color: #333;
+	font-family: 'Bebas Neue';
+	font-size: 12px;
+	font-weight: 400;
+	line-height: 16px;
+	width: 100%;
+	height: 100%;
+	padding: 0;
+	margin: 0;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+a
+{
+	transition: all 0.2s ease;
+}
+
+a,
+input
+{
+	outline: none;
+}
+
+ul, ol, li,
+h1, h2, h3, h4, h5,
+p
+{
+	margin: 0;
+	padding: 0;
+}
+
+li
+{
+	list-style: none;
+}
+
+/* UI */
+.row
+{
+	display: table;
+	width: 100%;
+}
+
+.col
+{
+	display: table-cell;
+	vertical-align: top;
+}
+
+.row.c2 .col
+{
+	width: 50%;
+}
+
+.section
+{
+	height: 100%;
+}
+
+.section.orange,
+.section.orange > .wrapper
+{
+	background: #da5215;
+}
+
+.section > .wrapper
+{
+	text-align: center;
+	padding-bottom: 100px;
+}
+
+.btn
+{
+	display: block;
+	text-decoration: none;
+	border: 0;
+	border-radius: 9px;
+	padding: 0 0 9px;
+	cursor: pointer;
+}
+
+.btn.small
+{
+	
+}
+
+.btn p
+{
+	display: block;
+	color: #fff;
+	font-family: 'Lato';
+	font-size: 30px;
+	font-weight: 700;
+	line-height: 71px;
+	border-radius: 9px;
+	width: 100%;
+	height: 100%;
+	transition: all 0.2s ease;
+}
+
+.btn.small p
+{
+	font-size: 20px;
+	line-height: 36px;
+}
+
+.btn:hover p
+{
+	color: #fbddbb;
+}
+
+.btn.yellow
+{
+	background: #fea623;
+}
+
+.btn.yellow p
+{
+	background: #feb831;
+}
+
+.btn.orange
+{
+	background: #ef7914;
+}
+
+.btn.orange p
+{
+	background: #f38f1d;
+}
+
+.btn.disabled
+{
+	background: #707070;
+}
+
+.btn.disabled p
+{
+	background: #9b9a9b;
+	color: #e2e2e2;
+}
+
+.fields
+{
+	display: inline-block;
+}
+
+.fields .title
+{
+	color: #fff;
+	font-size: 65px;
+	font-weight: 400;
+	line-height: 65px;
+	text-transform: uppercase;
+	height: 52px;
+	margin: 0 0 70px;
+}
+
+.field
+{
+	margin: 0 0 20px;
+}
+
+.field .wrap
+{
+	display: block;
+	background: #fea623;
+	border-radius: 10px;
+	padding: 0 0 10px;
+}
+
+.field input[type="text"]
+{
+	background: #feb831;
+	color: #fff;
+	font-family: 'Lato';
+	font-size: 30px;
+	font-weight: 700;
+	line-height: 60px;
+	height: 60px;
+	border: 0;
+	border-radius: 10px;
+	padding: 0 15px;
+}
+
+.field input::-moz-placeholder
+{
+	color: #ffeac1;
+}
+
+.field input::-webkit-input-placeholder
+{
+	color: #ffeac1;
+}
+
+.fields .buttons .btn
+{
+	width: 100%;
+}
+
+.buttons
+{
+	display: inline-block;
+}
+
+/* Header */
+.header
+{
+	height: 75px;
+	position: relative;
+}
+
+.header .logo
+{
+	float: left;
+	display: block;
+	height: 70px;
+	margin-left: 140px;
+	margin-top: 2px;
+}
+
+.header .user
+{
+	display: block;
+	position: absolute;
+	right: 80px;
+}
+
+.header .user #username
+{
+	color: #f7c263;
+	font-size: 22px;
+	line-height: 75px;
+	margin-right: 25px;
+}
+
+.header .user .userpic
+{
+	float: right;
+	display: block;
+	margin: 2.5px 15px 0 0;
+}
+
+.header #nav-btn
+{
+	float: right;
+	display: block;
+	width: 75px;
+	height: 75px;
+	position: absolute;
+	right: 0;
+}
+
+.header #nav-btn:before
+{
+	background: #fcb829;
+	display: block;
+	content: '';
+	width: 5px;
+	position: absolute;
+	left: -5px;
+	top: 5px;
+	bottom: 5px;
+}
+
+.header #nav-btn:after
+{
+	display: block;
+	content: '';
+	width: 0;
+	height: 0;
+	border-style: solid;
+	border-width: 20px 14px 0 14px;
+	border-color: #fcb829 transparent transparent transparent;
+	margin: -10px 0 0 -14px;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+}
+
+.header .nav
+{
+	display: none;
+	background: #fff;
+	border: 4px solid #fcb829;
+	position: absolute;
+	right: 0;
+	top: 75px;
+	z-index: 9999;
+}
+
+.header .nav.show
+{
+	display: block;
+}
+
+.header .nav a
+{
+	display: block;
+	color: #f7c263;
+	font-family: 'Lato';
+	font-size: 16px;
+	font-weight: 700;
+	line-height: 50px;
+	text-align: center;
+	text-decoration: none;
+	width: 110px;
+}
+
+.header .nav a:hover
+{
+	/**/
+}
+
+.header .nav .sep
+{
+	display: block;
+	background: #fcb829;
+	height: 4px;
+	width: 110px;
+}
+
+/* Sign in */
+.sign-in > .wrapper
+{
+	padding: 65px 0 0;
+}
+
+.sign-in h1
+{
+	color: #da5215;
+	font-size: 72px;
+	font-weight: 400;
+	line-height: 70px;
+	height: 50px;
+	text-transform: uppercase;
+	margin: 20px 0 0;
+}
+
+.sign-in h3
+{
+	color: #f38f1d;
+	font-size: 62px;
+	font-weight: 400;
+	line-height: 60px;
+	height: 70px;
+	text-transform: uppercase;
+	margin: 10px 0 65px;
+}
+
+.sign-in .buttons
+{
+	width: 300px;
+}
+
+.sign-in .buttons .btn
+{
+	margin: 0 0 17px;
+}
+
+/* Log in */
+.log-in > .wrapper
+{
+	padding: 225px 0 0;
+}
+
+.log-in .field input
+{
+	width: 370px;
+}
+
+.log-in .buttons
+{
+	display: block;
+	margin: 40px 0 0;
+	padding: 0 20px;
+}
+
+.log-in .btn p
+{
+	line-height: 61px;
+}
+
+/* Registartion */
+.registration > .wrapper
+{
+	padding: 90px 0 0;
+}
+
+.registration .fields .col
+{
+	padding: 0 30px;
+}
+
+.registration .buttons
+{
+	width: 360px;
+	margin: 40px 0 0;
+}
+
+/* Profile */
+.profile .container
+{
+	display: inline-block;
+}
+.profile .col.left
+{
+	padding-top: 45px;
+}
+
+.profile .col.left
+{
+	width: 350px;
+	padding-right: 160px;
+}
+
+.profile .col.left h1
+{
+	color: #f0a852;
+	font-size: 42px;
+	font-weight: 400;
+	line-height: 42px;
+	text-transform: capitalize;
+	height: 35px;
+	margin: 0 0 35px;
+}
+
+.profile .col.left .buttons
+{
+	width: 100%;
+}
+
+.profile .col.left .buttons .btn
+{
+	margin: 25px 0 0;
+}
+
+.profile .col.left .avatar #change_pic
+{
+	display: inline-block;
+	color: #f7c263;
+	font-size: 16px;
+	font-weight: 400;
+	text-transform: capitalize;
+	text-decoration: none;
+	margin: 5px 0 0;
+}
+
+.profile .col.left #username
+{
+	display: inline-block;
+	color: #f7c263;
+	font-size: 30px;
+	font-weight: 400;
+	line-height: 30px;
+	height: 25px;
+	margin: 75px 0 0;
+}
+
+.profile .col.left .avatar #change_pic:hover
+{
+	color: #fff;
+}
+
+.profile .col.right
+{
+	width: 700px;
+}
+
+.profile .col.right h3
+{
+	color: #f7c263;
+	font-size: 46px;
+	font-weight: 400;
+	line-height: 46px;
+	text-transform: capitalize;
+	height: 35px;
+	margin: 60px 0 20px;
+}
+
+.profile .col.right .panel
+{
+	background: #fff;
+	border: 10px solid #fcb829;
+	padding: 20px 30px 15px;
+}
+
+.profile .col.right .panel .wrap
+{
+	overflow: hidden;
+	max-height: 450px;
+}
+
+.profile .col.right .panel .line
+{
+	display: inline-block;
+	width: 100%;
+	margin: 0 0 35px;
+}
+
+.profile .col.right .panel .line:last-child
+{
+	margin: 0;
+}
+
+.profile .col.right .panel .pic
+{
+	float: left;
+	width: 255px;
+	height: 160px;
+}
+
+.profile .col.right .panel .description
+{
+	float: right;
+	text-align: center;
+	width: 350px;
+	padding-left: 15px;
+}
+
+.profile .col.right .panel .description .title
+{
+	color: #f7c263;
+	font-size: 28px;
+	font-weight: 400;
+	line-height: 28px;
+	text-transform: capitalize;
+	height: 28px;
+	margin: 0 0 15px;
+}
+
+.profile .col.right .panel .description .title.blue
+{
+	color: #61b6e0;
+}
+
+.profile .col.right .panel .description .title.purple
+{
+	color: #9862dd;
+}
+
+.profile .col.right .panel .description .title.green
+{
+	color: #6ac689;
+}
+
+.profile .col.right .panel.disabled .description .title
+{
+	color: #707070;
+}
+
+.profile .col.right .panel.disabled
+{
+	background: #bbb;
+}
+
+.profile .col.right .panel .description .brief
+{
+	text-align: left;
+}
+
+.profile .col.right .panel .description .btn
+{
+	display: inline-block;
+	width: 200px;
+	margin: 20px 0 0;
+}
+
+/* Course */
+.course .wrapper
+{
+	border: 10px solid #fcb829;
+}
+
+.course .title
+{
+	font-size: 75px;
+	font-weight: 400;
+	line-height: 75px;
+	text-transform: capitalize;
+	height: 60px;
+	margin: 20px 0 0;
+}
+
+.course .brief
+{
+	margin: 10px 0 50px;
+}
+
+.course .tabs
+{
+	width: 1210px;
+	height: 750px;
+	margin: 0 15px;
+	position: relative;
+}
+
+.course .tabs .tab
+{
+	font-size: 24px;
+	line-height: 30px;
+	text-align: center;
+	border-width: 2px;
+	border-style: solid;
+	border-top-right-radius: 15px;
+	border-bottom-left-radius: 15px;
+	border-bottom-right-radius: 15px;
+	width: 100%;
+	height: 700px;
+	position: absolute;
+	left: 0;
+	top: 50px;
+	z-index: 1;
+}
+
+.course .tabs .tab h3
+{
+	font-size: 50px;
+	font-weight: 400;
+	line-height: 50px;
+	text-transform: capitalize;
+	height: 40px;
+	margin: 90px 0 25px;
+}
+
+.course .tabs .tab .caption
+{
+	font-size: 32px;
+	font-weight: 400;
+	line-height: 48px;
+	text-decoration: none;
+	border-top-width: 2px;
+	border-top-style: solid;
+	border-left-width: 2px;
+	border-left-style: solid;
+	border-right-width: 2px;
+	border-right-style: solid;
+	border-top-left-radius: 15px;
+	border-top-right-radius: 15px;
+	width: 240px;
+	height: 48px;
+	position: absolute;
+	top: -50px;
+}
+
+.course .tabs .tab.lectures
+{
+	background: #e8ad43;
+	color: #d18028;
+	border-color: #d18028;
+	z-index: 3;
+}
+
+.course .tabs .tab.lectures .caption
+{
+	background: #e8ad43;
+	color: #d18028;
+	border-color: #d18028;
+	left: -2px;
+}
+
+.course .tabs .tab.handouts
+{
+	background: #6ae5df;
+	color: #1388bc;
+	border-color: #1388bc;
+	z-index: 2;
+}
+
+.course .tabs .tab.handouts .caption
+{
+	background: #6ae5df;
+	color: #1388bc;
+	border-color: #1388bc;
+	left: 242px;
+}
+
+.course .tabs .tab.quizzes
+{
+	background: #e7a6f4;
+	color: #7e2dd3;
+	border-color: #7e2dd3;
+	z-index: 1;
+}
+
+.course .tabs .tab.quizzes .caption
+{
+	background: #e7a6f4;
+	color: #7e2dd3;
+	border-color: #7e2dd3;
+	left: 486px;
+}
+
+.course .tabs .tab.current
+{
+	z-index: 999;
+}
+
+.course .tabs .tab.lectures .video
+{
+	display: inline-block;
+	border: 10px solid #d18028;
+	width: 640px;
+	height: 360px;
+}
+
+.course .tabs .tab.handouts .text
+{
+	display: inline-block;
+	background: #fff;
+	color: #333;
+	width: 610px;
+	padding: 45px;
+}
+
+.course .tabs .tab.handouts .text .author
+{
+	font-size: 16px;
+	line-height: 20px;
+	text-align: left;
+	margin: 0 0 40px;
+}
+
+.course .tabs .tab.handouts .text h5
+{
+	font-size: 24px;
+	font-weight: 400;
+	line-height: 24px;
+	text-align: center;
+	text-transform: capitalize;
+	height: 20px;
+	margin: 0 0 30px;
+}
+
+.course .tabs .tab.handouts .text p
+{
+	font-size: 16px;
+	line-height: 20px;
+	text-align: left;
+	margin: 0 0 15px;
+}
+
+.course .tabs .tab .question
+{
+	display: inline-block;
+	width: 750px;
+	margin: 0 0 25px;
+}
+
+.course .tabs .tab .question .task
+{
+	text-align: left;
+	margin: 0 0 15px;
+}
+
+.course .tabs .tab .question .answers .field
+{
+	margin: 0 0 10px;
+}
+
+/* Class */
+.class .brief
+{
+	background: url('/img/course-bg.jpg') no-repeat center center / cover;
+	height: 400px;
+	position: relative;
+}
+
+.class .brief .wrap
+{
+	display: inline-block;
+	text-align: center;
+	width: 100%;
+	margin: 120px 0 0;
+}
+
+.class .brief .wrap h1
+{
+	font-size: 75px;
+	font-weight: 400;
+	line-height: 75px;
+	text-transform: capitalize;
+	height: 60px;
+	margin: 20px 0 10px;
+}
+
+.class .brief .wrap p
+{
+	display: inline-block;
+	width: 450px;
+	margin: 10px 0 50px;
+}
+
+.class .brief .info
+{
+	display: block;
+	background: #fff;
+	border: 5px solid #fcb829;
+	width: 200px;
+	height: 350px;
+	padding: 0 5px 5px;
+	position: absolute;
+	left: 150px;
+	top: 170px;
+}
+
+.class .brief .info a
+{
+	display: block;
+	color: #f7c263;
+	font-size: 20px;
+	line-height: 45px;
+	text-decoration: none;
+	border-bottom: 5px solid #e59f2e;
+}
+
+.class .brief .info #begin-course
+{
+	background: #fcb829;
+	color: #fff;
+	font-family: 'Lato';
+	font-weight: 700;
+	text-align: center;
+	text-transform: uppercase;
+	border: 0;
+	position: absolute;
+	left: 5px;
+	right: 5px;
+	bottom: 5px;
+}
+
+.class .wrapper
+{
+	border: 10px solid #fcb829;
+	padding: 20px 0;
+}
+
+.class .description .line
+{
+	text-align: left;
+	padding-left: 480px;
+	margin: 0 0 20px;
+}
+
+.class .description h3
+{
+	display: block;
+	background: #fb8b00;
+	text-decoration: none;
+	border: 0;
+	border-radius: 9px;
+	width: 300px;
+	margin: 0 0 10px;
+	padding: 0 0 9px;
+}
+
+.class .description h3 p
+{
+	display: block;
+	background: #fea623;
+	color: #333;
+	font-family: 'Lato';
+	font-size: 22px;
+	font-weight: 700;
+	line-height: 51px;
+	text-align: center;
+	border-radius: 9px;
+	width: 100%;
+	height: 100%;
+}
+
+.class .description .line > p
+{
+	text-indent: 30px;
+	margin: 0 0 10px;
+}
