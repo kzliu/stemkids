@@ -7,7 +7,7 @@ conn.query('CREATE TABLE IF NOT EXISTS user_info (user_id INTEGER PRIMARY KEY AU
 	console.log('user_info table successfully created');
 });
 // create classes table
-conn.query('CREATE TABLE IF NOT EXISTS classes (class_id TEXT, class_description TEXT, instructor TEXT, PRIMARY KEY (class_id));').on('error', console.error).on('end', function(){
+conn.query('CREATE TABLE IF NOT EXISTS classes (class_id TEXT, class_description TEXT, instructor TEXT, quiz_id INTEGER, lecture TEXT, handout TEXT, PRIMARY KEY (class_id), FOREIGN KEY (quiz_id) REFERENCES quiz(quiz_id));').on('error', console.error).on('end', function(){
 	console.log('classes table successfully created');
 });
 // create course table
