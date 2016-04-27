@@ -13,7 +13,8 @@ app.use(express.static('public'));
 
 app.get('/profile/:identifyer', function(request, response){
 	var identifyer = request.params.identifyer;
-	var q = conn.query("SELECT * FROM user_info, course, course_attendance WHERE user_info.id = $1", [identifyer], function(err, data){
+	// select 
+	var q = conn.query("SELECT * FROM user_info, classes, class_attendance WHERE user_info.id = $1", [identifyer], function(err, data){
 		// send data to the front end as a response
 		response.json(data.rows);
 		// print response to console (should be unique)
@@ -26,6 +27,9 @@ app.get('/profile/:identifyer', function(request, response){
 		console.log('data successfuly sent')
 	});
 });
+
+
+app.get('/');
 
 // set the app's server to listen on a given port
 app.listen(1234, function(){
