@@ -111,11 +111,6 @@
 	width: 110px;
 }
 
-/* adding orange border*/
-.border {
-	border: 10px solid #fcb829;
-}
-
 /* class title & description */
 .title {
 	padding-top: 1%;
@@ -134,7 +129,7 @@
 .tabs
 {
 	width: 95%;
-	height: 750px;
+	height: 80%;
 	margin: auto;
 	position: relative;
 	padding-bottom: 2%;
