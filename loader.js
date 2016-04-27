@@ -16,7 +16,7 @@ conn.query('CREATE TABLE IF NOT EXISTS courses (course_id TEXT, num_classes INTE
 });
 //quiz table
 conn.query('CREATE TABLE IF NOT EXISTS quiz (quiz_id INTEGER PRIMARY KEY AUTOINCREMENT, class_id TEXT, question TEXT, answer1 TEXT, answer2 TEXT, answer3 TEXT, answer4 TEXT, correct INTEGER, FOREIGN KEY (class_id) REFERENCES classes(class_id));').on('error', console.error).on('end', function(){
-	console.log('course table successfully created');
+	console.log('quiz table successfully created');
 });
 
 
