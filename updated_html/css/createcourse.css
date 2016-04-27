@@ -1,0 +1,17 @@
+.ui.form {
+	width: 45%;
+	margin: auto;
+}
+
+.ui.form label {
+	text-align: left;
+}
+
+.url {
+	text-align: left;
+	font-weight: bold;
+}
+
+.url label {
+	padding-right: 5px;
+}

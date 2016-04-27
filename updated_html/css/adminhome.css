@@ -1,0 +1,17 @@
+#create {
+	float: left;
+	margin-right: 20px;
+}
+
+#update {
+	float: right;
+	margin-left: 20px;
+}
+
+#create p, #update p {
+	width: 250px !important;
+}
+
+.admin {
+	display: inline-block;
+}
