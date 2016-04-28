@@ -3,7 +3,7 @@
 	margin: auto;
 }
 
-.ui.form label {
+.ui.form label, #upload {
 	text-align: left;
 }
 
@@ -14,4 +14,17 @@
 
 .url label {
 	padding-right: 5px;
+}
+
+#def {
+	font-weight: bold;
+	padding-right: 5px;
+}
+
+#upload {
+	padding-bottom: 10px;
+}
+
+.radiobtn {
+	margin-top: 10px;
 }
