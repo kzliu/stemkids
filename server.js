@@ -2,6 +2,7 @@ var express = require('express');
 var bodyParser = require('bodyParser');
 var anyDB = require('any-db');
 var engines = require('consolidate');
+var crypto = require("crypto");
 
 var app = express();
 var conn = anyDB.createConnection('sqlite3://');
@@ -9,6 +10,22 @@ app.engine('html', engines.hogan);
 app.set('views', __dirname + '/templates');
 app.use(bodyParser.urlencoded());
 app.use(express.static('public'));
+
+
+function hash_function(value, salt) {
+	// function creates a hash from the inputted value and salt
+	string = salt.cancat(value);
+	hash = crypto.createHash(string);
+	return hash;
+}
+
+
+function compare_hash(hash1, hash2) {
+	if hash1 === hash2:
+		return true;
+	else:
+		return false;
+}
 
 
 app.get('/profile/:identifyer', function(request, response){
