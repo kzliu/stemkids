@@ -18,6 +18,11 @@
   "homepage": "https://github.com/kzliu/stemkids#readme",
   "dependencies": {
     "any-db": "^2.1.0",
-    "any-db-sqlite3": "^2.1.4"
+    "any-db-sqlite3": "^2.1.4",
+    "body-parser": "^1.15.0",
+    "consolidate": "^0.14.0",
+    "express": "^4.13.4",
+    "hogan": "^1.0.2",
+    "socket.io": "^1.4.5"
   }
 }
