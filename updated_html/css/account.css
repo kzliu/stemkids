@@ -61,9 +61,76 @@ html, body {
 	padding: 0 15px;
 }
 
+.field input[type="tel"]
+{
+	background: #feb831;
+	color: #fff;
+	font-family: 'Lato';
+	font-size: 30px;
+	font-weight: 700;
+	line-height: 60px;
+	height: 60px;
+	border: 0;
+	border-radius: 10px;
+	padding: 0 15px;
+}
+
+.field input[type="email"]
+{
+	background: #feb831;
+	color: #fff;
+	font-family: 'Lato';
+	font-size: 30px;
+	font-weight: 700;
+	line-height: 60px;
+	height: 60px;
+	border: 0;
+	border-radius: 10px;
+	padding: 0 15px;
+}
+
+.field input[type="password"]
+{
+	background: #feb831;
+	color: #fff;
+	font-family: 'Lato';
+	font-size: 30px;
+	font-weight: 700;
+	line-height: 60px;
+	height: 60px;
+	border: 0;
+	border-radius: 10px;
+	padding: 0 15px;
+}
+
 .field input::-moz-placeholder
 {
 	color: #ffeac1;
+}
+
+.field .wrap .gender_menu{
+	
+}
+
+select{
+	width: 100%;
+	-webkit-appearance: none;
+}
+
+
+.gender_menu{
+
+	background: #feb831;
+	color: #fff;
+	font-family: 'Lato';
+	font-size: 30px;
+	font-weight: 700;
+	line-height: 60px;
+	height: 60px;
+	border: 0;
+	border-radius: 10px;
+	padding: 0 15px;
+
 }
 
 .field input::-webkit-input-placeholder

@@ -46,6 +46,21 @@ body {
 	padding: 0 15px;
 }
 
+.field input[type="password"]
+{
+	background: #feb831;
+	color: #fff;
+	font-family: 'Lato';
+	font-size: 30px;
+	font-weight: 700;
+	line-height: 60px;
+	height: 60px;
+	border: 0;
+	border-radius: 10px;
+	padding: 0 15px;
+
+}
+
 .field input::-moz-placeholder
 {
 	color: #ffeac1;
