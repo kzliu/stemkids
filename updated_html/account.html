@@ -21,6 +21,7 @@
 			<form action="/createAccount" method="post">
 				<div class="fields">
 					<h1 class="title">Create an account</h1>
+					<p id="errorMessage">{{ message }}</p>
 					<div class="row c2">
 						<div class="col">
 							<div class="field">
@@ -111,9 +112,10 @@ window.addEventListener('load', function(){
     	});
 	}); 
 
+	// $("#errorMessage").html("");
+
 	socket.on('createAccountError', function(message) {
-		//this needs to be rendered in html
-		console.log(message);
+		$("#errorMessage").html(message);
 	});
 });
 

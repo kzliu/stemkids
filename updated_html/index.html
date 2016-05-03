@@ -13,6 +13,7 @@
 	<link href="apple-favicon.png" rel="apple-touch-icon"/>
 	<link href="css/new_main.css" type="text/css" rel="stylesheet" media="all"/>
 	<link href="css/index.css" type="text/css" rel="stylesheet" media="all"/>
+	<script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
 	<div class="main">
@@ -21,12 +22,17 @@
 			<h1>STEM KIDS NYC</h1>
 			<h3>Online portal</h3>
 			<div class="buttons">
-				<a class="btn yellow" href="account.html">
-					<p>Create an Account</p>
-				</a>
-				<a class="btn orange" href="login.html">
-					<p>Log In</p>
-				</a>
+				<form method="get" action="/createAccount">
+					<button class="btn yellow" type="submit">
+					<!-- <a class="btn yellow" href="account.html"> -->
+						<p>Create an Account</p>
+					</button>
+				</form>
+				<form method="get" action="/login">
+					<button class="btn orange" type="submit">
+						<p>Log In</p>
+					</button>
+				</form>
 			</div>
 		</div>
 	</div>
@@ -35,4 +41,7 @@
 	<script src="js/jquery-2.2.0.min.js" type="text/javascript"></script>
 	<script src="js/main.js" type="text/javascript"></script>
 </body>
+<script>
+
+</script>
 </html>

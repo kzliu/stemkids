@@ -24,7 +24,7 @@ app.use(bodyParser.json());
 
 function hash(value, salt) {
 	// function creates a hash from the inputted value and salt
-	string = salt.cancat(value);
+	string = salt + value;
 	hash = crypto.createHash(string);
 	return hash;
 }
@@ -74,9 +74,19 @@ app.get('/', function(request, response){
     response.render('index.html',{ root : __dirname});
 });
 
+app.get('/login', function(request, response){
+    console.log('- Request received:', request.method, request.url);
+    response.render('login.html',{ root : __dirname});
+});
+
+app.get('/createAccount', function(request, response){
+    console.log('- Request received:', request.method, request.url);
+    response.render('account.html',{ root : __dirname});
+});
+
+var loggedin = [];
 
 io.sockets.on('connection', function(socket) {
-	console.log('here');
 	socket.on('existingUser', function(userID, callback) {
 		console.log('made connection');
 		checkUsername(userID, callback);
@@ -97,20 +107,69 @@ io.sockets.on('connection', function(socket) {
 				var gender = request.body.gender;
 				var phone = request.body.phone;
 				var password = request.body.password;
-				password = hash(password, username);
-				conn.query('INSERT INTO user_info VALUES (null, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11);', [username, firstname, lastname, age, grade, school, gender, email, phone, password, 1], function(err, res) {
+				// password = hash(password, username);
+				conn.query('INSERT INTO user_info VALUES (null, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10);', [username, firstname, lastname, age, grade, school, gender, email, phone, password], function(err, res) {
 					if (err) {
 						message = "Could not properly insert value into database.";
 						throw err;
 						socket.emit('createAccountError', message);
 					} else {
-						response.render('profile.html');
+						// var q = conn.query("SELECT last_insert_rowid() FROM user_info;", function(error, result){
+						// 		if (error) throw error;
+				  //               var rows = result.rows;
+				  //               for (var i in rows){
+				  //               	console.log(rows[i].user_id);
+				  //               	
+			   //              	}
+			   			loggedin.push(username);
+						response.render('profile.html', {username:username});
+						// });
+						
 					}
 				});
 			} else {
 				message = "That username is already taken!";
-				socket.emit('createAccountError', message);
+				console.log(message);
+				// socket.emit('createAccountError', message);
+				//make it so all the preexisting information stays
+				response.render('account.html', {message:message});
+				// response.end();
 			}
+		});
+	});
+
+	app.post('/login', function(request, response){
+		var username = request.body.username;
+		var password = request.body.password;
+		var message = "success";
+		console.log('- Request received:', request.method, request.url);
+		// password = String(hash(password, username));
+		var q = conn.query("SELECT user_id FROM user_info WHERE login = $1 AND password = $2;", [username, password], function(err, data){
+			if (err) {
+				message = "Server encountered an error while attempting to retrieve";
+				throw err;
+				response.render('login.html', {message:message});
+				// socket.emit('loginError', message);
+			}
+			if (data.rows.length == 0){
+				message = "No user/password combination found";
+				console.log(message);
+				// socket.emit('loginError', message);
+				response.render('login.html', {message:message});
+			} else {
+				// iterate through the set of elements returned (to handle the case where more than one is returned)
+				var rows = data.rows;
+				// for (var i in rows){
+				// 	console.log(rows[i].user_id);
+				// 	loggedin.push(rows[i].user_id);
+				// }
+				loggedin.push(username);
+				response.render('profile.html', {username:username});
+				// socket.emit("loggedIn", username); // emit a signal to indicate a successful connection
+			}
+		});
+		q.on('end', function(){
+			console.log('login function executed');
 		});
 	});
 });
@@ -135,37 +194,37 @@ app.get('/profile/:identifyer', function(request, response){
 });
 
 
-app.get('/login', function(request, response){
-	var username = request.body.username;
-	var password = request.body.password;
-	password = String(hash(password, username));
-	var q = conn.query("SELECT password FROM user_info WHERE user_id = $1", [username], function(err, data){
-		if (err) {
-			message = "Server encountered an error while attempting to retrieve"
-			throw err;
-			socket.emit("loginError", message);
-		}
-		if (data.rows.length === 0){
-			message = "No user found"
-			socket.emit("noUserFoundError", message);
-		} else {
-			// iterate through the set of elements returned (to handle the case where more than one is returned)
-			for (var i = 0; i < data.rows.length; i++) {
-				password2 = data.rows[i];
-				match = compare_hash(password, password2);
-				if (match) {
-					conn.query("UPDATE user_info SET logged_in = $1 WHERE username = $2", [1, username]); // indicate that the user in question has successfully logged in
-					socket.emit("loggedIn", username); // emit a signal to indicate a successful connection
-				} else {
-					socket.emit("loginFailed", username); // emit a signal to indicate that login was unsuccessful
-				}
-			}
-		}
-	});
-	q.on('end', function(){
-		console.log('login function executed');
-	});
-});
+// app.get('/login', function(request, response){
+// 	var username = request.body.username;
+// 	var password = request.body.password;
+// 	password = String(hash(password, username));
+// 	var q = conn.query("SELECT password FROM user_info WHERE user_id = $1", [username], function(err, data){
+// 		if (err) {
+// 			message = "Server encountered an error while attempting to retrieve"
+// 			throw err;
+// 			socket.emit("loginError", message);
+// 		}
+// 		if (data.rows.length === 0){
+// 			message = "No user found"
+// 			socket.emit("noUserFoundError", message);
+// 		} else {
+// 			// iterate through the set of elements returned (to handle the case where more than one is returned)
+// 			for (var i = 0; i < data.rows.length; i++) {
+// 				password2 = data.rows[i];
+// 				match = compare_hash(password, password2);
+// 				if (match) {
+// 					conn.query("UPDATE user_info SET logged_in = $1 WHERE username = $2", [1, username]); // indicate that the user in question has successfully logged in
+// 					socket.emit("loggedIn", username); // emit a signal to indicate a successful connection
+// 				} else {
+// 					socket.emit("loginFailed", username); // emit a signal to indicate that login was unsuccessful
+// 				}
+// 			}
+// 		}
+// 	});
+// 	q.on('end', function(){
+// 		console.log('login function executed');
+// 	});
+// });
 
 
 // set the app's server to listen on a given port
