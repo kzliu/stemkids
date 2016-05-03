@@ -26,22 +26,22 @@
 						<div class="col">
 							<div class="field">
 								<div class="wrap">
-									<input id="firstname" name="firstname" type="text" placeholder="First name*" required/>
+									<input id="firstname" name="firstname" type="text" placeholder="First name*" value="{{firstname}}" required/>
 								</div>
 							</div>
 							<div class="field">
 								<div class="wrap">
-									<input id="age" name="age" type="text" placeholder="Age" required/>
+									<input id="age" name="age" type="number" placeholder="Age" value="{{age}}" required/>
 								</div>
 							</div>
 							<div class="field">
 								<div class="wrap">
-									<input id="school" name="school" type="text" placeholder="School*" required/>
+									<input id="school" name="school" type="text" placeholder="School*" value="{{school}}" required/>
 								</div>
 							</div>
 							<div class="field">
 								<div class="wrap">
-									<input id="email" name="email" type="email" placeholder="E-mail*" required/>
+									<input id="email" name="email" type="email" placeholder="E-mail*" value="{{email}}" required/>
 								</div>
 							</div>
 							<div class="field">
@@ -53,7 +53,7 @@
 						<div class="col">
 							<div class="field">
 								<div class="wrap">
-									<input id="lastname" name="lastname" type="text" placeholder="Last name*" required/>
+									<input id="lastname" name="lastname" type="text" placeholder="Last name*" value="{{lastname}}" required/>
 								</div>
 							</div>
 							<div class="field">
@@ -68,12 +68,12 @@
 							</div>
 							<div class="field">
 								<div class="wrap">
-									<input id="grade" name="grade" type="text" placeholder="Grade*" required/>
+									<input id="grade" name="grade" type="text" placeholder="Grade*" value="{{grade}}" required/>
 								</div>
 							</div>
 							<div class="field">
 								<div class="wrap">
-									<input id="phone" name="phone" type="tel" placeholder="Phone number"/>
+									<input id="phone" name="phone" type="tel" placeholder="Phone number" value="{{phone}}"/>
 								</div>
 							</div>
 							<div class="field">
@@ -112,12 +112,14 @@ window.addEventListener('load', function(){
     	});
 	}); 
 
-	// $("#errorMessage").html("");
 
-	socket.on('createAccountError', function(message) {
-		$("#errorMessage").html(message);
-	});
-});
+	// socket.on('createAccountError', function(message) {
+	// 	console.log(message);
+	// 	$("#errorMessage").html(message);
+	// 	$('#username').val('');
+	// });
+}, false);
+
 
 
 </script>

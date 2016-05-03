@@ -46,7 +46,7 @@ function checkUsername(userID, callback){
         if (result.rows.length != 0) {
         	isUser = 1;
         }
-        console.log(isUser);
+        // console.log(isUser);
         callback(isUser);
         // return isUser;
     });
@@ -71,11 +71,11 @@ function isCourse(id){
 
 app.get('/', function(request, response){
     console.log('- Request received:', request.method, request.url);
-    conn.query('SELECT logged_in FROM user_info WHERE login = $1', [username], function(err, data){
-    	if () {
+    // conn.query('SELECT logged_in FROM user_info WHERE login = $1', [username], function(err, data){
+    // 	if () {
 
-    	}
-    });
+    // 	}
+    // });
     response.render('index.html',{ root : __dirname});
 });
 
@@ -93,7 +93,6 @@ var loggedin = [];
 
 io.sockets.on('connection', function(socket) {
 	socket.on('existingUser', function(userID, callback) {
-		console.log('made connection');
 		checkUsername(userID, callback);
 	});
 
@@ -102,22 +101,23 @@ io.sockets.on('connection', function(socket) {
 		console.log('- Request received:', request.method, request.url);
 		var message = "success";
 		checkUsername(username, function(isUser) {
+			var firstname = request.body.firstname;
+			var lastname = request.body.lastname;
+			var age = request.body.age;
+			var grade = request.body.grade;
+			var school = request.body.school;
+			var email = request.body.email;
+			var gender = request.body.gender;
+			var phone = request.body.phone;
+			var password = request.body.password;
 			if (isUser != 1) {
-				var firstname = request.body.firstname;
-				var lastname = request.body.lastname;
-				var age = request.body.age;
-				var grade = request.body.grade;
-				var school = request.body.school;
-				var email = request.body.email;
-				var gender = request.body.gender;
-				var phone = request.body.phone;
-				var password = request.body.password;
 				// password = hash(password, username);
 				conn.query('INSERT INTO user_info VALUES (null, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10);', [username, firstname, lastname, age, grade, school, gender, email, phone, password], function(err, res) {
 					if (err) {
 						message = "Could not properly insert value into database.";
 						throw err;
-						socket.emit('createAccountError', message);
+						// socket.emit('createAccountError', message);
+						response.render('account.html', {message:message, firstname:firstname, lastname:lastname, age:age, grade:grade, email:email, phone:phone, school:school});
 					} else {
 						// var q = conn.query("SELECT last_insert_rowid() FROM user_info;", function(error, result){
 						// 		if (error) throw error;
@@ -127,7 +127,7 @@ io.sockets.on('connection', function(socket) {
 				  //               	
 			   //              	}
 			   			loggedin.push(username);
-						response.render('profile.html', {username:username});
+						response.render('profile.html', {username:username, firstname:firstname});
 						// });
 						
 					}
@@ -135,12 +135,19 @@ io.sockets.on('connection', function(socket) {
 			} else {
 				message = "That username is already taken!";
 				console.log(message);
+				// response.redirect({message:message}, 'account.html');
 				// socket.emit('createAccountError', message);
+				// repsonse.end();
+				// response.redirect(request.get('referer'));
+				
 				//make it so all the preexisting information stays
-				response.render('account.html', {message:message});
+				response.render('account.html', {message:message, firstname:firstname, lastname:lastname, age:age, grade:grade, email:email, phone:phone, school:school});
 				// response.end();
 			}
 		});
+	    response.on('close', function(){
+	        console.log("Close received for create account!");
+	    });
 	});
 
 	app.post('/login', function(request, response){
@@ -149,7 +156,7 @@ io.sockets.on('connection', function(socket) {
 		var message = "success";
 		console.log('- Request received:', request.method, request.url);
 		// password = String(hash(password, username));
-		var q = conn.query("SELECT user_id FROM user_info WHERE login = $1 AND password = $2;", [username, password], function(err, data){
+		var q = conn.query("SELECT user_id,first_name FROM user_info WHERE login = $1 AND password = $2;", [username, password], function(err, data){
 			if (err) {
 				message = "Server encountered an error while attempting to retrieve";
 				throw err;
@@ -164,12 +171,14 @@ io.sockets.on('connection', function(socket) {
 			} else {
 				// iterate through the set of elements returned (to handle the case where more than one is returned)
 				var rows = data.rows;
-				// for (var i in rows){
-				// 	console.log(rows[i].user_id);
-				// 	loggedin.push(rows[i].user_id);
-				// }
+				var firstname = "";
+				for (var i in rows){
+					// console.log(rows[i].user_id);
+					// loggedin.push(rows[i].user_id);
+					firstname = rows[i].first_name;
+				}
 				loggedin.push(username);
-				response.render('profile.html', {username:username});
+				response.render('profile.html', {username:username, firstname:firstname});
 				// socket.emit("loggedIn", username); // emit a signal to indicate a successful connection
 			}
 		});

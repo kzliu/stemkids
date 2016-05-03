@@ -19,7 +19,7 @@
 	<div class="header">
 		<img class="logo" src="img/logo-small.png">
 		<div class="user">
-			<span id="username">abathla</span>
+			<span id="username">{{ username }}</span>
 			<img class="userpic" src="img/avatar-small.png">
 		</div>
 		<a id="nav-btn" href="#"></a>
@@ -35,7 +35,7 @@
 			<div class="container">
 				<div class="row">
 					<div class="col left">
-						<h1>Hello, <span>{{ username }}</span>!</h1>
+						<h1>Hello, <span>{{ firstname }}</span>!</h1>
 						<div class="avatar">
 							<div class="pic">
 								<img src="img/avatar.png" width="50%" height="50%"/>
@@ -214,7 +214,7 @@ window.addEventListener('load', function(){
 		//this needs to be rendered in html
 		console.log(username);
 	});
-});
+}, false);
 
 </script>
 </html>
