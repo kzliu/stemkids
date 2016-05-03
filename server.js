@@ -71,6 +71,11 @@ function isCourse(id){
 
 app.get('/', function(request, response){
     console.log('- Request received:', request.method, request.url);
+    conn.query('SELECT logged_in FROM user_info WHERE login = $1', [username], function(err, data){
+    	if () {
+
+    	}
+    });
     response.render('index.html',{ root : __dirname});
 });
 
