@@ -47,9 +47,7 @@ function checkUsername(userID, callback){
         if (result.rows.length != 0) {
         	isUser = 1;
         }
-        // console.log(isUser);
         callback(isUser);
-        // return isUser;
     });
 };
 

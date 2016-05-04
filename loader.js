@@ -19,7 +19,7 @@ conn.query('CREATE TABLE IF NOT EXISTS courses (course_id TEXT, num_classes INTE
 
 
 // create classes table
-conn.query('CREATE TABLE IF NOT EXISTS classes (class_id TEXT, class_title TEXT, class_description TEXT, instructor TEXT, lecture TEXT, handout TEXT, PRIMARY KEY (class_id);').on('error', console.error).on('end', function(){
+conn.query('CREATE TABLE IF NOT EXISTS classes (class_id TEXT, class_title TEXT, class_description TEXT, instructor TEXT, lecture TEXT, handout TEXT, PRIMARY KEY (class_id));').on('error', console.error).on('end', function(){
 	console.log('classes table successfully created');
 });
 
@@ -53,7 +53,7 @@ conn.query('CREATE TABLE IF NOT EXISTS questions (question_id INTEGER PRIMARY KE
 
 
 // create an answers table
-conn.query('CREATE TABLE IF NOT EXITSTS answers (answer_id INTEGER PRIMARY KEY AUTOINCREMENT, question_id INTEGER, correct INTEGER, answer TEXT, FOREIGN KEY (question_id) REFERENCES questions(question_id) ON DELETE CASCADE ON UPDATE CASCADE);').on('error', console.error).on('end', function(){
+conn.query('CREATE TABLE IF NOT EXISTS answers (answer_id INTEGER PRIMARY KEY AUTOINCREMENT, question_id INTEGER, correct INTEGER, answer TEXT, FOREIGN KEY (question_id) REFERENCES questions(question_id) ON DELETE CASCADE ON UPDATE CASCADE);').on('error', console.error).on('end', function(){
 	console.log('answers table successfully created');
 });
 
