@@ -212,6 +212,18 @@ io.sockets.on('connection', function(socket) {
 	});
 
 
+	// add class to the database
+	app.post('/addClass', function(request, response){
+		var lectureTitle = request.body.lectureTitle;
+		var video = request.body.video;
+		var courseId = request.body.courseId;
+		var courseTitle = request.body.courseTitle;
+		var quiz_list = request.body.quizes;
+		var length = quiz_list.length;
+		for (var i = 0; i < length; i++) {
+			var 
+		}
+	});
 
 
 });
