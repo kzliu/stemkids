@@ -162,6 +162,7 @@ io.sockets.on('connection', function(socket) {
 		var q = conn.query("SELECT user_id, first_name, password FROM user_info WHERE login = $1;", [username], function(err, data){
 			// handle errors
 			if (err) {
+				
 				message = "Server encountered an error while attempting to retrieve";
 				throw err;
 				response.render('login.html', {message:message});
@@ -184,9 +185,9 @@ io.sockets.on('connection', function(socket) {
 				// iterate through the set of elements returned (to handle the case where more than one is returned)
 				for (var i = 0; i < data.rows.length; i++) {
 					var password2 = data.rows[i].password;
-					password = hash(password, username)
+					password = hash(password, username);
 					var match = compare_hash(password, password2);
-					console.log(password2);
+					console.log(password);
 
 					if (match) {
 						firstname = rows[i].first_name;
@@ -197,10 +198,11 @@ io.sockets.on('connection', function(socket) {
 					message = "No user/password combination found";
 					console.log(message);
 					response.render('login.html', {message:message});
-				}
-				loggedin.push(username);
-				response.render('profile.html', {username:username, firstname:firstname});
+				} else {
+					loggedin.push(username);
+					response.render('profile.html', {username:username, firstname:firstname});
 				// socket.emit("loggedIn", username); // emit a signal to indicate a successful connection
+				}
 			}
 		});
 		q.on('end', function(){
