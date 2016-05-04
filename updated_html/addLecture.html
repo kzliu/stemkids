@@ -20,7 +20,7 @@
 		<div class="wrapper">
 			<h2> Add Lecture to Course {{courseId}}</h2>
 
-			<form class="ui form">
+			<form class="ui_form">
 				<div class="field">
 				    <label>Course Title</label>
 				    <!-- <input type="text" name="course-title" placeholder="Title" hidden> -->
@@ -180,29 +180,29 @@
 	</div>
 
 <script type="text/javascript">
-		window.addEventListener('load', function(){
-			var max_questions = 10; // maximum number of questions allowed
-			var i = 1;
-			var qzz = $('#quiz');
+window.addEventListener('load', function(){
+	var max_questions = 10; // maximum number of questions allowed
+	var i = 1;
+	var qzz = $('#quiz');
 
-			$('#qstn').click(function(e) {
-				e.preventDefault();
-				if (i < max_questions) {
-					i++;
-					$('.quizlet').append('<h3> Question ' + i + '</h3>');
-					$('#quiz').clone().prop('id', 'quiz' + i).appendTo('.quizlet');
-				};	
-			});
-			
-			$('#ui_form').submit(function(event){
-				
-			});			
-		});
-
-	</script>
-	<script src="css/semantic-ui/semantic.js" type="text/javascript"></script>
-	<script src="js/jquery-2.2.0.min.js" type="text/javascript"></script>
-	<script src="https://code.jquery.com/jquery-2.2.0.min.js" type="text/javascript"></script>
-	<script src="js/main.js" type="text/javascript"></script>
+	$('#qstn').click(function(e) {
+		e.preventDefault();
+		if (i < max_questions) {
+			i++;
+			$('.quizlet').append('<h3> Question ' + i + '</h3>');
+			$('#quiz').clone().prop('id', 'quiz' + i).appendTo('.quizlet');
+		};	
+	});
+	
+	$('#ui_form').submit(function(event){
+		var 
+		event.preventDefault();
+	});			
+});
+</script>
+<script src="css/semantic-ui/semantic.js" type="text/javascript"></script>
+<script src="js/jquery-2.2.0.min.js" type="text/javascript"></script>
+<script src="https://code.jquery.com/jquery-2.2.0.min.js" type="text/javascript"></script>
+<script src="js/main.js" type="text/javascript"></script>
 </body>
 </html>
