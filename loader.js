@@ -12,7 +12,7 @@ conn.query('CREATE TABLE IF NOT EXISTS courses (course_id TEXT, num_classes INTE
 });
 
 
-//quiz table
+// quiz table
 // conn.query('CREATE TABLE IF NOT EXISTS quiz (quiz_id INTEGER PRIMARY KEY AUTOINCREMENT, question TEXT, answer1 TEXT, answer2 TEXT, answer3 TEXT, answer4 TEXT, correct INTEGER);').on('error', console.error).on('end', function(){
 // 	console.log('quiz table successfully created');
 // });

@@ -113,6 +113,7 @@ io.sockets.on('connection', function(socket) {
 			var password = request.body.password;
 			if (isUser != 1) {
 				password = hash(password, username);
+				console.log("passowrd " + password);
 				conn.query('INSERT INTO user_info VALUES (null, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10);', [username, firstname, lastname, age, grade, school, gender, email, phone, password], function(err, res) {
 					if (err) {
 						message = "Could not properly insert value into database.";
@@ -183,8 +184,9 @@ io.sockets.on('connection', function(socket) {
 				// iterate through the set of elements returned (to handle the case where more than one is returned)
 				for (var i = 0; i < data.rows.length; i++) {
 					var password2 = data.rows[i].password;
-					password2 = hash(password2, username)
+					password = hash(password, username)
 					var match = compare_hash(password, password2);
+
 					if (match) {
 						firstname = rows[i].first_name;
 					}
