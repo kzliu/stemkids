@@ -220,8 +220,9 @@ io.sockets.on('connection', function(socket) {
 		var courseTitle = request.body.courseTitle;
 		var quiz_list = request.body.quizes;
 		var length = quiz_list.length;
+		console.log(quiz_list);
 		for (var i = 0; i < length; i++) {
-			var 
+			// var 
 		}
 	});
 
