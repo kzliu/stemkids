@@ -98,17 +98,6 @@ app.get('/createCourse',function(request, response) {
     response.render('createcourse.html',{ root : __dirname, course_id: courseCode});
 });
 
-app.get('/:courseId/addLecture', function(request, response){
-	console.log('- Request received:', request.method, request.url);
-	var code = request.params.courseId; 
-	var title = request.body.courseTitle;
-	var summary = request.body.courseSummary;
-	console.log(title);
-	console.log(summary);
-	console.log(code);
-	response.render('addLecture.html',{ root : __dirname, courseId: code, courseTitle: title, courseSummary: summary});
-});
-
 var loggedin = [];
 
 io.sockets.on('connection', function(socket) {
