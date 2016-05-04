@@ -7,6 +7,7 @@ h1
 	height: 50px;
 	text-transform: uppercase;
 	margin: 20px 0 0;
+	position: static;
 }
 
 h3
@@ -18,6 +19,12 @@ h3
 	height: 70px;
 	text-transform: uppercase;
 	margin: 1.25% 0 3.5%;
+	position: static;
+}
+
+.wrapper{
+	width: 900px;
+	margin: 0;
 }
 
 .buttons
@@ -29,3 +36,8 @@ h3
 {
 	margin: 0 0 4%;
 }
+
+.btn{
+	width: 100%;
+}
+

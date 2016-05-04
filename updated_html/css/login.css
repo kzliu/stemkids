@@ -75,6 +75,10 @@ body {
 	width: 175px !important;
 }
 
+#errorMessage {
+	color: #fff;
+	font-size: 20px;
+}
 
 
 
