@@ -176,12 +176,6 @@ io.sockets.on('connection', function(socket) {
 				// iterate through the set of elements returned (to handle the case where more than one is returned)
 				var rows = data.rows;
 				var firstname = "";
-				// for (var i in rows){
-				// 	// console.log(rows[i].user_id);
-				// 	// loggedin.push(rows[i].user_id);
-				// 	firstname = rows[i].first_name;
-				// }
-				// iterate through the set of elements returned (to handle the case where more than one is returned)
 				for (var i = 0; i < data.rows.length; i++) {
 					var password2 = data.rows[i].password;
 					password = hash(password, username)
@@ -206,6 +200,12 @@ io.sockets.on('connection', function(socket) {
 		q.on('end', function(){
 			console.log('login function executed');
 		});
+
+
+		// handle the post request from course creation page
+		app.post('/login', function(requst, response){
+			
+		});
 	});
 });
 
@@ -227,39 +227,6 @@ app.get('/profile/:identifyer', function(request, response){
 		console.log('data successfuly sent')
 	});
 });
-
-
-// app.get('/login', function(request, response){
-// 	var username = request.body.username;
-// 	var password = request.body.password;
-// 	password = String(hash(password, username));
-// 	var q = conn.query("SELECT password FROM user_info WHERE user_id = $1", [username], function(err, data){
-// 		if (err) {
-// 			message = "Server encountered an error while attempting to retrieve"
-// 			throw err;
-// 			socket.emit("loginError", message);
-// 		}
-// 		if (data.rows.length === 0){
-// 			message = "No user found"
-// 			socket.emit("noUserFoundError", message);
-// 		} else {
-// 			// iterate through the set of elements returned (to handle the case where more than one is returned)
-// 			for (var i = 0; i < data.rows.length; i++) {
-// 				password2 = data.rows[i];
-// 				match = compare_hash(password, password2);
-// 				if (match) {
-// 					conn.query("UPDATE user_info SET logged_in = $1 WHERE username = $2", [1, username]); // indicate that the user in question has successfully logged in
-// 					socket.emit("loggedIn", username); // emit a signal to indicate a successful connection
-// 				} else {
-// 					socket.emit("loginFailed", username); // emit a signal to indicate that login was unsuccessful
-// 				}
-// 			}
-// 		}
-// 	});
-// 	q.on('end', function(){
-// 		console.log('login function executed');
-// 	});
-// });
 
 
 // set the app's server to listen on a given port
