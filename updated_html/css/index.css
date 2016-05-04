@@ -1,3 +1,8 @@
+body{
+	min-width: 600px;
+	min-height: 800px;
+}
+
 h1
 {
 	color: #da5215;
@@ -20,6 +25,16 @@ h3
 	margin: 1.25% 0 3.5%;
 }
 
+.titleText{
+	position: static;
+	
+}
+
+.wrapper{
+	width: 900px;
+	margin: 0;
+}
+
 .buttons
 {
 	width: 265px;
@@ -29,3 +44,8 @@ h3
 {
 	margin: 0 0 4%;
 }
+
+.btn{
+	width: 100%;
+}
+

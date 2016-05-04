@@ -47,9 +47,7 @@ function checkUsername(userID, callback){
         if (result.rows.length != 0) {
         	isUser = 1;
         }
-        // console.log(isUser);
         callback(isUser);
-        // return isUser;
     });
 };
 
@@ -72,11 +70,6 @@ function isCourse(id){
 
 app.get('/', function(request, response){
     console.log('- Request received:', request.method, request.url);
-    // conn.query('SELECT logged_in FROM user_info WHERE login = $1', [username], function(err, data){
-    // 	if () {
-
-    // 	}
-    // });
     response.render('index.html',{ root : __dirname});
 });
 
@@ -88,6 +81,16 @@ app.get('/login', function(request, response){
 app.get('/createAccount', function(request, response){
     console.log('- Request received:', request.method, request.url);
     response.render('account.html',{ root : __dirname});
+});
+
+app.get('/admin', function(request, response){
+    console.log('- Request received:', request.method, request.url);
+    response.render('adminhome.html',{ root : __dirname});
+});
+
+app.get('/createCourse',function(request, response) {
+	console.log('- Request received:', request.method, request.url);
+    response.render('createcourse.html',{ root : __dirname});
 });
 
 var loggedin = [];
@@ -121,17 +124,8 @@ io.sockets.on('connection', function(socket) {
 						// socket.emit('createAccountError', message);
 						response.render('account.html', {message:message, firstname:firstname, lastname:lastname, age:age, grade:grade, email:email, phone:phone, school:school});
 					} else {
-						// var q = conn.query("SELECT last_insert_rowid() FROM user_info;", function(error, result){
-						// 		if (error) throw error;
-				  //               var rows = result.rows;
-				  //               for (var i in rows){
-				  //               	console.log(rows[i].user_id);
-				  //               	
-			   //              	}
 			   			loggedin.push(username);
-						response.render('profile.html', {username:username, firstname:firstname});
-						// });
-						
+						response.render('profile.html', {username:username, firstname:firstname});	
 					}
 				});
 			} else {
@@ -144,11 +138,10 @@ io.sockets.on('connection', function(socket) {
 				
 				//make it so all the preexisting information stays
 				response.render('account.html', {message:message, firstname:firstname, lastname:lastname, age:age, grade:grade, email:email, phone:phone, school:school});
-				// response.end();
 			}
 		});
 	    response.on('close', function(){
-	        console.log("Close received for create account!");
+	        console.log("Close received for create account.");
 	    });
 	});
 
@@ -162,6 +155,7 @@ io.sockets.on('connection', function(socket) {
 		var q = conn.query("SELECT user_id, first_name, password FROM user_info WHERE login = $1;", [username], function(err, data){
 			// handle errors
 			if (err) {
+				
 				message = "Server encountered an error while attempting to retrieve";
 				throw err;
 				response.render('login.html', {message:message});
@@ -178,9 +172,9 @@ io.sockets.on('connection', function(socket) {
 				var firstname = "";
 				for (var i = 0; i < data.rows.length; i++) {
 					var password2 = data.rows[i].password;
-					password = hash(password, username)
+					password = hash(password, username);
 					var match = compare_hash(password, password2);
-					console.log(password2);
+					console.log(password);
 
 					if (match) {
 						firstname = rows[i].first_name;
@@ -191,10 +185,11 @@ io.sockets.on('connection', function(socket) {
 					message = "No user/password combination found";
 					console.log(message);
 					response.render('login.html', {message:message});
-				}
-				loggedin.push(username);
-				response.render('profile.html', {username:username, firstname:firstname});
+				} else {
+					loggedin.push(username);
+					response.render('profile.html', {username:username, firstname:firstname});
 				// socket.emit("loggedIn", username); // emit a signal to indicate a successful connection
+				}
 			}
 		});
 		q.on('end', function(){
@@ -207,6 +202,9 @@ io.sockets.on('connection', function(socket) {
 			
 		});
 	});
+	
+
+
 });
 
 

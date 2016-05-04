@@ -1,5 +1,7 @@
 body {
 	background: #da5215;
+	min-width: 450px;
+	min-height:450px;
 }
 
 /* input fields */
@@ -75,6 +77,11 @@ body {
 	width: 175px !important;
 }
 
+#errorMessage {
+	color: #fff;
+	font-size: 20px;
+	padding-bottom: 20px;
+}
 
 
 
