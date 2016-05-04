@@ -113,6 +113,7 @@ io.sockets.on('connection', function(socket) {
 			var password = request.body.password;
 			if (isUser != 1) {
 				password = hash(password, username);
+				console.log("passowrd " + password);
 				conn.query('INSERT INTO user_info VALUES (null, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10);', [username, firstname, lastname, age, grade, school, gender, email, phone, password], function(err, res) {
 					if (err) {
 						message = "Could not properly insert value into database.";
@@ -158,17 +159,18 @@ io.sockets.on('connection', function(socket) {
 		var message = "success";
 		console.log('- Request received:', request.method, request.url);
 		// password = String(hash(password, username));
-		var q = conn.query("SELECT user_id, first_name, password FROM user_info WHERE login = $1 AND password = $2;", [username, password], function(err, data){
+		var q = conn.query("SELECT user_id, first_name, password FROM user_info WHERE login = $1;", [username], function(err, data){
 			// handle errors
 			if (err) {
+				
 				message = "Server encountered an error while attempting to retrieve";
 				throw err;
 				response.render('login.html', {message:message});
 			}
 			// if the data element returned is empty, indicate to the user that no password and username combination was found
-			if (data.rows.length === 0){
+			if (data.rows.length == 0){
 				message = "No user/password combination found";
-				console.log(message);
+				console.log(message + password);
 				// socket.emit('loginError', message);
 				response.render('login.html', {message:message});
 			} else {
@@ -183,8 +185,10 @@ io.sockets.on('connection', function(socket) {
 				// iterate through the set of elements returned (to handle the case where more than one is returned)
 				for (var i = 0; i < data.rows.length; i++) {
 					var password2 = data.rows[i].password;
-					password2 = hash(password2, username)
+					password = hash(password, username);
 					var match = compare_hash(password, password2);
+					console.log(password);
+
 					if (match) {
 						firstname = rows[i].first_name;
 					}
@@ -194,10 +198,11 @@ io.sockets.on('connection', function(socket) {
 					message = "No user/password combination found";
 					console.log(message);
 					response.render('login.html', {message:message});
-				}
-				loggedin.push(username);
-				response.render('profile.html', {username:username, firstname:firstname});
+				} else {
+					loggedin.push(username);
+					response.render('profile.html', {username:username, firstname:firstname});
 				// socket.emit("loggedIn", username); // emit a signal to indicate a successful connection
+				}
 			}
 		});
 		q.on('end', function(){
