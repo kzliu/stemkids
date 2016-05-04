@@ -195,14 +195,14 @@ io.sockets.on('connection', function(socket) {
 		q.on('end', function(){
 			console.log('login function executed');
 		});
-
-
-		// handle the post request from course creation page
-		app.post('/login', function(requst, response){
-			
-		});
 	});
 	
+
+	// handle the post response quest from course creation page
+	app.post('/add_course', function(requst, response){
+			
+	});
+
 
 
 });
