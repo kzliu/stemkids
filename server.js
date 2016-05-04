@@ -26,7 +26,7 @@ function hash(value, salt) {
 	// function creates a hash from the inputted value and salt
 	var secret = 'stemkids'; // private key for encryption purposes
 	var string = salt + value;
-	var hash = crypto.createHash('md5', secret).update(string).digest('hex');
+	var hash = crypto.createHash('sha256', secret).update(string).digest('hex');
 	return hash;
 }
 
@@ -159,7 +159,7 @@ io.sockets.on('connection', function(socket) {
 		var message = "success";
 		console.log('- Request received:', request.method, request.url);
 		// password = String(hash(password, username));
-		var q = conn.query("SELECT user_id, first_name, password FROM user_info WHERE login = $1 AND password = $2;", [username, password], function(err, data){
+		var q = conn.query("SELECT user_id, first_name, password FROM user_info WHERE login = $1;", [username], function(err, data){
 			// handle errors
 			if (err) {
 				message = "Server encountered an error while attempting to retrieve";
@@ -167,9 +167,9 @@ io.sockets.on('connection', function(socket) {
 				response.render('login.html', {message:message});
 			}
 			// if the data element returned is empty, indicate to the user that no password and username combination was found
-			if (data.rows.length === 0){
+			if (data.rows.length == 0){
 				message = "No user/password combination found";
-				console.log(message);
+				console.log(message + password);
 				// socket.emit('loginError', message);
 				response.render('login.html', {message:message});
 			} else {
@@ -186,6 +186,7 @@ io.sockets.on('connection', function(socket) {
 					var password2 = data.rows[i].password;
 					password2 = hash(password2, username)
 					var match = compare_hash(password, password2);
+					console.log(password2);
 
 					if (match) {
 						firstname = rows[i].first_name;
