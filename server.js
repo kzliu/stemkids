@@ -24,8 +24,9 @@ app.use(bodyParser.json());
 
 function hash(value, salt) {
 	// function creates a hash from the inputted value and salt
-	string = salt + value;
-	hash = crypto.createHash(string);
+	var secret = 'stemkids'; // private key for encryption purposes
+	var string = salt + value;
+	var hash = crypto.createHash('sha256', secret).update(string).digest('hex');
 	return hash;
 }
 
@@ -111,7 +112,7 @@ io.sockets.on('connection', function(socket) {
 			var phone = request.body.phone;
 			var password = request.body.password;
 			if (isUser != 1) {
-				// password = hash(password, username);
+				password = hash(password, username);
 				conn.query('INSERT INTO user_info VALUES (null, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10);', [username, firstname, lastname, age, grade, school, gender, email, phone, password], function(err, res) {
 					if (err) {
 						message = "Could not properly insert value into database.";
@@ -150,20 +151,22 @@ io.sockets.on('connection', function(socket) {
 	    });
 	});
 
+
 	app.post('/login', function(request, response){
 		var username = request.body.username;
 		var password = request.body.password;
 		var message = "success";
 		console.log('- Request received:', request.method, request.url);
 		// password = String(hash(password, username));
-		var q = conn.query("SELECT user_id,first_name FROM user_info WHERE login = $1 AND password = $2;", [username, password], function(err, data){
+		var q = conn.query("SELECT user_id, first_name, password FROM user_info WHERE login = $1 AND password = $2;", [username, password], function(err, data){
+			// handle errors
 			if (err) {
 				message = "Server encountered an error while attempting to retrieve";
 				throw err;
 				response.render('login.html', {message:message});
-				// socket.emit('loginError', message);
 			}
-			if (data.rows.length == 0){
+			// if the data element returned is empty, indicate to the user that no password and username combination was found
+			if (data.rows.length === 0){
 				message = "No user/password combination found";
 				console.log(message);
 				// socket.emit('loginError', message);
@@ -172,10 +175,24 @@ io.sockets.on('connection', function(socket) {
 				// iterate through the set of elements returned (to handle the case where more than one is returned)
 				var rows = data.rows;
 				var firstname = "";
-				for (var i in rows){
-					// console.log(rows[i].user_id);
-					// loggedin.push(rows[i].user_id);
-					firstname = rows[i].first_name;
+				// for (var i in rows){
+				// 	// console.log(rows[i].user_id);
+				// 	// loggedin.push(rows[i].user_id);
+				// 	firstname = rows[i].first_name;
+				// }
+				// iterate through the set of elements returned (to handle the case where more than one is returned)
+				for (var i = 0; i < data.rows.length; i++) {
+					password2 = data.rows[i].password;
+					match = compare_hash(password, password2);
+					if (match) {
+						firstname = rows[i].first_name;
+					}
+				}
+				// handle the case where no logins are found
+				if (firstname === "") {
+					message = "No user/password combination found";
+					console.log(message);
+					response.render('login.html', {message:message});
 				}
 				loggedin.push(username);
 				response.render('profile.html', {username:username, firstname:firstname});
