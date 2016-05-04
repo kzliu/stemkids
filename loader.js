@@ -3,7 +3,7 @@ var anyDB = require('any-db');
 var conn = anyDB.createConnection('sqlite3://stemkids.sqlite3');
 
 // create user information datatable
-conn.query('CREATE TABLE IF NOT EXISTS user_info (user_id INTEGER PRIMARY KEY AUTOINCREMENT, login TEXT, first_name TEXT, last_name TEXT, age INTEGER, grade TEXT, school TEXT, gender TEXT, email TEXT, phone_num INTEGER, password TEXT, logged_in INTEGER);').on('error', console.error).on('end', function(){
+conn.query('CREATE TABLE IF NOT EXISTS user_info (user_id INTEGER PRIMARY KEY AUTOINCREMENT, login TEXT, first_name TEXT, last_name TEXT, age INTEGER, grade TEXT, school TEXT, gender TEXT, email TEXT, phone_num INTEGER, password TEXT);').on('error', console.error).on('end', function(){
 	console.log('user_info table successfully created');
 });
 // create course table
