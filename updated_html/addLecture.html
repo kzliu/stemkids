@@ -35,19 +35,19 @@
 				    <!-- <button value="Edit" id="editCourseSummary">Edit</button> -->
 				</div>
 
-				<div class="ui dividing header"> </div>
+				<div class="uiDividingHeader"> </div>
 				<div class="field">
 				    <label>Lecture Title</label>
-				    <input type="text" name="lecture-title" placeholder="Title">
+				    <input type="text" name="lectureTitle" id="lectureTitle" placeholder="Title">
 				</div>
 
 				<div class="url">
 				    <label>Video Url</label>
-					<div class="ui labeled input">
+					<div class="uiLabeledInput">
 						<div class="ui label">
 							http://
 						</div>
-						<input type="text" placeholder="mysite.com">
+						<input type="text" id="video" placeholder="mysite.com">
 					</div>
 				</div>
 
@@ -55,7 +55,7 @@
 
 				<div id="upload">
 					<label id="def">Lecture Handout</label>
-			    <label for="file" class="ui icon button">
+			    <label for="file" class="uiIconButton">
 			        Upload File</label>
 			    <input type="file" id="file">
 				</div>
@@ -64,11 +64,11 @@
 					<div id="quiz">
 						<div class="field">
 						    <label> </label>
-						    <input type="text" name="question1" placeholder="Question">
+						    <input type="text" name="question1" id="question1" placeholder="Question">
 						</div>
 
-						<table class="ui teal table">
-							<tr class="center aligned">
+						<table class="uiTealTable">
+							<tr class="centerAligned">
 								<td>Answer</td>
 								<td>Correct</td>
 							</tr>
@@ -151,18 +151,38 @@ window.addEventListener('load', function(){
 	var max_questions = 10; // maximum number of questions allowed
 	var i = 1;
 	var qzz = $('#quiz');
+	var quiz_list = ['#quiz'];
 
 	$('#qstn').click(function(e) {
 		e.preventDefault();
 		if (i < max_questions) {
 			i++;
 			$('.quizlet').append('<h3> Question ' + i + '</h3>');
+			var id = '#quiz' + i;
 			$('#quiz').clone().prop('id', 'quiz' + i).appendTo('.quizlet');
+			quiz_list.push(id);
 		};	
 	});
 	
 	$('#ui_form').submit(function(event){
-		var 
+		var lectureTitle = this.lectureTitle.value;
+		var video = this.video.value;
+		var length = quiz_list.length;
+		var obj = {lectureTitle: lectureTitle, video: video, quizes: []};
+		for (var i = 0; i < length; i++) {
+			var quiz = quiz_list[i];
+			var answer1 = $(quiz + ' > table.uiTealTable > #answer1').val();
+			var answer2 = $(quiz + ' > table.uiTealTable > #answer2').val();
+			var answer3 = $(quiz + ' > table.uiTealTable > #answer3').val();
+			var answer4 = $(quiz + ' > table.uiTealTable > #answer4').val();
+			var corr1 = $(quiz + ' > table.uiTealTable > #answer1corr').checked();
+			var corr2 = $(quiz + ' > table.uiTealTable > #answer2corr').checked();
+			var corr3 = $(quiz + ' > table.uiTealTable > #answer3corr').checked();
+			var corr4 = $(quiz + ' > table.uiTealTable > #answer4corr').checked();
+			var json = {quiz: {answer1: answer1, answer2: answer2, answer3: answer3, answer4: answer4, corr1: corr1, corr2: corr2, corr3: corr3, corr4: corr4}};
+			obj.quizes.push(json);
+		}
+		$.post('/addLecture', obj);
 		event.preventDefault();
 	});			
 });
