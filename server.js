@@ -72,11 +72,6 @@ function isCourse(id){
 
 app.get('/', function(request, response){
     console.log('- Request received:', request.method, request.url);
-    // conn.query('SELECT logged_in FROM user_info WHERE login = $1', [username], function(err, data){
-    // 	if () {
-
-    // 	}
-    // });
     response.render('index.html',{ root : __dirname});
 });
 
@@ -88,6 +83,16 @@ app.get('/login', function(request, response){
 app.get('/createAccount', function(request, response){
     console.log('- Request received:', request.method, request.url);
     response.render('account.html',{ root : __dirname});
+});
+
+app.get('/admin', function(request, response){
+    console.log('- Request received:', request.method, request.url);
+    response.render('adminhome.html',{ root : __dirname});
+});
+
+app.get('/createCourse',function(request, response) {
+	console.log('- Request received:', request.method, request.url);
+    response.render('createcourse.html',{ root : __dirname});
 });
 
 var loggedin = [];
@@ -121,17 +126,8 @@ io.sockets.on('connection', function(socket) {
 						// socket.emit('createAccountError', message);
 						response.render('account.html', {message:message, firstname:firstname, lastname:lastname, age:age, grade:grade, email:email, phone:phone, school:school});
 					} else {
-						// var q = conn.query("SELECT last_insert_rowid() FROM user_info;", function(error, result){
-						// 		if (error) throw error;
-				  //               var rows = result.rows;
-				  //               for (var i in rows){
-				  //               	console.log(rows[i].user_id);
-				  //               	
-			   //              	}
 			   			loggedin.push(username);
-						response.render('profile.html', {username:username, firstname:firstname});
-						// });
-						
+						response.render('profile.html', {username:username, firstname:firstname});	
 					}
 				});
 			} else {
@@ -144,11 +140,10 @@ io.sockets.on('connection', function(socket) {
 				
 				//make it so all the preexisting information stays
 				response.render('account.html', {message:message, firstname:firstname, lastname:lastname, age:age, grade:grade, email:email, phone:phone, school:school});
-				// response.end();
 			}
 		});
 	    response.on('close', function(){
-	        console.log("Close received for create account!");
+	        console.log("Close received for create account.");
 	    });
 	});
 
@@ -209,6 +204,9 @@ io.sockets.on('connection', function(socket) {
 			console.log('login function executed');
 		});
 	});
+	
+
+
 });
 
 
@@ -229,40 +227,6 @@ app.get('/profile/:identifyer', function(request, response){
 		console.log('data successfuly sent')
 	});
 });
-
-
-// app.get('/login', function(request, response){
-// 	var username = request.body.username;
-// 	var password = request.body.password;
-// 	password = String(hash(password, username));
-// 	var q = conn.query("SELECT password FROM user_info WHERE user_id = $1", [username], function(err, data){
-// 		if (err) {
-// 			message = "Server encountered an error while attempting to retrieve"
-// 			throw err;
-// 			socket.emit("loginError", message);
-// 		}
-// 		if (data.rows.length === 0){
-// 			message = "No user found"
-// 			socket.emit("noUserFoundError", message);
-// 		} else {
-// 			// iterate through the set of elements returned (to handle the case where more than one is returned)
-// 			for (var i = 0; i < data.rows.length; i++) {
-// 				password2 = data.rows[i];
-// 				match = compare_hash(password, password2);
-// 				if (match) {
-// 					conn.query("UPDATE user_info SET logged_in = $1 WHERE username = $2", [1, username]); // indicate that the user in question has successfully logged in
-// 					socket.emit("loggedIn", username); // emit a signal to indicate a successful connection
-// 				} else {
-// 					socket.emit("loginFailed", username); // emit a signal to indicate that login was unsuccessful
-// 				}
-// 			}
-// 		}
-// 	});
-// 	q.on('end', function(){
-// 		console.log('login function executed');
-// 	});
-// });
-
 
 // set the app's server to listen on a given port
 server.listen(1234, function(){

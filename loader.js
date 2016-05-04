@@ -19,7 +19,7 @@ conn.query('CREATE TABLE IF NOT EXISTS courses (course_id TEXT, num_classes INTE
 
 
 // create classes table
-conn.query('CREATE TABLE IF NOT EXISTS classes (class_id TEXT, class_description TEXT, instructor TEXT, quiz_id INTEGER, lecture TEXT, handout TEXT, PRIMARY KEY (class_id), FOREIGN KEY (quiz_id) REFERENCES quiz(quiz_id) ON DELETE CASCADE ON UPDATE CASCADE);').on('error', console.error).on('end', function(){
+conn.query('CREATE TABLE IF NOT EXISTS classes (class_id TEXT, class_title TEXT, class_description TEXT, instructor TEXT, lecture TEXT, handout TEXT, PRIMARY KEY (class_id);').on('error', console.error).on('end', function(){
 	console.log('classes table successfully created');
 });
 
@@ -35,25 +35,25 @@ conn.query('CREATE TABLE IF NOT EXISTS enrollment (user_id INTEGER, course_id TE
 });
 
 //quiz history for a user
-conn.query('CREATE TABLE IF NOT EXISTS quiz_history (user_id INTEGER, quiz_id TEXT, answer INTEGER, FOREIGN KEY (user_id) REFERENCES user_info(user_id) ON DELETE CASCADE ON UPDATE CASCADE, FOREIGN KEY (quiz_id) REFERENCES quiz(quiz_id) ON DELETE CASCADE ON UPDATE CASCADE);').on('error', console.error).on('end', function(){
+conn.query('CREATE TABLE IF NOT EXISTS quiz_history (user_id INTEGER, answer_id INTEGER, FOREIGN KEY (user_id) REFERENCES user_info(user_id) ON DELETE CASCADE ON UPDATE CASCADE, FOREIGN KEY (answer_id) REFERENCES answers(answer_id) ON DELETE CASCADE ON UPDATE CASCADE);').on('error', console.error).on('end', function(){
 	console.log('quiz_history table successfully created');
 });
 
 
 // create course progress table, where values are inserted when a user completes a class
-conn.query('CREATE TABLE IF NOT EXISTS course_history (user_id INTEGER, class_id TEXT, PRIMARY KEY (user_id, answer_id), FOREIGN KEY (class_id) REFERENCES classes(class_id) ON DELETE CASCADE ON UPDATE CASCADE, FOREIGN KEY (user_id) REFERENCES user_info(user_id) ON DELETE CASCADE ON UPDATE CASCADE);').on('error', console.error).on('end', function(){
+conn.query('CREATE TABLE IF NOT EXISTS course_history (user_id INTEGER, class_id TEXT, PRIMARY KEY (user_id, class_id), FOREIGN KEY (class_id) REFERENCES classes(class_id) ON DELETE CASCADE ON UPDATE CASCADE, FOREIGN KEY (user_id) REFERENCES user_info(user_id) ON DELETE CASCADE ON UPDATE CASCADE);').on('error', console.error).on('end', function(){
 	console.log('quiz_history table successfully created');
 });
 
 
 // create a questions table
-conn.query('CREATE TABLE IF NOT EXISTS questions (question_id INTEGER PRIMARY KEY AUTOINCREMENT, question TEXT, class_id, FOREIGN KEY (class_id) REFERENCES classes(class_id));').on('error', console.error).on('end', function(){
+conn.query('CREATE TABLE IF NOT EXISTS questions (question_id INTEGER PRIMARY KEY AUTOINCREMENT, question TEXT, class_id INTEGER, FOREIGN KEY (class_id) REFERENCES classes(class_id) ON DELETE CASCADE ON UPDATE CASCADE);').on('error', console.error).on('end', function(){
 	console.log('questions table successfully created');
 });
 
 
 // create an answers table
-conn.query('CREATE TABLE IF NOT EXITSTS answers (answer_id INTEGER PRIMARY KEY AUTOINCREMENT, question_id INTEGER, correct INTEGER, FOREIGN KEY (question_id) REFERENCES questions(question_id));').on('error', console.error).on('end', function(){
+conn.query('CREATE TABLE IF NOT EXITSTS answers (answer_id INTEGER PRIMARY KEY AUTOINCREMENT, question_id INTEGER, correct INTEGER, answer TEXT, FOREIGN KEY (question_id) REFERENCES questions(question_id) ON DELETE CASCADE ON UPDATE CASCADE);').on('error', console.error).on('end', function(){
 	console.log('answers table successfully created');
 });
 
