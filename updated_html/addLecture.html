@@ -177,10 +177,26 @@ window.addEventListener('load', function(){
 			var answer2 = $(quiz + ' > table.uiTealTable > #answer2').val();
 			var answer3 = $(quiz + ' > table.uiTealTable > #answer3').val();
 			var answer4 = $(quiz + ' > table.uiTealTable > #answer4').val();
-			var corr1 = $(quiz + ' > table.uiTealTable > #answer1corr').checked();
-			var corr2 = $(quiz + ' > table.uiTealTable > #answer2corr').checked();
-			var corr3 = $(quiz + ' > table.uiTealTable > #answer3corr').checked();
-			var corr4 = $(quiz + ' > table.uiTealTable > #answer4corr').checked();
+			if ($(quiz + ' > table.uiTealTable > #answer1corr').checked) {
+				var corr1 = 1;
+			} else {
+				var corr1 = 0;
+			}
+			if ($(quiz + ' > table.uiTealTable > #answer2corr').checked) {
+				var corr2 = 1;
+			} else {
+				var corr2 = 0;
+			}
+			if ($(quiz + ' > table.uiTealTable > #answer3corr').checked) {
+				var corr3 = 1;
+			} else {
+				var corr3 = 0;
+			}
+			if ($(quiz + ' > table.uiTealTable > #answer4corr').checked) {
+				var corr4 = 1;
+			} else {
+				var corr4 = 0;
+			}
 			var json = {quiz: {answer1: answer1, answer2: answer2, answer3: answer3, answer4: answer4, corr1: corr1, corr2: corr2, corr3: corr3, corr4: corr4}};
 			obj.quizes.push(json);
 		}

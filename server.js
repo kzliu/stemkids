@@ -24,7 +24,7 @@ app.use(bodyParser.json());
 
 function hash(value, salt) {
 	// function creates a hash from the inputted value and salt
-	var secret = 'stemkids'; // private key for encryption purposes
+	var secret = 'stemkids'; // private key for encryption purposes (note: for RSA, this will need to be made a significantly larger random integer)
 	var string = salt + value;
 	var hash = crypto.createHash('sha256', secret).update(string).digest('hex');
 	return hash;
@@ -208,20 +208,41 @@ io.sockets.on('connection', function(socket) {
 		var code = request.body.courseId; 
 		var title = request.body.courseTitle;
 		var summary = request.body.courseSummary;
+		// note: need to check to see if the course in question doesn't already exist
+		conn.query('SELECT course_title FROM courses WHERE course_title = $1', [title], function(err, data){
+			if (data.rows.length == 0) {
+				conn.query('INSERT INTO courses (course_id, num_classes, course_title, course_description) VALUES ($1, $2, $3, $4);', [code, 0, title, summary]);
+			} else { // handle the case where the course already exists
+				console.log('course exists already');
+			}
+		});
     	response.render('addLecture.html',{ root : __dirname, courseId: code, courseTitle: title, courseSummary: summary});
 	});
 
 
 	// add class to the database
 	app.post('/addClass', function(request, response){
+		// retrieve all static elements concerining the class and corresponding material
 		var lectureTitle = request.body.lectureTitle;
 		var video = request.body.video;
 		var courseId = request.body.courseId;
 		var courseTitle = request.body.courseTitle;
-		var quiz_list = request.body.quizes;
-		var length = quiz_list.length;
+		var quiz_list = request.body.quizes; // retrieve the quiz list from the JSON element
+		var length = quiz_list.length; // calculate the length of the quiz list
+		// iterate through all quiz elements to retrieve answers
 		for (var i = 0; i < length; i++) {
-			var 
+			var quiz = quiz_list[i].quiz; // retrieve the quiz json element
+			// retrieve the quiz answers
+			var answer1 = quiz.answer1;
+			var answer2 = quiz.answer2;
+			var answer3 = quiz.answer3;
+			var answer4 = quiz.answer4;
+			// determine the correctness of each answer
+			var corr1 = quiz.corr1;
+			var corr2 = quiz.corr2;
+			var corr3 = quiz.corr3;
+			var corr4 = quiz.corr4;
+			conn.query('INSERT INTO questions');
 		}
 	});
 
