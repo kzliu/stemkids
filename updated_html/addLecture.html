@@ -57,109 +57,76 @@
 					<label id="def">Lecture Handout</label>
 			    <label for="file" class="ui icon button">
 			        Upload File</label>
-			    <input type="file" id="file" style="display:none">
+			    <input type="file" id="file">
 				</div>
 				<div class="quizlet">
 					<h3>Question 1</h3>
-				<div id="quiz">
-					<div class="field">
-					    <label> </label>
-					    <input type="text" name="question1" placeholder="Question">
+					<div id="quiz">
+						<div class="field">
+						    <label> </label>
+						    <input type="text" name="question1" placeholder="Question">
+						</div>
+
+						<table class="ui teal table">
+							<tr class="center aligned">
+								<td>Answer</td>
+								<td>Correct</td>
+							</tr>
+							<tr>
+								<td>
+								    <input type="text" name='answer1' id='answer1' placeholder="Answer 1">
+								</td>
+								<td class="center aligned">
+									<div class="inline field">
+									    <div class="ui checkbox">
+									      <input type="checkbox" name='answer1cb' id='answer1corr'>
+									      <label></label>
+									    </div>
+									  </div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+								    <input type="text" name='answer2' id='answer2' placeholder="Answer 2">
+								</td>
+								<td class="center aligned">
+									<div class="inline field">
+									    <div class="ui checkbox">
+									      <input type="checkbox" name='answer2cb' id='answer2corr'>
+									      <label></label>
+									    </div>
+									  </div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+								    <input type="text" name='answer3' id='answer3' placeholder="Answer 3">
+								</td>
+								<td class="center aligned">
+									<div class="inline field">
+									    <div class="ui checkbox">
+									      <input type="checkbox" name='answer3cb' id='answer3corr'>
+									      <label></label>
+									    </div>
+									  </div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+								    <input type="text" name='answer4' id='answer4' placeholder="Answer 4">
+								</td>
+								<td class="center aligned">
+									<div class="inline field">
+									    <div class="ui checkbox">
+									      <input type="checkbox" name='answer4cb' id='answer4corr'>
+									      <label></label>
+									    </div>
+									  </div>
+								</td>
+							</tr>
+						</table>
 					</div>
-
-					<table class="ui teal table">
-						<tr class="center aligned">
-							<td>Answer</td>
-							<td>Correct</td>
-							<td>Incorrect</td>
-						</tr>
-						<tr>
-							<td>
-							    <input type="text" name='answer1' id='answer1' placeholder="Answer 1">
-							</td>
-							<td class="center aligned">
-								<div class="inline field">
-								    <div class="ui checkbox">
-								      <input type="checkbox" name='answer1cb' id='answer1corr'>
-								      <label></label>
-								    </div>
-								  </div>
-							</td>
-							<td class="center aligned">
-								<div class="inline field">
-								    <div class="ui checkbox">
-								      <input type="checkbox" name='answer1cb' id='answer2incorr'>
-								      <label></label>
-								    </div>
-								  </div>
-							</td>
-						</tr>
-						<tr>
-							<td>
-							    <input type="text" name='answer2' id='answer2' placeholder="Answer 2">
-							</td>
-							<td class="center aligned">
-								<div class="inline field">
-								    <div class="ui checkbox">
-								      <input type="checkbox" name='answer2cb' id='answer2corr'>
-								      <label></label>
-								    </div>
-								  </div>
-							</td>
-							<td class="center aligned">
-								<div class="inline field">
-								    <div class="ui checkbox">
-								      <input type="checkbox" name='answer2cb' id='answer2incorr'>
-								      <label></label>
-								    </div>
-								  </div>
-							</td>
-						</tr>
-						<tr>
-							<td>
-							    <input type="text" name='answer3' id='answer3' placeholder="Answer 3">
-							</td>
-							<td class="center aligned">
-								<div class="inline field">
-								    <div class="ui checkbox">
-								      <input type="checkbox" name='answer3cb' id='answer3corr'>
-								      <label></label>
-								    </div>
-								  </div>
-							</td>
-							<td class="center aligned">
-								<div class="inline field">
-								    <div class="ui checkbox">
-								      <input type="checkbox" name='answer3cb' id='answer3incorr'>
-								      <label></label>
-								    </div>
-								  </div>
-							</td>
-						</tr>
-						<tr>
-							<td>
-							    <input type="text" name='answer4' id='answer4' placeholder="Answer 4">
-							</td>
-							<td class="center aligned">
-								<div class="inline field">
-								    <div class="ui checkbox">
-								      <input type="checkbox" name='answer4cb' id='answer4corr'>
-								      <label></label>
-								    </div>
-								  </div>
-							</td>
-							<td class="center aligned">
-								<div class="inline field">
-								    <div class="ui checkbox">
-								      <input type="checkbox" name='answer4cb' id='answer4incorr'>
-								      <label> </label>
-								    </div>
-								  </div>
-							</td>
-						</tr>
-					</table>
-
-
+				</div>
 			<div id="qstn">
 				<button class="ui button" type="submit">Add Question</button>
 			</div>
