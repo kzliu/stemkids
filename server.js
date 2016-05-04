@@ -207,9 +207,6 @@ io.sockets.on('connection', function(socket) {
 		var code = request.body.courseId; 
 		var title = request.body.courseTitle;
 		var summary = request.body.courseSummary;
-		console.log(title);
-		console.log(summary);
-		console.log(code);
     	response.render('addLecture.html',{ root : __dirname, courseId: code, courseTitle: title, courseSummary: summary});
 	});
 
