@@ -26,7 +26,7 @@ function hash(value, salt) {
 	// function creates a hash from the inputted value and salt
 	var secret = 'stemkids'; // private key for encryption purposes
 	var string = salt + value;
-	var hash = crypto.createHash('md5', secret).update(string).digest('hex');
+	var hash = crypto.createHash('sha256', secret).update(string).digest('hex');
 	return hash;
 }
 
