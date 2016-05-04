@@ -168,7 +168,9 @@ window.addEventListener('load', function(){
 		var lectureTitle = this.lectureTitle.value;
 		var video = this.video.value;
 		var length = quiz_list.length;
-		var obj = {lectureTitle: lectureTitle, video: video, quizes: []};
+		var courseId = meta('courseId');
+		var courseTitle = meta('courseTitle');
+		var obj = {lectureTitle: lectureTitle, video: video, courseId: courseId, courseTitle: courseTitle, quizes: []};
 		for (var i = 0; i < length; i++) {
 			var quiz = quiz_list[i];
 			var answer1 = $(quiz + ' > table.uiTealTable > #answer1').val();
@@ -182,7 +184,7 @@ window.addEventListener('load', function(){
 			var json = {quiz: {answer1: answer1, answer2: answer2, answer3: answer3, answer4: answer4, corr1: corr1, corr2: corr2, corr3: corr3, corr4: corr4}};
 			obj.quizes.push(json);
 		}
-		$.post('/addLecture', obj);
+		$.post('/addClass', obj);
 		event.preventDefault();
 	});			
 });

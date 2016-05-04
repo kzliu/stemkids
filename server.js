@@ -202,6 +202,7 @@ io.sockets.on('connection', function(socket) {
 		});
 	});
 	
+	// add lecture and render lecture and quiz page
 	app.post('/addLecture', function(request, response){
 		console.log('- Request received:', request.method, request.url);
 		var code = request.body.courseId; 
@@ -209,6 +210,8 @@ io.sockets.on('connection', function(socket) {
 		var summary = request.body.courseSummary;
     	response.render('addLecture.html',{ root : __dirname, courseId: code, courseTitle: title, courseSummary: summary});
 	});
+
+
 
 
 });
