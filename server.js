@@ -65,7 +65,7 @@ function isCourse(id){
     conn.query('SELECT * FROM courses where course_id=$1', [id], function(error,result) {
         return (result.rows.length != 0);
     });
-}
+};
 
 
 app.get('/', function(request, response){
@@ -90,7 +90,23 @@ app.get('/admin', function(request, response){
 
 app.get('/createCourse',function(request, response) {
 	console.log('- Request received:', request.method, request.url);
-    response.render('createcourse.html',{ root : __dirname});
+	var courseCode = generateCourseCode();
+	while (isCourse(courseCode)) {
+		courseCode = generateCourseCode();
+	}
+	console.log("course code " + courseCode);
+    response.render('createcourse.html',{ root : __dirname, course_id: courseCode});
+});
+
+app.get('/:courseId/addLecture', function(request, response){
+	console.log('- Request received:', request.method, request.url);
+	var code = request.params.courseId; 
+	var title = request.body.courseTitle;
+	var summary = request.body.courseSummary;
+	console.log(title);
+	console.log(summary);
+	console.log(code);
+	response.render('addLecture.html',{ root : __dirname, courseId: code, courseTitle: title, courseSummary: summary});
 });
 
 var loggedin = [];
@@ -195,14 +211,18 @@ io.sockets.on('connection', function(socket) {
 		q.on('end', function(){
 			console.log('login function executed');
 		});
-
-
-		// handle the post request from course creation page
-		app.post('/login', function(requst, response){
-			
-		});
 	});
 	
+	app.post('/addLecture', function(request, response){
+		console.log('- Request received:', request.method, request.url);
+		var code = request.body.courseId; 
+		var title = request.body.courseTitle;
+		var summary = request.body.courseSummary;
+		console.log(title);
+		console.log(summary);
+		console.log(code);
+    	response.render('addLecture.html',{ root : __dirname, courseId: code, courseTitle: title, courseSummary: summary});
+	});
 
 
 });
