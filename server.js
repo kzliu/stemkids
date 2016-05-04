@@ -26,7 +26,7 @@ function hash(value, salt) {
 	// function creates a hash from the inputted value and salt
 	var secret = 'stemkids'; // private key for encryption purposes
 	var string = salt + value;
-	var hash = crypto.createHash('sha256', secret).update(string).digest('hex');
+	var hash = crypto.createHash('md5', secret).update(string).digest('hex');
 	return hash;
 }
 
@@ -182,8 +182,9 @@ io.sockets.on('connection', function(socket) {
 				// }
 				// iterate through the set of elements returned (to handle the case where more than one is returned)
 				for (var i = 0; i < data.rows.length; i++) {
-					password2 = data.rows[i].password;
-					match = compare_hash(password, password2);
+					var password2 = data.rows[i].password;
+					password2 = hash(password2, username)
+					var match = compare_hash(password, password2);
 					if (match) {
 						firstname = rows[i].first_name;
 					}
