@@ -1,9 +1,9 @@
-.ui.form {
+.ui_form {
 	width: 45%;
 	margin: auto;
 }
 
-.ui.form label, #upload {
+.ui_form label, #upload {
 	text-align: left;
 }
 
