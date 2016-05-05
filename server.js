@@ -237,14 +237,24 @@ io.sockets.on('connection', function(socket) {
 		var quiz_list = JSON.parse(request.body.quizes);// retrieve the quiz list from the JSON element
 
 		// var length = quiz_list.length;
-		// console.log(lectureTitle);
-		// console.log(video);
-		// console.log(courseId);
-		// console.log(courseTitle);
-		// console.log(request.body.quizes);
+		console.log(lectureTitle);
+		console.log(video);
+		console.log(courseId);
+		console.log(courseTitle);
+		console.log(request.body.quizes);
 		for (var i in quiz_list) {
 			var quiz = quiz_list[i]; // retrieve the quiz json element
-			var question = quiz[question]; // retrieve the given question
+			console.log(quiz);
+			var question = quiz.question; // retrieve the given question
+			console.log(question);
+
+			var question_id = '/q/' + courseId+ i;
+			console.log(question_id);
+			var lecture_id = '/l/' + courseId + i;
+			console.log(lecture_id);
+			// insert values into questions table
+			conn.query('INSERT INTO questions (question_id, class_id, question) VALUES ($1, $2, $3);', [question_id, lecture_id, question]).on('error', console.error);
+
 			// retrieve the quiz answers
 			var answers =[]
 			for (var a = 1; a <= 4; a++){
@@ -253,17 +263,21 @@ io.sockets.on('connection', function(socket) {
 			// determine the correctness of each answer
 			var correct = [];
 			for (var c = 1; c <= 4; c++){
-				correct.push(quiz['corr'+c]);
+				var corr = quiz['corr'+c];
+				if (corr){
+					correct.push(1);
+				} else {
+					correct.push(0);
+				}
 			}
 			console.log(answers);
 			console.log(correct);
-			// insert values into questions table
-			// conn.query('INSERT INTO questions (question_id, class_id, question) VALUES ($1, $2, $3);', [question_num, lectureTitle, question]);
-			// // insert values into answers table
-			// for (var j = 0; j < 4; j++) {
-			// 	conn.query('INSERT INTO answers (question_id, class_id, correct, answer) VALUES ($1, $2, $3, $4);', [question_num, lectureTitle, correct[j], answers[j]]);
-			// }
-			// // get current number of classes
+			
+			// insert values into answers table
+			for (var j = 0; j < 4; j++) {
+				conn.query('INSERT INTO answers (question_id, class_id, correct, answer) VALUES ($1, $2, $3, $4);', [question_id, lecture_id, correct[j], answers[j]]).on('error', console.error);
+			}
+			// get current number of classes
 			// conn.query('SELECT num_classes FROM courses WHERE course_id = $1', [courseId], function(err, data){
 			// 	num_courses = data.rows[0];
 			// 	num_courses++;
