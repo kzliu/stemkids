@@ -177,16 +177,16 @@ window.addEventListener('load', function(){
 		for (var i = 0; i < length; i++) {
 			var quiz = quiz_list[i];
 			var question = $(quiz + ' > div.field > input#question').val();
-			obj.quizes[i] = {question:question}
-			// var answers = {};
-			// var corr = {};
-			var a = 1;
-			$(quiz + ' table.uiTealTable tr.tableanswerouter').each(function() {
-			    obj.quizes[i]["answer" + a] = $(this).find("#answer" + a).val();
-			    obj.quizes[i]["corr"+a] = $(this).find("#answer" + a + "corr").prop('checked');
-			    a += 1;
-			});
-			// obj.quizes[i] = {question:question, answers:answers, corr:corr};
+			if (question != ""){
+				//fill quiz of i with question and answer/correctness
+				obj.quizes[i] = {question:question}
+				var a = 1;
+				$(quiz + ' table.uiTealTable tr.tableanswerouter').each(function() {
+				    obj.quizes[i]["answer" + a] = $(this).find("#answer" + a).val();
+				    obj.quizes[i]["corr"+a] = $(this).find("#answer" + a + "corr").prop('checked');
+				    a += 1;
+				});
+			}
 		}
 		obj.quizes = JSON.stringify(obj.quizes);
 		console.log(obj);

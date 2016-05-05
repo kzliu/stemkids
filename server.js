@@ -228,10 +228,7 @@ io.sockets.on('connection', function(socket) {
 
 	// add class to the database
 	app.post('/addClass', function(request, response){
-
 		console.log('- Request received:', request.method, request.url);
-		// var json = JSON.parse(request);
-		// console.log(json);
 		// retrieve all static elements concerining the class and corresponding material
 		var lectureTitle = request.body.lectureTitle;
 		var video = request.body.video;
@@ -249,17 +246,15 @@ io.sockets.on('connection', function(socket) {
 			var quiz = quiz_list[i]; // retrieve the quiz json element
 			var question = quiz[question]; // retrieve the given question
 			// retrieve the quiz answers
-			var answer1 = quiz['answer1'];
-			var answer2 = quiz['answer2'];
-			var answer3 = quiz['answer3'];
-			var answer4 = quiz['answer4'];
-			var answers = [answer1, answer2, answer3, answer4];
+			var answers =[]
+			for (var a = 1; a <= 4; a++){
+				answers.push(quiz['answer'+a]);
+			}
 			// determine the correctness of each answer
-			var corr1 = quiz['corr1'];
-			var corr2 = quiz['corr2'];
-			var corr3 = quiz['corr3'];
-			var corr4 = quiz['corr4'];
-			var correct = [corr1, corr2, corr3, corr4];
+			var correct = [];
+			for (var c = 1; c <= 4; c++){
+				correct.push(quiz['corr'+c]);
+			}
 			console.log(answers);
 			console.log(correct);
 			// insert values into questions table
