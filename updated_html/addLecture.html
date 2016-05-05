@@ -9,6 +9,7 @@
 	<meta name="courseId" content="{{courseId}}">
 	<meta name="courseTitle" content="{{courseTitle}}">
 	<meta name="courseSummary" content="{{courseSummary}}">
+	<meta name="lectureNum" content="{{lectureNum}}">
 
 	<title>Create Course {{courseId}}</title>
 
@@ -21,7 +22,7 @@
 <body>
 	<div class="main">
 		<div class="wrapper">
-			<h2> Add Lecture to Course {{courseId}}</h2>
+			<h2> Add Lecture {{lectureNum}} to Course {{courseId}}</h2>
 
 			<form class="ui form">
 				<div class="field">
@@ -167,12 +168,13 @@ window.addEventListener('load', function(){
 	
 	$('#addNewLecture').click(function(e){
 		console.log("in submit");
+		e.preventDefault();
 		var lectureTitle = $('#lectureTitle').val();
 		var video = $('#video').val();
 		var length = quiz_list.length;
 		var courseId = meta('courseId');
 		var courseTitle = meta('courseTitle');
-		var obj = {lectureTitle: lectureTitle, video: video, courseId: courseId, courseTitle: courseTitle, quizes: {}};
+		var obj = {lectureTitle: lectureTitle, lectureNum: meta('lectureNum'), video: video, courseId: courseId, courseTitle: courseTitle, quizes: {}};
 		for (var i = 0; i < length; i++) {
 			var quiz = quiz_list[i];
 			var question = $(quiz + ' > div.field > input#question').val();
