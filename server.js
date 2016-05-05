@@ -214,15 +214,32 @@ io.sockets.on('connection', function(socket) {
 
 	// add class to the database
 	app.post('/addClass', function(request, response){
+		// console.log(request);
+		// var json = JSON.parse(request);
+		// console.log(json);
 		var lectureTitle = request.body.lectureTitle;
 		var video = request.body.video;
 		var courseId = request.body.courseId;
 		var courseTitle = request.body.courseTitle;
-		var quiz_list = request.body.quizes;
-		var length = quiz_list.length;
-		console.log(quiz_list);
-		for (var i = 0; i < length; i++) {
-			// var 
+		var quiz_list = JSON.parse(request.body.quizes);
+
+		// var length = quiz_list.length;
+		// console.log(lectureTitle);
+		// console.log(video);
+		// console.log(courseId);
+		// console.log(courseTitle);
+		// console.log(request.body.quizes);
+		for (var i in quiz_list) {
+			var quiz = quiz_list[i];
+			var question = quiz[question];
+			var answer1 = quiz['answer1'];
+			var answer2 = quiz['answer2'];
+			var answer3 = quiz['answer3'];
+			var answer4 = quiz['answer4'];
+			var corr1 = quiz['corr1'];
+			var corr2 = quiz['corr2'];
+			var corr3 = quiz['corr3'];
+			var corr4 = quiz['corr4'];
 		}
 	});
 

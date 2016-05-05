@@ -23,7 +23,7 @@
 		<div class="wrapper">
 			<h2> Add Lecture to Course {{courseId}}</h2>
 
-			<form class="ui_form">
+			<form class="ui form">
 				<div class="field">
 				    <label>Course Title</label>
 				    <!-- <input type="text" name="course-title" placeholder="Title" hidden> -->
@@ -67,7 +67,7 @@
 					<div id="quiz">
 						<div class="field">
 						    <label> </label>
-						    <input type="text" name="question1" id="question1" placeholder="Question">
+						    <input type="text" name="question" id="question" placeholder="Question">
 						</div>
 
 						<table class="uiTealTable">
@@ -75,8 +75,8 @@
 								<td>Answer</td>
 								<td>Correct</td>
 							</tr>
-							<tr>
-								<td>
+							<tr class="tableanswerouter">
+								<td class="tableanswer">
 								    <input type="text" name='answer1' id='answer1' placeholder="Answer 1">
 								</td>
 								<td class="center aligned">
@@ -88,8 +88,8 @@
 									  </div>
 								</td>
 							</tr>
-							<tr>
-								<td>
+							<tr class="tableanswerouter">
+								<td class="tableanswer">
 								    <input type="text" name='answer2' id='answer2' placeholder="Answer 2">
 								</td>
 								<td class="center aligned">
@@ -101,8 +101,8 @@
 									  </div>
 								</td>
 							</tr>
-							<tr>
-								<td>
+							<tr class="tableanswerouter">
+								<td class="tableanswer">
 								    <input type="text" name='answer3' id='answer3' placeholder="Answer 3">
 								</td>
 								<td class="center aligned">
@@ -114,8 +114,8 @@
 									  </div>
 								</td>
 							</tr>
-							<tr>
-								<td>
+							<tr class="tableanswerouter">
+								<td class="tableanswer">
 								    <input type="text" name='answer4' id='answer4' placeholder="Answer 4">
 								</td>
 								<td class="center aligned">
@@ -173,26 +173,25 @@ window.addEventListener('load', function(){
 		var length = quiz_list.length;
 		var courseId = meta('courseId');
 		var courseTitle = meta('courseTitle');
-		var obj = {lectureTitle: lectureTitle, video: video, courseId: courseId, courseTitle: courseTitle, quizes: []};
-		console.log(obj);
-		console.log(quiz_list);
+		var obj = {lectureTitle: lectureTitle, video: video, courseId: courseId, courseTitle: courseTitle, quizes: {}};
 		for (var i = 0; i < length; i++) {
 			var quiz = quiz_list[i];
-			var answer1 = $(quiz + ' > table.uiTealTable > #answer1').val();
-			var answer2 = $(quiz + ' > table.uiTealTable > #answer2').val();
-			var answer3 = $(quiz + ' > table.uiTealTable > #answer3').val();
-			var answer4 = $(quiz + ' > table.uiTealTable > #answer4').val();
-			var corr1 = $(quiz + ' > table.uiTealTable > #answer1corr').prop('checked');
-			var corr2 = $(quiz + ' > table.uiTealTable > #answer2corr').prop('checked');
-			var corr3 = $(quiz + ' > table.uiTealTable > #answer3corr').prop('checked');
-			var corr4 = $(quiz + ' > table.uiTealTable > #answer4corr').prop('checked');
-			var json = {quiz: {answer1: answer1, answer2: answer2, answer3: answer3, answer4: answer4, corr1: corr1, corr2: corr2, corr3: corr3, corr4: corr4}};
-			console.log(json);
-			obj.quizes.push(json);
+			var question = $(quiz + ' > div.field > input#question').val();
+			obj.quizes[i] = {question:question}
+			// var answers = {};
+			// var corr = {};
+			var a = 1;
+			$(quiz + ' table.uiTealTable tr.tableanswerouter').each(function() {
+			    obj.quizes[i]["answer" + a] = $(this).find("#answer" + a).val();
+			    obj.quizes[i]["corr"+a] = $(this).find("#answer" + a + "corr").prop('checked');
+			    a += 1;
+			});
+			// obj.quizes[i] = {question:question, answers:answers, corr:corr};
 		}
+		obj.quizes = JSON.stringify(obj.quizes);
 		console.log(obj);
-		// $.post('/addClass', obj);
-		// return false;
+		$.post('/addClass', obj);
+		return false;
 	});	
 });
 
