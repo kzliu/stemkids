@@ -289,11 +289,11 @@ io.sockets.on('connection', function(socket) {
 
 
 	// handle post request to deal with logout
-	app.post('/logout', function(request, response){
+	app.get('/logout', function(request, response){
 		username = request.body.username;
 		var index = loggedin.indexOf(username);
 		if (index > -1) {
-			loggedin = loggedin.splice(index, 1);
+			loggedin.splice(index, 1);
 		}
 		response.render('index.html',{ root : __dirname});
 	});
