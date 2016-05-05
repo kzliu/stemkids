@@ -232,17 +232,27 @@ io.sockets.on('connection', function(socket) {
 		// iterate through all quiz elements to retrieve answers
 		for (var i = 0; i < length; i++) {
 			var quiz = quiz_list[i].quiz; // retrieve the quiz json element
+			var question = quiz.question; // retrieve the given question
+			var question_num = quiz.num;
 			// retrieve the quiz answers
 			var answer1 = quiz.answer1;
 			var answer2 = quiz.answer2;
 			var answer3 = quiz.answer3;
 			var answer4 = quiz.answer4;
+			var answers = [answer1, answer2, answer3, answer4];
 			// determine the correctness of each answer
 			var corr1 = quiz.corr1;
 			var corr2 = quiz.corr2;
 			var corr3 = quiz.corr3;
 			var corr4 = quiz.corr4;
-			conn.query('INSERT INTO questions');
+			var correct = [corr1, corr2, corr3, corr4];
+			// insert values into questions table
+			conn.query('INSERT INTO questions (question_id, class_id, question) VALUES ($1, $2, $3);', [question_num, lectureTitle, question]);
+			// insert values into answers table
+			for (var j = 0; j < 4; j++) {
+				conn.query('INSERT INTO answers (question_id, class_id, correct, answer) VALUES ($1, $2, $3, $4);', [question_num, lectureTitle, correct[j], answers[j]]);
+			}
+			conn.query('UPDATE ');
 		}
 	});
 
