@@ -167,7 +167,6 @@ window.addEventListener('load', function(){
 	
 	$('#addNewLecture').click(function(e){
 		console.log("in submit");
-		e.preventDefault();
 		var lectureTitle = $('#lectureTitle').val();
 		var video = $('#video').val();
 		var length = quiz_list.length;
@@ -215,6 +214,7 @@ window.addEventListener('load', function(){
 			obj.quizes.push(json);
 		}
 		console.log(obj);
+		e.preventDefault();
 		// $.post('/addClass', obj);
 		// return false;
 	});	

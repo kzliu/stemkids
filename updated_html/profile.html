@@ -26,7 +26,7 @@
 		<div class="nav">
 			<a href="#">Home</a>
 			<span class="sep"></span>
-			<a href="#">Sign out</a>
+			<a href="#" id="signout">Sign out</a>
 		</div>
 	</div>
 
@@ -213,6 +213,13 @@ window.addEventListener('load', function(){
 	socket.on('loggedIn', function(username) {
 		//this needs to be rendered in html
 		console.log(username);
+	});
+
+	var user = meta('username');
+	// implement logout functionality on the client side
+	$('#signout').click(function(e){
+		$.post('/logout', {username: user});
+		e.preventDefault();
 	});
 }, false);
 
