@@ -218,7 +218,7 @@ window.addEventListener('load', function(){
 	var user = meta('username');
 	// implement logout functionality on the client side
 	$('#signout').click(function(e){
-		$.get('/logout', {username: user});
+		$.post('/logout', {username: user});
 		e.preventDefault();
 	});
 }, false);
