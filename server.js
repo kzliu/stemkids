@@ -252,7 +252,14 @@ io.sockets.on('connection', function(socket) {
 			for (var j = 0; j < 4; j++) {
 				conn.query('INSERT INTO answers (question_id, class_id, correct, answer) VALUES ($1, $2, $3, $4);', [question_num, lectureTitle, correct[j], answers[j]]);
 			}
-			conn.query('UPDATE ');
+			// get current number of classes
+			conn.query('SELECT num_classes FROM courses WHERE course_id = $1', [courseId], function(err, data){
+				num_courses = data.rows[0];
+				num_courses++;
+				// update the courses table to include an additional class
+				conn.query('UPDATE courses SET num_classes = $1 WHERE course_id = $2;', [num_courses, course_id]);
+			});
+			
 		}
 	});
 
