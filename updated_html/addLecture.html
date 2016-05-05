@@ -23,7 +23,7 @@
 		<div class="wrapper">
 			<h2> Add Lecture to Course {{courseId}}</h2>
 
-			<form class="ui_form">
+			<form class="ui form">
 				<div class="field">
 				    <label>Course Title</label>
 				    <!-- <input type="text" name="course-title" placeholder="Title" hidden> -->
@@ -75,8 +75,8 @@
 								<td>Answer</td>
 								<td>Correct</td>
 							</tr>
-							<tr>
-								<td>
+							<tr class="tableanswerouter">
+								<td class="tableanswer">
 								    <input type="text" name='answer1' id='answer1' placeholder="Answer 1">
 								</td>
 								<td class="center aligned">
@@ -88,8 +88,8 @@
 									  </div>
 								</td>
 							</tr>
-							<tr>
-								<td>
+							<tr class="tableanswerouter">
+								<td class="tableanswer">
 								    <input type="text" name='answer2' id='answer2' placeholder="Answer 2">
 								</td>
 								<td class="center aligned">
@@ -101,8 +101,8 @@
 									  </div>
 								</td>
 							</tr>
-							<tr>
-								<td>
+							<tr class="tableanswerouter">
+								<td class="tableanswer">
 								    <input type="text" name='answer3' id='answer3' placeholder="Answer 3">
 								</td>
 								<td class="center aligned">
@@ -114,8 +114,8 @@
 									  </div>
 								</td>
 							</tr>
-							<tr>
-								<td>
+							<tr class="tableanswerouter">
+								<td class="tableanswer">
 								    <input type="text" name='answer4' id='answer4' placeholder="Answer 4">
 								</td>
 								<td class="center aligned">
@@ -172,51 +172,28 @@ window.addEventListener('load', function(){
 		var length = quiz_list.length;
 		var courseId = meta('courseId');
 		var courseTitle = meta('courseTitle');
-		var obj = {lectureTitle: lectureTitle, video: video, courseId: courseId, courseTitle: courseTitle, quizes: []};
-		console.log(obj);
-		console.log(quiz_list);
+		var obj = {lectureTitle: lectureTitle, video: video, courseId: courseId, courseTitle: courseTitle, quizes: {}};
 		for (var i = 0; i < length; i++) {
 			var quiz = quiz_list[i];
-			var question = $(quiz + ' > table.uiTealTable > #question').val();
-			var answer1 = $(quiz + ' > table.uiTealTable > #answer1').val();
-			var answer2 = $(quiz + ' > table.uiTealTable > #answer2').val();
-			var answer3 = $(quiz + ' > table.uiTealTable > #answer3').val();
-			var answer4 = $(quiz + ' > table.uiTealTable > #answer4').val();
-// <<<<<<< HEAD
-			if ($(quiz + ' > table.uiTealTable > #answer1corr').checked) {
-				var corr1 = 1;
-			} else {
-				var corr1 = 0;
+			var question = $(quiz + ' > div.field > input#question').val();
+			if (question != ""){
+				//fill quiz of i with question and answer/correctness
+				obj.quizes[i] = {question:question}
+				var a = 1;
+				$(quiz + ' table.uiTealTable tr.tableanswerouter').each(function() {
+				    obj.quizes[i]["answer" + a] = $(this).find("#answer" + a).val();
+				    obj.quizes[i]["corr"+a] = $(this).find("#answer" + a + "corr").prop('checked');
+				    a += 1;
+				});
 			}
-			if ($(quiz + ' > table.uiTealTable > #answer2corr').checked) {
-				var corr2 = 1;
-			} else {
-				var corr2 = 0;
-			}
-			if ($(quiz + ' > table.uiTealTable > #answer3corr').checked) {
-				var corr3 = 1;
-			} else {
-				var corr3 = 0;
-			}
-			if ($(quiz + ' > table.uiTealTable > #answer4corr').checked) {
-				var corr4 = 1;
-			} else {
-				var corr4 = 0;
-			}
-// =======
-			// var corr1 = $(quiz + ' > table.uiTealTable > #answer1corr').prop('checked');
-			// var corr2 = $(quiz + ' > table.uiTealTable > #answer2corr').prop('checked');
-			// var corr3 = $(quiz + ' > table.uiTealTable > #answer3corr').prop('checked');
-			// var corr4 = $(quiz + ' > table.uiTealTable > #answer4corr').prop('checked');
-// >>>>>>> cb1a02cb6c6c203c5b1590ffb96e10d17fc87bb6
-			var json = {quiz: {num: i, question: question, answer1: answer1, answer2: answer2, answer3: answer3, answer4: answer4, corr1: corr1, corr2: corr2, corr3: corr3, corr4: corr4}};
-			console.log(json);
-			obj.quizes.push(json);
 		}
+		obj.quizes = JSON.stringify(obj.quizes);
 		console.log(obj);
 		e.preventDefault();
 		// $.post('/addClass', obj);
 		// return false;
+		$.post('/addClass', obj);
+		return false;
 	});	
 });
 
