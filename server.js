@@ -236,7 +236,9 @@ io.sockets.on('connection', function(socket) {
 		var courseTitle = request.body.courseTitle;
 		var quiz_list = JSON.parse(request.body.quizes);// retrieve the quiz list from the JSON element
 
-		// var length = quiz_list.length;
+		var lecture_id = '/l/' + courseId + i;
+		console.log(lecture_id);
+		
 		console.log(lectureTitle);
 		console.log(video);
 		console.log(courseId);
@@ -250,8 +252,6 @@ io.sockets.on('connection', function(socket) {
 
 			var question_id = '/q/' + courseId+ i;
 			console.log(question_id);
-			var lecture_id = '/l/' + courseId + i;
-			console.log(lecture_id);
 			// insert values into questions table
 			conn.query('INSERT INTO questions (question_id, class_id, question) VALUES ($1, $2, $3);', [question_id, lecture_id, question]).on('error', console.error);
 
