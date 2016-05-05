@@ -73,20 +73,24 @@ app.get('/', function(request, response){
     response.render('index.html',{ root : __dirname});
 });
 
+
 app.get('/login', function(request, response){
     console.log('- Request received:', request.method, request.url);
     response.render('login.html',{ root : __dirname});
 });
+
 
 app.get('/createAccount', function(request, response){
     console.log('- Request received:', request.method, request.url);
     response.render('account.html',{ root : __dirname});
 });
 
+
 app.get('/admin', function(request, response){
     console.log('- Request received:', request.method, request.url);
     response.render('adminhome.html',{ root : __dirname});
 });
+
 
 app.get('/createCourse',function(request, response) {
 	console.log('- Request received:', request.method, request.url);
@@ -105,6 +109,7 @@ io.sockets.on('connection', function(socket) {
 		checkUsername(userID, callback);
 	});
 
+
 	app.post('/createAccount', function(request, response) {
 		var username = request.body.username;
 		console.log('- Request received:', request.method, request.url);
@@ -121,7 +126,7 @@ io.sockets.on('connection', function(socket) {
 			var password = request.body.password;
 			if (isUser != 1) {
 				password = hash(password, username);
-				console.log("passowrd " + password);
+				console.log("password " + password);
 				conn.query('INSERT INTO user_info VALUES (null, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10);', [username, firstname, lastname, age, grade, school, gender, email, phone, password], function(err, res) {
 					if (err) {
 						message = "Could not properly insert value into database.";
@@ -202,6 +207,7 @@ io.sockets.on('connection', function(socket) {
 		});
 	});
 	
+
 	// add lecture and render lecture and quiz page
 	app.post('/addLecture', function(request, response){
 		console.log('- Request received:', request.method, request.url);
@@ -270,6 +276,17 @@ io.sockets.on('connection', function(socket) {
 			// 	conn.query('UPDATE courses SET num_classes = $1 WHERE course_id = $2;', [num_courses, course_id]);
 			// });
 		}
+	});
+
+
+	// handle post request to deal with logout
+	app.post('/logout', function(request, response){
+		username = request.body.username;
+		var index = loggedin.indexOf(username);
+		if (index > -1) {
+			loggedin = loggedin.splice(index, 1);
+		}
+		response.render('index.html',{ root : __dirname});
 	});
 
 });
