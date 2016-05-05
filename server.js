@@ -233,8 +233,10 @@ io.sockets.on('connection', function(socket) {
 		var lectureTitle = request.body.lectureTitle;
 		var video = request.body.video;
 		var courseId = request.body.courseId;
+		var summary = request.body.courseSummary;
 		var courseTitle = request.body.courseTitle;
-		var lecture_num = request.body.lectureNum;
+		var lecture_num = parseInt(request.body.lectureNum);
+		console.log(request.body.quizes);
 		var quiz_list = JSON.parse(request.body.quizes);// retrieve the quiz list from the JSON element
 
 		var lecture_id = '/l/' + courseId + lecture_num;
@@ -286,6 +288,7 @@ io.sockets.on('connection', function(socket) {
 			// 	conn.query('UPDATE courses SET num_classes = $1 WHERE course_id = $2;', [num_courses, course_id]);
 			// });
 		}
+		response.render('addLecture.html',{ root : __dirname, courseId: courseId, courseTitle: courseTitle, courseSummary: summary, lectureNum: lecture_num+1});
 	});
 
 

@@ -139,6 +139,7 @@
 
 				<div id="sbmt">
 					<button class="ui teal button" id="addNewLecture">Submit & Add New Lecture</button>
+					<!-- <button class="ui teal button" onsubmit="return processClass();">Submit & Add New Lecture</button> -->
 				</div>
 
 				<div id="finish">
@@ -167,6 +168,7 @@ window.addEventListener('load', function(){
 	});
 	
 	$('#addNewLecture').click(function(e){
+	// function processClass() {
 		console.log("in submit");
 		e.preventDefault();
 		var lectureTitle = $('#lectureTitle').val();
@@ -174,7 +176,7 @@ window.addEventListener('load', function(){
 		var length = quiz_list.length;
 		var courseId = meta('courseId');
 		var courseTitle = meta('courseTitle');
-		var obj = {lectureTitle: lectureTitle, lectureNum: meta('lectureNum'), video: video, courseId: courseId, courseTitle: courseTitle, quizes: {}};
+		var obj = {lectureTitle: lectureTitle, lectureNum: meta('lectureNum'), courseSummary: meta('courseSummary'), video: video, courseId: courseId, courseTitle: courseTitle, quizes: {}};
 		for (var i = 0; i < length; i++) {
 			var quiz = quiz_list[i];
 			var question = $(quiz + ' > div.field > input#question').val();
@@ -191,10 +193,14 @@ window.addEventListener('load', function(){
 		}
 		obj.quizes = JSON.stringify(obj.quizes);
 		console.log(obj);
-		e.preventDefault();
+		// e.preventDefault();
 		// $.post('/addClass', obj);
 		// return false;
-		$.post('/addClass', obj);
+		$.post('/addClass', obj, function( data ) {
+			console.log(data);
+			console.log("here after post");
+			// document.open(data);
+		});
 		return false;
 	});	
 });

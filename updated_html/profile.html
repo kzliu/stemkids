@@ -219,6 +219,10 @@ window.addEventListener('load', function(){
 	// implement logout functionality on the client side
 	$('#signout').click(function(e){
 		$.post('/logout', {username: user});
+		var url = window.location.href;
+		url = url.replace('/login', '');
+		window.location.replace(url);
+		console.log(url);
 		e.preventDefault();
 	});
 }, false);
