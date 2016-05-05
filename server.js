@@ -290,12 +290,15 @@ io.sockets.on('connection', function(socket) {
 
 
 	// handle post request to deal with logout
-	app.get('/logout', function(request, response){
+	app.post('/logout', function(request, response){
+		console.log('- Request received:', request.method, request.url);
 		username = request.body.username;
 		var index = loggedin.indexOf(username);
+		console.log(loggedin);
 		if (index > -1) {
 			loggedin.splice(index, 1);
 		}
+		console.log(loggedin);
 		response.render('index.html',{ root : __dirname});
 	});
 

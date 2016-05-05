@@ -180,11 +180,11 @@ window.addEventListener('load', function(){
 			var question = $(quiz + ' > div.field > input#question').val();
 			if (question != ""){
 				//fill quiz of i with question and answer/correctness
-				obj.quizes[i] = {question:question}
+				obj.quizes[i+1] = {question:question}
 				var a = 1;
 				$(quiz + ' table.uiTealTable tr.tableanswerouter').each(function() {
-				    obj.quizes[i]["answer" + a] = $(this).find("#answer" + a).val();
-				    obj.quizes[i]["corr"+a] = $(this).find("#answer" + a + "corr").prop('checked');
+				    obj.quizes[i+1]["answer" + a] = $(this).find("#answer" + a).val();
+				    obj.quizes[i+1]["corr"+a] = $(this).find("#answer" + a + "corr").prop('checked');
 				    a += 1;
 				});
 			}
@@ -194,7 +194,7 @@ window.addEventListener('load', function(){
 		e.preventDefault();
 		// $.post('/addClass', obj);
 		// return false;
-		$.get('/addClass', obj);
+		$.post('/addClass', obj);
 		return false;
 	});	
 });

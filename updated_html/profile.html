@@ -6,7 +6,7 @@
 	<!--meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1"/-->
 	<meta name="description" content=""/>
 	<meta name="keywords" content=""/>
-
+	<meta name="username" content="{{username}}"/>
 	<title></title>
 
 	<link href="/favicon.ico" rel="icon"/>
@@ -218,10 +218,18 @@ window.addEventListener('load', function(){
 	var user = meta('username');
 	// implement logout functionality on the client side
 	$('#signout').click(function(e){
-		$.post('/logout', {username: user});
+		$.get('/logout', {username: user});
 		e.preventDefault();
 	});
 }, false);
+
+function meta(name) {
+    var tag = document.querySelector('meta[name=' + name + ']');
+    if (tag != null)
+        return tag.content;
+    return '';
+};
+
 
 </script>
 </html>
