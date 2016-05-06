@@ -165,7 +165,7 @@ io.sockets.on('connection', function(socket) {
 		var q = conn.query("SELECT user_id, first_name, password FROM user_info WHERE login = $1;", [username], function(err, data){
 			// handle errors
 			if (err) {
-				
+				// generate message
 				message = "Server encountered an error while attempting to retrieve";
 				throw err;
 				response.render('login.html', {message:message});
@@ -214,6 +214,7 @@ io.sockets.on('connection', function(socket) {
 		var code = request.body.courseId; 
 		var title = request.body.courseTitle;
 		var summary = request.body.courseSummary;
+
 		// // note: need to check to see if the course in question doesn't already exist (might want to add funtionality for course title)
 		console.log("here");
 		conn.query('SELECT * FROM courses WHERE course_id = $1;', [code], function(err, data){
@@ -232,6 +233,7 @@ io.sockets.on('connection', function(socket) {
 	// handle post request to deal with logout
 	app.post('/logout', function(request, response){
 		console.log('- Request received:', request.method, request.url);
+
 		username = request.body.username;
 		var index = loggedin.indexOf(username);
 		console.log(loggedin);
@@ -292,7 +294,7 @@ app.post('/addClass', function(request, response){
 			}
 			console.log(answers);
 			console.log(correct);
-			
+
 			// insert values into answers table
 			for (var j = 0; j < 4; j++) {
 				conn.query('INSERT INTO answers (question_id, class_id, correct, answer) VALUES ($1, $2, $3, $4);', [question_id, lecture_id, correct[j], answers[j]]).on('error', console.error);
@@ -323,7 +325,7 @@ app.post('/addClass', function(request, response){
 // retrieve profile information
 app.get('/profile/:identifyer', function(request, response){
 	var identifyer = request.params.identifyer;
-	// select 
+	// select elements for profile
 	var q = conn.query("SELECT * FROM user_info, classes, class_attendance WHERE user_info.user_id = $1", [identifyer], function(err, data){
 		// send data to the front end as a response
 		response.json(data.rows);
