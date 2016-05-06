@@ -165,7 +165,7 @@ io.sockets.on('connection', function(socket) {
 		var q = conn.query("SELECT user_id, first_name, password FROM user_info WHERE login = $1;", [username], function(err, data){
 			// handle errors
 			if (err) {
-				
+				// generate message
 				message = "Server encountered an error while attempting to retrieve";
 				throw err;
 				response.render('login.html', {message:message});
@@ -222,7 +222,7 @@ io.sockets.on('connection', function(socket) {
 		// 		console.log('course exists already');
 		// 	}
 		// });
-    	response.render('addLecture.html',{ root : __dirname, courseId: code, courseTitle: title, courseSummary: summary, lectureNum: 1});
+    	response.render('addLecture.html',{ root : __dirname, courseId: code, courseTƒitle: title, courseSummary: summary, lectureNum: 1});
 	});
 
 
@@ -237,7 +237,7 @@ io.sockets.on('connection', function(socket) {
 		var courseTitle = request.body.courseTitle;
 		var lecture_num = parseInt(request.body.lectureNum);
 		console.log(request.body.quizes);
-		var quiz_list = JSON.parse(request.body.quizes);// retrieve the quiz list from the JSON element
+		var quiz_list = JSON.parse(request.body.quizes); // retrieve the quiz list from the JSON element
 
 		var lecture_id = '/l/' + courseId + lecture_num;
 		console.log(lecture_id);
@@ -276,17 +276,26 @@ io.sockets.on('connection', function(socket) {
 			console.log(answers);
 			console.log(correct);
 			
+			// insert the course into the database if it doesn't already exist
+			conn.query('SELECT course_title FROM courses WHERE course_title = $1', [title], function(err, data){
+				if (data.rows.length == 0) {
+					conn.query('INSERT INTO courses (course_id, num_classes, course_title, course_description) VALUES ($1, $2, $3, $4);', [code, 0, title, summary]);
+				} else { // handle the case where the course already exists
+					console.log('course exists already');
+				}
+			});
+
 			// insert values into answers table
 			for (var j = 0; j < 4; j++) {
 				conn.query('INSERT INTO answers (question_id, class_id, correct, answer) VALUES ($1, $2, $3, $4);', [question_id, lecture_id, correct[j], answers[j]]).on('error', console.error);
 			}
 			// get current number of classes
-			// conn.query('SELECT num_classes FROM courses WHERE course_id = $1', [courseId], function(err, data){
-			// 	num_courses = data.rows[0];
-			// 	num_courses++;
-			// 	// update the courses table to include an additional class
-			// 	conn.query('UPDATE courses SET num_classes = $1 WHERE course_id = $2;', [num_courses, course_id]);
-			// });
+			conn.query('SELECT num_classes FROM courses WHERE course_id = $1', [courseId], function(err, data){
+				num_courses = data.rows[0];
+				num_courses++;
+				// update the courses table to include an additional class
+				conn.query('UPDATE courses SET num_classes = $1 WHERE course_id = $2;', [num_courses, course_id]);
+			});
 		}
 		response.render('addLecture.html',{ root : __dirname, courseId: courseId, courseTitle: courseTitle, courseSummary: summary, lectureNum: lecture_num+1});
 	});
@@ -311,7 +320,7 @@ io.sockets.on('connection', function(socket) {
 // retrieve profile information
 app.get('/profile/:identifyer', function(request, response){
 	var identifyer = request.params.identifyer;
-	// select 
+	// select elements for profile
 	var q = conn.query("SELECT * FROM user_info, classes, class_attendance WHERE user_info.user_id = $1", [identifyer], function(err, data){
 		// send data to the front end as a response
 		response.json(data.rows);
