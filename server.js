@@ -216,11 +216,8 @@ io.sockets.on('connection', function(socket) {
 		var summary = request.body.courseSummary;
 
 		// // note: need to check to see if the course in question doesn't already exist (might want to add funtionality for course title)
-		console.log("here");
 		conn.query('SELECT * FROM courses WHERE course_id = $1;', [code], function(err, data){
-			console.log("Here after query.");
 			if (data.rows.length == 0) {
-				console.log("Here after query where there is no course.");
 				conn.query('INSERT INTO courses (course_id, num_classes, course_title, course_description, active) VALUES ($1, $2, $3, $4, $5);', [code, 0, title, summary, 0]);
 			} else { // handle the case where the course already exists
 				console.log('course exists already');
@@ -263,14 +260,11 @@ app.post('/addClass', function(request, response){
 	console.log(video);
 	console.log(courseId);
 	console.log(courseTitle);
-	// console.log(request);
 	
 	for (var i = 1; i <=10; i++) {
 		var question = request.body["question" + i];
-		console.log(question);
 
 		if (question){
-			console.log("here");
 
 			var question_id = '/q/' + courseId + i;
 			console.log(question_id);
@@ -311,15 +305,23 @@ app.post('/addClass', function(request, response){
 	conn.query('SELECT num_classes FROM courses WHERE course_id = $1', [courseId], function(err, data) {
 		if (err) throw err;
 		var num_classes = data.rows[0].num_classes;
-		// console.log("the current number of classes in " + courseId + " before updating is: " + num_classes);
+		if (data.rows.length == 0){
+			//how should we handle this error?
+			console.log("THERE HAS BEEN AN ERROR UPLOADING CLASS");
+		}
 		num_classes++;
 		console.log("the current number of classes in " + courseId + " is: " + num_classes);
 		// update the courses table to include an additional class
 		conn.query('UPDATE courses SET num_classes = $1 WHERE course_id = $2;', [num_classes, courseId]);
 	});
+	if (request.body.finishmeep == "finish"){
 
+		conn.query('UPDATE courses SET active = 1 WHERE course_id = $1;', [courseId]).on('error', console.error);
 
-	response.render('addLecture.html',{ root : __dirname, courseId: courseId, courseTitle: courseTitle, courseSummary: summary, lectureNum: lecture_num+1});
+		response.render('adminhome.html',{ root : __dirname, message:"Successfully uploaded and activated class."});
+	} else {
+		response.render('addLecture.html',{ root : __dirname, courseId: courseId, courseTitle: courseTitle, courseSummary: summary, lectureNum: lecture_num+1});
+	}
 });
 
 // retrieve profile information
