@@ -110,6 +110,16 @@ io.sockets.on('connection', function(socket) {
 	});
 
 
+	socket.on('fillCurrent', function(user, callback){
+		conn.query('SELECT user_id FROM user_info WHERE login=$1', [user], function(err, data){
+			var userId = data[0].user_id;
+			conn.query('SELECT * FROM enrollment AS e, courses AS c WHERE e.user_id=$1 AND e.course_id = c.course_id;', [userId], function(err, data){
+				callback(data.rows);
+			});
+		});
+	});
+
+
 	app.post('/createAccount', function(request, response) {
 		var username = request.body.username;
 		console.log('- Request received:', request.method, request.url);
@@ -291,7 +301,7 @@ io.sockets.on('connection', function(socket) {
 			}
 			// get current number of classes
 			conn.query('SELECT num_classes FROM courses WHERE course_id = $1', [courseId], function(err, data){
-				num_courses = data.rows[0];
+				num_courses = data.rows[0].num_classes;
 				num_courses++;
 				// update the courses table to include an additional class
 				conn.query('UPDATE courses SET num_classes = $1 WHERE course_id = $2;', [num_courses, course_id]);

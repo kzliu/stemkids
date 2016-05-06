@@ -55,13 +55,13 @@
 					</div>
 					<div class="col right">
 						<h3>Current class</h3>
-						<div class="panel">
+						<div class="panel" id="currPanel">
 							<div class="wrap">
 								<div class="line">
-									<div class="pic">
+									<div class="pic" id="currpic">
 										<img src="img/pics/1.jpg"/>
 									</div>
-									<div class="description">
+									<div class="description" id="currDisc">
 										<h5 class="title blue">Sample class</h5>
 										<div class="brief">
 											Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
@@ -210,12 +210,28 @@
 <script>
 var socket = io.connect();
 window.addEventListener('load', function(){
+
+
+	function add_course(course_title, course_description) {
+
+	};
+
+
+	var user = meta('username');
+	socket.emit('fillCurrent', user, function(dataList){
+		$.each(dataList, function(index, value){
+			var courseId = value.course_id;
+			var courseDesc = value.coures_description;
+			add_course(courseId, courseDesc);
+		});
+	});
+
+
 	socket.on('loggedIn', function(username) {
 		//this needs to be rendered in html
 		console.log(username);
 	});
 
-	var user = meta('username');
 	// implement logout functionality on the client side
 	$('#signout').click(function(e){
 		$.post('/logout', {username: user});
