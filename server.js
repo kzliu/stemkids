@@ -112,7 +112,7 @@ io.sockets.on('connection', function(socket) {
 
 	socket.on('fillCurrent', function(user, callback){
 		conn.query('SELECT user_id FROM user_info WHERE login=$1', [user], function(err, data){
-			var userId = data[0].user_id;
+			var userId = data.rows[0].user_id;
 			conn.query('SELECT * FROM enrollment AS e, courses AS c WHERE e.user_id=$1 AND e.course_id = c.course_id AND c.active=$2;', [userId, 1], function(err, data){
 				callback(data.rows);
 			});
@@ -122,7 +122,7 @@ io.sockets.on('connection', function(socket) {
 
 	socket.on('fillHistory', function(user, callback){
 		conn.query('SELECT user_id FROM user_info WHERE login=$1', [user], function(err, data){
-			var userId = data[0].user_id;
+			var userId = data.rows[0].user_id;
 			conn.query('SELECT * FROM courses NATURAL JOIN course_history WHERE user_id=$1 AND active=$2;', [userId, 0], function(err, data){
 				callback(data.rows);
 			});
@@ -131,9 +131,11 @@ io.sockets.on('connection', function(socket) {
 
 
 	socket.on('fillFuture', function(user, callback){
+		console.log('fillFuture being called')
 		conn.query('SELECT user_id FROM user_info WHERE login=$1', [user], function(err, data){
-			var userId = data[0].user_id;
-			conn.query('SELECT * FROM courses WHERE NOT EXISTS (SELECT * FROM enrollment NATURAL JOIN course_history WHERE user_id=$1);', [userId, 0], function(err, data){
+			var userId = data.rows[0].user_id;
+			console.log('user id in fillFuture function: ' + userId);
+			conn.query('SELECT * FROM courses WHERE NOT EXISTS (SELECT * FROM enrollment NATURAL JOIN course_history WHERE user_id=$1 AND active=$2);', [userId, 0], function(err, data){
 				callback(data.rows);
 			});
 		});
@@ -186,56 +188,7 @@ io.sockets.on('connection', function(socket) {
 	});
 
 
-	app.post('/login', function(request, response){
-		var username = request.body.username;
-		var password = request.body.password;
-		var message = "success";
-		console.log('- Request received:', request.method, request.url);
-		// password = String(hash(password, username));
-		var q = conn.query("SELECT user_id, first_name, password FROM user_info WHERE login = $1;", [username], function(err, data){
-			// handle errors
-			if (err) {
-				// generate message
-				message = "Server encountered an error while attempting to retrieve";
-				throw err;
-				response.render('login.html', {message:message});
-			}
-			// if the data element returned is empty, indicate to the user that no password and username combination was found
-			if (data.rows.length == 0){
-				message = "No user/password combination found";
-				console.log(message + password);
-				// socket.emit('loginError', message);
-				response.render('login.html', {message:message});
-			} else {
-				// iterate through the set of elements returned (to handle the case where more than one is returned)
-				var rows = data.rows;
-				var firstname = "";
-				for (var i = 0; i < data.rows.length; i++) {
-					var password2 = data.rows[i].password;
-					password = hash(password, username);
-					var match = compare_hash(password, password2);
-					console.log(password);
-
-					if (match) {
-						firstname = rows[i].first_name;
-					}
-				}
-				// handle the case where no logins are found
-				if (firstname === "") {
-					message = "No user/password combination found";
-					console.log(message);
-					response.render('login.html', {message:message});
-				} else {
-					loggedin.push(username);
-					response.render('profile.html', {username:username, firstname:firstname});
-				// socket.emit("loggedIn", username); // emit a signal to indicate a successful connection
-				}
-			}
-		});
-		q.on('end', function(){
-			console.log('login function executed');
-		});
-	});
+	
 	
 
 	// add lecture and render lecture and quiz page
@@ -271,6 +224,57 @@ io.sockets.on('connection', function(socket) {
 		response.render('index.html',{ root : __dirname});
 	});
 
+});
+
+app.post('/login', function(request, response){
+	var username = request.body.username;
+	var password = request.body.password;
+	var message = "success";
+	console.log('- Request received:', request.method, request.url);
+	// password = String(hash(password, username));
+	var q = conn.query("SELECT user_id, first_name, password FROM user_info WHERE login = $1;", [username], function(err, data){
+		// handle errors
+		if (err) {
+			// generate message
+			message = "Server encountered an error while attempting to retrieve";
+			throw err;
+			response.render('login.html', {message:message});
+		}
+		// if the data element returned is empty, indicate to the user that no password and username combination was found
+		if (data.rows.length == 0){
+			message = "No user/password combination found";
+			console.log(message + password);
+			// socket.emit('loginError', message);
+			response.render('login.html', {message:message});
+		} else {
+			// iterate through the set of elements returned (to handle the case where more than one is returned)
+			var rows = data.rows;
+			var firstname = "";
+			for (var i = 0; i < data.rows.length; i++) {
+				var password2 = data.rows[i].password;
+				password = hash(password, username);
+				var match = compare_hash(password, password2);
+				console.log(password);
+
+				if (match) {
+					firstname = rows[i].first_name;
+				}
+			}
+			// handle the case where no logins are found
+			if (firstname === "") {
+				message = "No user/password combination found";
+				console.log(message);
+				response.render('login.html', {message:message});
+			} else {
+				loggedin.push(username);
+				response.render('profile.html', {username:username, firstname:firstname});
+			// socket.emit("loggedIn", username); // emit a signal to indicate a successful connection
+			}
+		}
+	});
+	q.on('end', function(){
+		console.log('login function executed');
+	});
 });
 
 // add class to the database

@@ -213,7 +213,7 @@ window.addEventListener('load', function(){
 		$(parent_id).append('<div class="line"><div class="pic" id="currpic"><img src="img/pics/1.jpg"/></div><div class="description" id="currDisc"><h5 class="title blue">' + course_title + '</h5><div class="brief">' + course_description + '</div><a class="btn small yellow" href="#"><p>' + button_text + '</p></a></div></div>');
 	};
 
-
+	var user = meta('username');
 	socket.emit('fillHistory', user, function(dataList){
 		$.each(dataList, function(index, value){
 			var courseId = value.course_id;
@@ -232,7 +232,7 @@ window.addEventListener('load', function(){
 	});
 
 
-	var user = meta('username');
+	
 	socket.emit('fillCurrent', user, function(dataList){
 		$.each(dataList, function(index, value){
 			var courseId = value.course_id;
