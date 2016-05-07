@@ -221,6 +221,7 @@ window.addEventListener('load', function(){
 		$.post('/logout', {username: user});
 		var url = window.location.href;
 		url = url.replace('/login', '');
+		url = url.replace('/createAccount', '');
 		window.location.replace(url);
 		console.log(url);
 		e.preventDefault();
