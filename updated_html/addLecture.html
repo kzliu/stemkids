@@ -49,6 +49,11 @@
 				    <input type="text" name="lectureTitle" id="lectureTitle" placeholder="Title">
 				</div>
 
+				<div class="field">
+				    <label>Lecture Summary</label>
+				    <textarea rows="2" placeholder="Summary" name="lectureSummary"></textarea>
+				</div>
+
 				<div class="url">
 				    <label>Video Url</label>
 					<div class="ui labeled input">
@@ -176,18 +181,10 @@ window.addEventListener('load', function(){
 
 	$('#file').click(function(e) {
 		e.preventDefault;
-		console.log('upload attempt');
-
 			$('#file').on('change', function() {
-				console.log('clicked');
-				var fileUpload = $(this).val();
-				console.log("this worked");
+				var fileUpload = $('#file')[0].files[0].name;
 				$('#fileName').html(fileUpload);
-		// $('input[id="file"]').change(function() {
-
-
 			});
-
 		});
 
 

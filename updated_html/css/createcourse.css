@@ -62,5 +62,9 @@ tr {
 }
 
 #fileName {
-	/*width: 100px;*/
+	display: inline-block;
+}
+
+.tableanswer {
+	padding-top: 4px;
 }
