@@ -12,6 +12,11 @@
 	width: 250px !important;
 }
 
-.admin {
+.admin, #adminbtn {
 	display: inline-block;
+}
+
+#msg {
+	padding-bottom: 1%;
+	font-size: 24px;
 }
