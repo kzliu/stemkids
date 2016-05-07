@@ -43,7 +43,7 @@
 				    <!-- <button value="Edit" id="editCourseSummary">Edit</button> -->
 				</div>
 
-				<div class="uiDividingHeader"> </div>
+				<div class="ui dividing header"> </div>
 				<div class="field">
 				    <label>Lecture Title</label>
 				    <input type="text" name="lectureTitle" id="lectureTitle" placeholder="Title">
@@ -51,7 +51,7 @@
 
 				<div class="url">
 				    <label>Video Url</label>
-					<div class="uiLabeledInput">
+					<div class="ui labeled input">
 						<div class="ui label">
 							http://
 						</div>
@@ -63,9 +63,9 @@
 
 				<div id="upload">
 					<label id="def">Lecture Handout</label>
-			    <label for="file" class="uiIconButton">
+			    <label for="file" class="ui button" id="uploadbtn">
 			        Upload File</label>
-			    <input type="file" id="file">
+			    <input type="file" id="file" style="display:none"><p id="fileName"></p>
 				</div>
 				<div class="quizlet">
 					<h3>Question 1</h3>
@@ -173,6 +173,23 @@ window.addEventListener('load', function(){
 			refactor(id, i);
 		};	
 	});
+
+	$('#file').click(function(e) {
+		e.preventDefault;
+		console.log('upload attempt');
+
+			$('#file').on('change', function() {
+				console.log('clicked');
+				var fileUpload = $(this).val();
+				console.log("this worked");
+				$('#fileName').html(fileUpload);
+		// $('input[id="file"]').change(function() {
+
+
+			});
+
+		});
+
 
 });
 
