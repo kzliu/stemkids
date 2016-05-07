@@ -55,8 +55,8 @@
 					</div>
 					<div class="col right">
 						<h3>Current class</h3>
-						<div class="panel" id="currPanel">
-							<div class="wrap">
+						<div class="panel">
+							<div class="wrap" id="currPanel">
 								<div class="line">
 									<div class="pic" id="currpic">
 										<img src="img/pics/1.jpg"/>
@@ -75,7 +75,7 @@
 						</div>
 						<h3>Classes I've taken</h3>
 						<div class="panel">
-							<div class="wrap">									
+							<div class="wrap" id="classHist">									
 								<div class="line">
 									<div class="pic">
 										<img src="img/pics/2.jpg"/>
@@ -139,7 +139,7 @@
 						</div>
 						<h3>Classes coming up</h3>
 						<div class="panel disabled">
-							<div class="wrap">
+							<div class="wrap" id="futureClasses">
 								<div class="line">
 									<div class="pic">
 										<img src="img/pics/4.jpg"/>
@@ -212,9 +212,27 @@ var socket = io.connect();
 window.addEventListener('load', function(){
 
 
-	function add_course(course_title, course_description) {
-
+	function add_course(course_title, course_description, parent_id) {
+		$(parent_id).append('<div class="line"><div class="pic" id="currpic"><img src="img/pics/1.jpg"/></div><div class="description" id="currDisc"><h5 class="title blue">' + course_title + '</h5><div class="brief">' + course_description + '</div><a class="btn small yellow" href="#"><p>Continue</p></a></div></div>');
 	};
+
+
+	socket.emit('fillHistory', user, function(dataList){
+		$.each(dataList, function(index, value){
+			var courseId = value.course_id;
+			var courseDesc = value.course_description;
+			add_course(courseId, courseDesc, '#classHist');
+		});
+	});
+
+
+	socket.emit('fillFuture', user, function(dataList){
+		$.each(dataList, function(index, value){
+			var courseId = value.course_id;
+			var courseDesc = value.course_description;
+			add_course(courseId, courseDesc, '#futureClasses');
+		});
+	});
 
 
 	var user = meta('username');
@@ -222,7 +240,7 @@ window.addEventListener('load', function(){
 		$.each(dataList, function(index, value){
 			var courseId = value.course_id;
 			var courseDesc = value.coures_description;
-			add_course(courseId, courseDesc);
+			add_course(courseId, courseDesc, '#currPanel');
 		});
 	});
 

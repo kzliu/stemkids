@@ -113,7 +113,27 @@ io.sockets.on('connection', function(socket) {
 	socket.on('fillCurrent', function(user, callback){
 		conn.query('SELECT user_id FROM user_info WHERE login=$1', [user], function(err, data){
 			var userId = data[0].user_id;
-			conn.query('SELECT * FROM enrollment AS e, courses AS c WHERE e.user_id=$1 AND e.course_id = c.course_id;', [userId], function(err, data){
+			conn.query('SELECT * FROM enrollment AS e, courses AS c WHERE e.user_id=$1 AND e.course_id = c.course_id AND c.active=$2;', [userId, 1], function(err, data){
+				callback(data.rows);
+			});
+		});
+	});
+
+
+	socket.on('fillHistory', function(user, callback){
+		conn.query('SELECT user_id FROM user_info WHERE login=$1', [user], function(err, data){
+			var userId = data[0].user_id;
+			conn.query('SELECT * FROM courses NATURAL JOIN course_history WHERE user_id=$1 AND active=$2;', [userId, 0], function(err, data){
+				callback(data.rows);
+			});
+		});
+	});
+
+
+	socket.on('fillFuture', function(user, callback){
+		conn.query('SELECT user_id FROM user_info WHERE login=$1', [user], function(err, data){
+			var userId = data[0].user_id;
+			conn.query('SELECT * FROM courses WHERE NOT EXISTS (SELECT * FROM enrollment NATURAL JOIN course_history WHERE user_id=$1);', [userId, 0], function(err, data){
 				callback(data.rows);
 			});
 		});
@@ -137,7 +157,7 @@ io.sockets.on('connection', function(socket) {
 			if (isUser != 1) {
 				password = hash(password, username);
 				console.log("password " + password);
-				conn.query('INSERT INTO user_info VALUES (null, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10);', [username, firstname, lastname, age, grade, school, gender, email, phone, password], function(err, res) {
+				conn.query('INSERT INTO user_info (user_id, login, first_name, last_name, age, grade, school, gender, email, phone_num, password) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);', [username, firstname, lastname, age, grade, school, gender, email, phone, password], function(err, res) {
 					if (err) {
 						message = "Could not properly insert value into database.";
 						throw err;
@@ -224,96 +244,26 @@ io.sockets.on('connection', function(socket) {
 		var code = request.body.courseId; 
 		var title = request.body.courseTitle;
 		var summary = request.body.courseSummary;
-		// // note: need to check to see if the course in question doesn't already exist
-		// conn.query('SELECT course_title FROM courses WHERE course_title = $1', [title], function(err, data){
-		// 	if (data.rows.length == 0) {
-		// 		conn.query('INSERT INTO courses (course_id, num_classes, course_title, course_description) VALUES ($1, $2, $3, $4);', [code, 0, title, summary]);
-		// 	} else { // handle the case where the course already exists
-		// 		console.log('course exists already');
-		// 	}
-		// });
-    	response.render('addLecture.html',{ root : __dirname, courseId: code, courseTƒitle: title, courseSummary: summary, lectureNum: 1});
-	});
 
-
-	// add class to the database
-	app.post('/addClass', function(request, response){
-		console.log('- Request received:', request.method, request.url);
-		// retrieve all static elements concerining the class and corresponding material
-		var lectureTitle = request.body.lectureTitle;
-		var video = request.body.video;
-		var courseId = request.body.courseId;
-		var summary = request.body.courseSummary;
-		var courseTitle = request.body.courseTitle;
-		var lecture_num = parseInt(request.body.lectureNum);
-		console.log(request.body.quizes);
-		var quiz_list = JSON.parse(request.body.quizes); // retrieve the quiz list from the JSON element
-
-		var lecture_id = '/l/' + courseId + lecture_num;
-		console.log(lecture_id);
-
-		console.log(lectureTitle);
-		console.log(video);
-		console.log(courseId);
-		console.log(courseTitle);
-		console.log(request.body.quizes);
-		for (var i in quiz_list) {
-			var quiz = quiz_list[i]; // retrieve the quiz json element
-			console.log(quiz);
-			var question = quiz.question; // retrieve the given question
-			console.log(question);
-
-			var question_id = '/q/' + courseId + i;
-			console.log(question_id);
-			// insert values into questions table
-			conn.query('INSERT INTO questions (question_id, class_id, question) VALUES ($1, $2, $3);', [question_id, lecture_id, question]).on('error', console.error);
-
-			// retrieve the quiz answers
-			var answers =[]
-			for (var a = 1; a <= 4; a++){
-				answers.push(quiz['answer'+a]);
+		// // note: need to check to see if the course in question doesn't already exist (might want to add funtionality for course title)
+		console.log("here");
+		conn.query('SELECT * FROM courses WHERE course_id = $1;', [code], function(err, data){
+			console.log("Here after query.");
+			if (data.rows.length == 0) {
+				console.log("Here after query where there is no course.");
+				conn.query('INSERT INTO courses (course_id, num_classes, course_title, course_description, active) VALUES ($1, $2, $3, $4, $5);', [code, 0, title, summary, 0]);
+			} else { // handle the case where the course already exists
+				console.log('course exists already');
 			}
-			// determine the correctness of each answer
-			var correct = [];
-			for (var c = 1; c <= 4; c++){
-				var corr = quiz['corr'+c];
-				if (corr){
-					correct.push(1);
-				} else {
-					correct.push(0);
-				}
-			}
-			console.log(answers);
-			console.log(correct);
-			
-			// insert the course into the database if it doesn't already exist
-			conn.query('SELECT course_title FROM courses WHERE course_title = $1', [title], function(err, data){
-				if (data.rows.length == 0) {
-					conn.query('INSERT INTO courses (course_id, num_classes, course_title, course_description) VALUES ($1, $2, $3, $4);', [code, 0, title, summary]);
-				} else { // handle the case where the course already exists
-					console.log('course exists already');
-				}
-			});
-
-			// insert values into answers table
-			for (var j = 0; j < 4; j++) {
-				conn.query('INSERT INTO answers (question_id, class_id, correct, answer) VALUES ($1, $2, $3, $4);', [question_id, lecture_id, correct[j], answers[j]]).on('error', console.error);
-			}
-			// get current number of classes
-			conn.query('SELECT num_classes FROM courses WHERE course_id = $1', [courseId], function(err, data){
-				num_courses = data.rows[0].num_classes;
-				num_courses++;
-				// update the courses table to include an additional class
-				conn.query('UPDATE courses SET num_classes = $1 WHERE course_id = $2;', [num_courses, course_id]);
-			});
-		}
-		response.render('addLecture.html',{ root : __dirname, courseId: courseId, courseTitle: courseTitle, courseSummary: summary, lectureNum: lecture_num+1});
+		});
+    	response.render('addLecture.html',{ root : __dirname, courseId: code, courseTitle: title, courseSummary: summary, lectureNum: 1});
 	});
 
 
 	// handle post request to deal with logout
 	app.post('/logout', function(request, response){
 		console.log('- Request received:', request.method, request.url);
+
 		username = request.body.username;
 		var index = loggedin.indexOf(username);
 		console.log(loggedin);
@@ -326,6 +276,81 @@ io.sockets.on('connection', function(socket) {
 
 });
 
+// add class to the database
+app.post('/addClass', function(request, response){
+	console.log('- Request received:', request.method, request.url);
+	// retrieve all static elements concerining the class and corresponding material
+	var lectureTitle = request.body.lectureTitle;
+	var video = request.body.video;
+	var courseId = request.body.courseId;
+	var summary = request.body.courseSummary;
+	var courseTitle = request.body.courseTitle;
+	var lecture_num = parseInt(request.body.lectureNum);
+	var lecture_id = '/l/' + courseId + lecture_num;
+	console.log(lecture_id);
+
+	console.log(lectureTitle);
+	console.log(video);
+	console.log(courseId);
+	console.log(courseTitle);
+	// console.log(request);
+	
+	for (var i = 1; i <=10; i++) {
+		var question = request.body["question" + i];
+		console.log(question);
+
+		if (question){
+			console.log("here");
+
+			var question_id = '/q/' + courseId + i;
+			console.log(question_id);
+			// insert values into questions table
+			conn.query('INSERT INTO questions (question_id, class_id, question) VALUES ($1, $2, $3);', [question_id, lecture_id, question]).on('error', console.error);
+
+			// // retrieve the quiz answers
+			var answers = [];
+			for (var a = 1; a <= 4; a++){
+				answers.push(request.body['answer'+ a + i]);
+			}
+			// // determine the correctness of each answer
+			var correct = [];
+			for (var c = 1; c <= 4; c++){
+				var corr = request.body['answer' + c + 'corr' + i];
+				if (corr){
+					correct.push(1);
+				} else {
+					correct.push(0);
+				}
+			}
+			console.log(answers);
+			console.log(correct);
+
+			// insert values into answers table
+			for (var j = 0; j < 4; j++) {
+				conn.query('INSERT INTO answers (question_id, class_id, correct, answer) VALUES ($1, $2, $3, $4);', [question_id, lecture_id, correct[j], answers[j]]).on('error', console.error);
+			}
+		}
+	}
+	
+	//add this class to the course_class table
+	conn.query('INSERT INTO course_classes (class_id, course_id, class_order) VALUES ($1, $2, $3);', [lecture_id, courseId, lecture_num]).on('error', console.error);
+
+	conn.query('INSERT INTO classes (class_id, class_title, video) VALUES ($1, $2, $3);', [lecture_id, lectureTitle, video]).on('error', console.error);
+
+	// get current number of classes
+	conn.query('SELECT num_classes FROM courses WHERE course_id = $1', [courseId], function(err, data) {
+		if (err) throw err;
+		var num_classes = data.rows[0].num_classes;
+		// console.log("the current number of classes in " + courseId + " before updating is: " + num_classes);
+		num_classes++;
+		console.log("the current number of classes in " + courseId + " is: " + num_classes);
+		// update the courses table to include an additional class
+		conn.query('UPDATE courses SET num_classes = $1 WHERE course_id = $2;', [num_classes, courseId]);
+	});
+
+
+	response.render('addLecture.html',{ root : __dirname, courseId: courseId, courseTitle: courseTitle, courseSummary: summary, lectureNum: lecture_num+1});
+});
 
 // retrieve profile information
 app.get('/profile/:identifyer', function(request, response){
