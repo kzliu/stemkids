@@ -115,8 +115,12 @@ app.get('/:courseCode', function(request, response) {
 		// console.log(course_des, course_title, num_classes);
 
 		response.render('lecturelist.html',{ course_id: courseCode, courseTitle: course_title, courseSummary: course_des, numClasses:num_classes, root : __dirname});
-	});
-    
+	}); 
+});
+
+app.get('/l/:lectureId', function(request, response){
+	conn.query('SELECT * FROM classes WHERE cless_id')
+	response.render('course.html', {});
 });
 
 var loggedin = [];
