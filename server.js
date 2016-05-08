@@ -119,8 +119,10 @@ app.get('/:courseCode', function(request, response) {
 });
 
 app.get('/l/:lectureId', function(request, response){
-	conn.query('SELECT * FROM classes WHERE cless_id')
-	response.render('course.html', {});
+	conn.query('SELECT * FROM classes WHERE class_id=$1;', [request.params.lectureId], function(err, data){
+		response.render('course.html', {classId:request.params.lectureId, root : __dirname});
+	});
+	
 });
 
 var loggedin = [];
@@ -145,9 +147,10 @@ io.sockets.on('connection', function(socket) {
 	});
 
 	socket.on('quiz', function(classId, callback) {
-		conn.query('SELECT * FROM questions AS q NATURAL JOIN answers AS a WHERE q.class_id = $1 AND q.class_id = a.class_id;', [classId], function(err, data){
+		conn.query('SELECT * FROM questions NATURAL JOIN answers WHERE class_id = $1;', [classId], function(err, data){
 			if (err) throw err;
 			var lectures = {};
+			console.log("after query");
 			for (var i in data.rows){
 				// console.log(data.rows[i]);
 				var row = data.rows[i];
