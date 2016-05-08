@@ -119,8 +119,13 @@ app.get('/:courseCode', function(request, response) {
 });
 
 app.get('/l/:lectureId', function(request, response){
-	conn.query('SELECT * FROM classes WHERE cless_id')
-	response.render('course.html', {});
+	var classId = request.params.lectureId;
+	conn.query('SELECT * FROM classes WHERE class_id=$1;', [classId], function(err, data){
+		var classTitle = data.rows[0].class_title;
+		var classDesc = data.rows[0].class_description;
+		response.render('course.html', {classTitle: classTitle, description: classDesc});
+		response.end();
+	});
 });
 
 var loggedin = [];
