@@ -102,7 +102,7 @@ app.get('/createCourse',function(request, response) {
     response.render('createcourse.html',{ root : __dirname, course_id: courseCode});
 });
 
-app.get('/:courseCode', function(request, response) {
+app.get('/c/:courseCode', function(request, response) {
 	console.log('- Request received:', request.method, request.url);
 	var courseCode = request.params.courseCode;
 	console.log("course code " + courseCode);
@@ -119,10 +119,13 @@ app.get('/:courseCode', function(request, response) {
 });
 
 app.get('/l/:lectureId', function(request, response){
-	conn.query('SELECT * FROM classes WHERE class_id=$1;', [request.params.lectureId], function(err, data){
-		response.render('course.html', {classId:request.params.lectureId, root : __dirname});
+	var classId = '/l/' + request.params.lectureId;
+	conn.query('SELECT * FROM classes WHERE class_id=$1;', [classId], function(err, data){
+		var classTitle = data.rows[0].class_title;
+		var classDesc = data.rows[0].class_description;
+		console.log(data.rows[0].video);
+		response.render('course.html', {classTitle: classTitle, description: classDesc, classId: classId, video: data.rows[0].video, root : __dirname});
 	});
-	
 });
 
 var loggedin = [];
@@ -139,7 +142,7 @@ io.sockets.on('connection', function(socket) {
 			for (var i in data.rows){
 				// console.log(data.rows[i]);
 				var row = data.rows[i];
-				lectures[row.class_order] = {class_id: row.class_id, class_title: row.class_title};
+				lectures[parseInt(row.class_order)] = {class_id: row.class_id, class_title: row.class_title};
 			}
 			// console.log(obj);
 			callback(lectures);
@@ -149,16 +152,30 @@ io.sockets.on('connection', function(socket) {
 	socket.on('quiz', function(classId, callback) {
 		conn.query('SELECT * FROM questions NATURAL JOIN answers WHERE class_id = $1;', [classId], function(err, data){
 			if (err) throw err;
-			var lectures = {};
+			var questions = {};
 			console.log("after query");
 			for (var i in data.rows){
 				// console.log(data.rows[i]);
+
 				var row = data.rows[i];
-				console.log(row);
-				// lectures[row.class_order] = {class_id: row.class_id, class_title: row.class_title};
+				if (!questions[row.question_id]){
+					questions[row.question_id] = {};
+					questions[row.question_id]["question"] = row.question;
+				}
+				if (!questions[row.question_id]["answers"]) {
+					console.log("here");
+					questions[row.question_id]["answers"] = {};
+				} 
+				if (!questions[row.question_id]["answers"][row.answer_id]) {
+					questions[row.question_id]["answers"][row.answer_id] = {};
+				}
+				questions[row.question_id]["answers"][row.answer_id]["answer"] = row.answer;
+				questions[row.question_id]["answers"][row.answer_id]["correct"] = row.correct;
+				
 			}
+			console.log(questions);
 			// console.log(obj);
-			// callback(lectures);
+			callback(questions);
 		});
 	});
 
