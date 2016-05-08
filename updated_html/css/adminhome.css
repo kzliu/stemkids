@@ -1,6 +1,9 @@
 #create {
 	float: left;
 	margin-right: 20px;
+	margin-bottom: 10px;
+
+
 }
 
 #update {
@@ -12,6 +15,9 @@
 	width: 250px !important;
 }
 
+
+
 .admin {
 	display: inline-block;
 }
+
