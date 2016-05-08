@@ -111,11 +111,16 @@ io.sockets.on('connection', function(socket) {
 
 
 	socket.on('fillCurrent', function(user, callback){
+		console.log("fillCurrent is being called");
 		conn.query('SELECT user_id FROM user_info WHERE login=$1', [user], function(err, data){
 			var userId = data.rows[0].user_id;
-			conn.query('SELECT * FROM enrollment AS e, courses AS c WHERE e.user_id=$1 AND e.course_id = c.course_id AND c.active=$2;', [userId, 1], function(err, data){
-				callback(data.rows);
+			conn.query('SELECT * FROM courses;', function(err, data){
+				console.log("response from server: " + data.rows[0].course_description)
+;				callback(data.rows);
 			});
+			// conn.query('SELECT * FROM enrollment AS e, courses AS c WHERE e.user_id=$1 AND e.course_id = c.course_id AND c.active=$2;', [userId, 1], function(err, data){
+			// 	callback(data.rows);
+			// });
 		});
 	});
 
@@ -231,6 +236,10 @@ app.post('/login', function(request, response){
 	var password = request.body.password;
 	var message = "success";
 	console.log('- Request received:', request.method, request.url);
+	if (loggedin.indexOf(username) > -1) {
+		response.render('profile.html', {username:username, firstname:firstname});
+		response.end();
+	}
 	// password = String(hash(password, username));
 	var q = conn.query("SELECT user_id, first_name, password FROM user_info WHERE login = $1;", [username], function(err, data){
 		// handle errors
