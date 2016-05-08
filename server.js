@@ -102,11 +102,42 @@ app.get('/createCourse',function(request, response) {
     response.render('createcourse.html',{ root : __dirname, course_id: courseCode});
 });
 
+app.get('/:courseCode', function(request, response) {
+	console.log('- Request received:', request.method, request.url);
+	var courseCode = request.params.courseCode;
+	console.log("course code " + courseCode);
+	// console.log(request);
+	conn.query('SELECT * FROM courses WHERE course_id = $1;', [courseCode], function(err, data){
+		if (err) throw err;
+		var num_classes = data.rows[0].num_classes;
+		var course_des =  data.rows[0].course_description;
+		var course_title =  data.rows[0].course_title;
+		// console.log(course_des, course_title, num_classes);
+
+		response.render('lecturelist.html',{ course_id: courseCode, courseTitle: course_title, courseSummary: course_des, numClasses:num_classes, root : __dirname});
+	});
+    
+});
+
 var loggedin = [];
 
 io.sockets.on('connection', function(socket) {
 	socket.on('existingUser', function(userID, callback) {
 		checkUsername(userID, callback);
+	});
+
+	socket.on('lectures', function(courseCode, numClasses, username, callback) {
+		conn.query('SELECT class_id, class_title, class_order FROM course_classes NATURAL JOIN classes WHERE course_id = $1;', [courseCode], function(err, data){
+			if (err) throw err;
+			var lectures = {};
+			for (var i in data.rows){
+				// console.log(data.rows[i]);
+				var row = data.rows[i];
+				lectures[row.class_order] = {class_id: row.class_id, class_title: row.class_title}
+			}
+			// console.log(obj);
+			callback(lectures);
+		});
 	});
 
 

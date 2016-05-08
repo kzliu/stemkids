@@ -209,13 +209,13 @@ var socket = io.connect();
 window.addEventListener('load', function(){
 
 
-	function add_course(course_title, course_description, parent_id, button_text) {
-		$(parent_id).append('<div class="line"><div class="pic" id="currpic"><img src="img/pics/1.jpg"/></div><div class="description" id="currDisc"><h5 class="title blue">' + course_title + '</h5><div class="brief"><br>' + course_description + '</div><a class="btn small yellow" href="#"><p>' + button_text + '</p></a></div></div>');
+	function add_course(course_title, course_description, course_code, parent_id, button_text) {
+		$(parent_id).append('<div class="line"><div class="pic" id="currpic"><img src="img/pics/1.jpg"/></div><div class="description" id="currDisc"><h5 class="title blue">' + course_title + '</h5><div class="brief"><br>' + course_description + '</div><a class="btn small yellow" href="' + course_code + '"><p>' + button_text + '</p></a></div></div>');
 	};
 
 
-	function add_future_courses(course_title, course_description, parent_id, button_text){
-		$(parent_id).append('<div class="line"><div class="pic"><img src="img/pics/5.jpg"/></div><div class="description"><h5 class="title green">' + course_title + '</h5><div class="brief"><br>' + course_description + '</div><a class="btn small yellow disabled" href="#"><p>' + button_text + '</p></a></div></div>');
+	function add_future_courses(course_title, course_description, course_code, parent_id, button_text){
+		$(parent_id).append('<div class="line"><div class="pic"><img src="img/pics/5.jpg"/></div><div class="description"><h5 class="title green">' + course_title + '</h5><div class="brief"><br>' + course_description + '</div><a class="btn small yellow disabled" href="' + course_code + '<p>' + button_text + '</p></a></div></div>');
 	};
 
 
@@ -224,7 +224,8 @@ window.addEventListener('load', function(){
 		$.each(dataList, function(index, value){
 			var courseId = value.course_title;
 			var courseDesc = value.course_description;
-			add_course(courseId, courseDesc, '#classHist', 'Do Again');
+			var courseCode = value.course_id;
+			add_course(courseId, courseDesc, courseCode, '#classHist', 'Do Again');
 		});
 	});
 
@@ -233,7 +234,8 @@ window.addEventListener('load', function(){
 		$.each(dataList, function(index, value){
 			var courseId = value.course_title;
 			var courseDesc = value.course_description;
-			add_future_courses(courseId, courseDesc, '#futureClasses', 'Get Started');
+			var courseCode = value.course_id;
+			add_future_courses(courseId, courseDesc, courseCode, '#futureClasses', 'Get Started');
 		});
 	});
 
@@ -243,9 +245,10 @@ window.addEventListener('load', function(){
 		console.log('data list: ' + dataList)
 		$.each(dataList, function(index, value){
 			var courseId = value.course_title;
+			var courseCode = value.course_id;
 			console.log('course description: ' + value.coures_description);
 			var courseDesc = value.course_description;
-			add_course(courseId, courseDesc, '#currPanel', 'Continue');
+			add_course(courseId, courseDesc, courseCode, '#currPanel', 'Continue');
 		});
 	});
 
