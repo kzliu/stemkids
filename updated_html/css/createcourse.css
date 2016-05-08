@@ -1,9 +1,9 @@
-.ui_form {
+.ui.form {
 	width: 45%;
 	margin: auto;
 }
 
-.ui_form label, #upload {
+.ui.form label, #upload {
 	text-align: left;
 }
 
@@ -55,5 +55,17 @@ tr {
 .main {
 	padding-top: 2%;
 	padding-bottom: 2%;
+}
+
+#courseTitle, #courseSummary {
+	text-align: left;
+}
+
+#fileName {
+	display: inline-block;
+}
+
+.tableanswer {
+	padding-top: 4px;
 }
 

@@ -6,9 +6,6 @@
 	<!--meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1"/-->
 	<meta name="description" content=""/>
 	<meta name="keywords" content=""/>
-	<meta name="courseId" content="{{courseId}}">
-	<meta name="courseTitle" content="{{courseTitle}}">
-	<meta name="courseSummary" content="{{courseSummary}}">
 
 	<title>Create Course {{courseId}}</title>
 
@@ -17,13 +14,21 @@
 	<link href="css/new_main.css" type="text/css" rel="stylesheet" media="all"/>
 	<link href="css/createcourse.css" type="text/css" rel="stylesheet" media="all"/>
 	<link href="css/semantic-ui/semantic.min.css" rel="stylesheet">
+
+	<script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
 	<div class="main">
 		<div class="wrapper">
-			<h2> Add Lecture to Course {{courseId}}</h2>
+			<h2> Add Lecture {{lectureNum}} to Course {{courseId}}</h2>
 
-			<form class="ui_form">
+			<form class="ui form" method="post" action="/addClass">
+				<!-- hidden information for request -->
+				<input hidden name="courseId" value="{{courseId}}">
+				<input hidden name="courseTitle" value="{{courseTitle}}">
+				<input hidden name="courseSummary" value="{{courseSummary}}">
+				<input hidden name="lectureNum" value="{{lectureNum}}">
+
 				<div class="field">
 				    <label>Course Title</label>
 				    <!-- <input type="text" name="course-title" placeholder="Title" hidden> -->
@@ -38,19 +43,24 @@
 				    <!-- <button value="Edit" id="editCourseSummary">Edit</button> -->
 				</div>
 
-				<div class="uiDividingHeader"> </div>
+				<div class="ui dividing header"> </div>
 				<div class="field">
 				    <label>Lecture Title</label>
 				    <input type="text" name="lectureTitle" id="lectureTitle" placeholder="Title">
 				</div>
 
+				<div class="field">
+				    <label>Lecture Summary</label>
+				    <textarea rows="2" placeholder="Summary" name="lectureSummary"></textarea>
+				</div>
+
 				<div class="url">
 				    <label>Video Url</label>
-					<div class="uiLabeledInput">
+					<div class="ui labeled input">
 						<div class="ui label">
 							http://
 						</div>
-						<input type="text" id="video" placeholder="mysite.com">
+						<input type="text" id="video" name="video" placeholder="mysite.com">
 					</div>
 				</div>
 
@@ -58,16 +68,16 @@
 
 				<div id="upload">
 					<label id="def">Lecture Handout</label>
-			    <label for="file" class="uiIconButton">
+			    <label for="file" class="ui button" id="uploadbtn">
 			        Upload File</label>
-			    <input type="file" id="file">
+			    <input type="file" id="file" style="display:none"><p id="fileName"></p>
 				</div>
 				<div class="quizlet">
 					<h3>Question 1</h3>
 					<div id="quiz">
 						<div class="field">
 						    <label> </label>
-						    <input type="text" name="question1" id="question1" placeholder="Question">
+						    <input type="text" name="question1" id="question" placeholder="Question">
 						</div>
 
 						<table class="uiTealTable">
@@ -75,53 +85,53 @@
 								<td>Answer</td>
 								<td>Correct</td>
 							</tr>
-							<tr>
-								<td>
-								    <input type="text" name='answer1' id='answer1' placeholder="Answer 1">
+							<tr class="tableanswerouter">
+								<td class="tableanswer">
+								    <input type="text" name='answer11' id='answer1' placeholder="Answer 1">
 								</td>
 								<td class="center aligned">
 									<div class="inline field">
 									    <div class="ui checkbox">
-									      <input type="checkbox" name='answer1cb' id='answer1corr'>
+									      <input type="checkbox" name='answer1corr1' id='answer1corr'>
 									      <label></label>
 									    </div>
 									  </div>
 								</td>
 							</tr>
-							<tr>
-								<td>
-								    <input type="text" name='answer2' id='answer2' placeholder="Answer 2">
+							<tr class="tableanswerouter">
+								<td class="tableanswer">
+								    <input type="text" name='answer21' id='answer2' placeholder="Answer 2">
 								</td>
 								<td class="center aligned">
 									<div class="inline field">
 									    <div class="ui checkbox">
-									      <input type="checkbox" name='answer2cb' id='answer2corr'>
+									      <input type="checkbox" name='answer2corr1' id='answer2corr'>
 									      <label></label>
 									    </div>
 									  </div>
 								</td>
 							</tr>
-							<tr>
-								<td>
-								    <input type="text" name='answer3' id='answer3' placeholder="Answer 3">
+							<tr class="tableanswerouter">
+								<td class="tableanswer">
+								    <input type="text" name='answer31' id='answer3' placeholder="Answer 3">
 								</td>
 								<td class="center aligned">
 									<div class="inline field">
 									    <div class="ui checkbox">
-									      <input type="checkbox" name='answer3cb' id='answer3corr'>
+									      <input type="checkbox" name='answer3corr1' id='answer3corr'>
 									      <label></label>
 									    </div>
 									  </div>
 								</td>
 							</tr>
-							<tr>
-								<td>
-								    <input type="text" name='answer4' id='answer4' placeholder="Answer 4">
+							<tr class="tableanswerouter">
+								<td class="tableanswer">
+								    <input type="text" name='answer41' id='answer4' placeholder="Answer 4">
 								</td>
 								<td class="center aligned">
 									<div class="inline field">
 									    <div class="ui checkbox">
-									      <input type="checkbox" name='answer4cb' id='answer4corr'>
+									      <input type="checkbox" name='answer4corr1' id='answer4corr'>
 									      <label></label>
 									    </div>
 									  </div>
@@ -137,18 +147,21 @@
 				<div class="uiDividingHeader"> </div>
 
 				<div id="sbmt">
-					<button class="ui teal button" id="addNewLecture">Submit & Add New Lecture</button>
+					<!-- <button class="ui teal button" id="addNewLecture">Submit & Add New Lecture</button> -->
+					<button class="ui teal button" type="submit" name="addNewLecture">Submit & Add New Lecture</button>
 				</div>
 
 				<div id="finish">
-					<button class="ui orange button" type="submit">Upload Course</button>
+					<button class="ui orange button" type="submit" id="finishmeep" name="finishmeep" value='finish'>Upload Course</button>
 				</div>
 			</form>
 		</div>
 	</div>
 
 <script type="text/javascript">
+var socket = io.connect();
 window.addEventListener('load', function(){
+
 	var max_questions = 10; // maximum number of questions allowed
 	var i = 1;
 	var qzz = $('#quiz');
@@ -162,50 +175,35 @@ window.addEventListener('load', function(){
 			var id = '#quiz' + i;
 			$('#quiz').clone().prop('id', 'quiz' + i).appendTo('.quizlet');
 			quiz_list.push(id);
+			refactor(id, i);
 		};	
 	});
-	
-	$('#addNewLecture').click(function(e){
-		console.log("in submit");
-		e.preventDefault();
-		var lectureTitle = $('#lectureTitle').val();
-		var video = $('#video').val();
-		var length = quiz_list.length;
-		var courseId = meta('courseId');
-		var courseTitle = meta('courseTitle');
-		var obj = {lectureTitle: lectureTitle, video: video, courseId: courseId, courseTitle: courseTitle, quizes: []};
-		console.log(obj);
-		console.log(quiz_list);
-		for (var i = 0; i < length; i++) {
-			var quiz = quiz_list[i];
-			var answer1 = $(quiz + ' > table.uiTealTable > #answer1').val();
-			var answer2 = $(quiz + ' > table.uiTealTable > #answer2').val();
-			var answer3 = $(quiz + ' > table.uiTealTable > #answer3').val();
-			var answer4 = $(quiz + ' > table.uiTealTable > #answer4').val();
-			var corr1 = $(quiz + ' > table.uiTealTable > #answer1corr').prop('checked');
-			var corr2 = $(quiz + ' > table.uiTealTable > #answer2corr').prop('checked');
-			var corr3 = $(quiz + ' > table.uiTealTable > #answer3corr').prop('checked');
-			var corr4 = $(quiz + ' > table.uiTealTable > #answer4corr').prop('checked');
-			var json = {quiz: {answer1: answer1, answer2: answer2, answer3: answer3, answer4: answer4, corr1: corr1, corr2: corr2, corr3: corr3, corr4: corr4}};
-			console.log(json);
-			obj.quizes.push(json);
-		}
-		console.log(obj);
-		// $.post('/addClass', obj);
-		// return false;
-	});	
+
+	$('#file').click(function(e) {
+		e.preventDefault;
+			$('#file').on('change', function() {
+				var fileUpload = $('#file')[0].files[0].name;
+				$('#fileName').html(fileUpload);
+			});
+		});
+
+
 });
 
-function meta(name) {
-    var tag = document.querySelector('meta[name=' + name + ']');
-    if (tag != null)
-        return tag.content;
-    return '';
-};
+function refactor(quiz, number){
+	$(quiz + ' > div.field > input#question').prop('name', 'question'+number);
+
+	var a = 1;
+	$(quiz + ' table.uiTealTable tr.tableanswerouter').each(function() {
+	    $(this).find("#answer" + a).prop('name', 'answer'+ a + number);
+	    $(this).find("#answer" + a + "corr").prop('name', 'answer' + a + 'corr' + number);
+	    a += 1;
+	});
+}
 
 </script>
 <script src="css/semantic-ui/semantic.js" type="text/javascript"></script>
-<script src="js/jquery-2.2.0.min.js" type="text/javascript"></script>
+<!-- <script src="js/jquery-2.2.0.min.js" type="text/javascript"></script> -->
 <script src="https://code.jquery.com/jquery-2.2.0.min.js" type="text/javascript"></script>
 <script src="js/main.js" type="text/javascript"></script>
 </body>

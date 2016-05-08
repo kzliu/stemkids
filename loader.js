@@ -7,7 +7,7 @@ conn.query('CREATE TABLE IF NOT EXISTS user_info (user_id INTEGER PRIMARY KEY AU
 	console.log('user_info table successfully created');
 });
 // create course table
-conn.query('CREATE TABLE IF NOT EXISTS courses (course_id TEXT, num_classes INTEGER, course_description TEXT, course_title TEXT, PRIMARY KEY (course_id));').on('error', console.error).on('end', function(){
+conn.query('CREATE TABLE IF NOT EXISTS courses (course_id TEXT, num_classes INTEGER, course_description TEXT, course_title TEXT, active INTEGER, PRIMARY KEY (course_id));').on('error', console.error).on('end', function(){
 	console.log('course table successfully created');
 });
 
@@ -19,13 +19,13 @@ conn.query('CREATE TABLE IF NOT EXISTS courses (course_id TEXT, num_classes INTE
 
 
 // create classes table
-conn.query('CREATE TABLE IF NOT EXISTS classes (class_id TEXT, class_title TEXT, class_description TEXT, instructor TEXT, lecture TEXT, handout TEXT, PRIMARY KEY (class_id));').on('error', console.error).on('end', function(){
+conn.query('CREATE TABLE IF NOT EXISTS classes (class_id TEXT, class_title TEXT, class_description TEXT, instructor TEXT, video TEXT, handout TEXT, PRIMARY KEY (class_id));').on('error', console.error).on('end', function(){
 	console.log('classes table successfully created');
 });
 
 
 // create class to course (multiple classes in a course) mapping
-conn.query('CREATE TABLE IF NOT EXISTS course_classes (class_id INTEGER, course_id TEXT, class_order INTEGER, PRIMARY KEY (course_id), FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE ON UPDATE CASCADE, FOREIGN KEY (class_id) REFERENCES classes(class_id) ON DELETE CASCADE ON UPDATE CASCADE);').on('error', console.error).on('end', function(){
+conn.query('CREATE TABLE IF NOT EXISTS course_classes (class_id TEXT, course_id TEXT, class_order INTEGER, PRIMARY KEY (course_id, class_id), FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE ON UPDATE CASCADE, FOREIGN KEY (class_id) REFERENCES classes(class_id) ON DELETE CASCADE ON UPDATE CASCADE);').on('error', console.error).on('end', function(){
 	console.log('course_classes table successfully created');
 });
 
@@ -47,13 +47,13 @@ conn.query('CREATE TABLE IF NOT EXISTS course_history (user_id INTEGER, class_id
 
 
 // create a questions table
-conn.query('CREATE TABLE IF NOT EXISTS questions (question_id INTEGER PRIMARY KEY AUTOINCREMENT, question TEXT, class_id INTEGER, FOREIGN KEY (class_id) REFERENCES classes(class_id) ON DELETE CASCADE ON UPDATE CASCADE);').on('error', console.error).on('end', function(){
+conn.query('CREATE TABLE IF NOT EXISTS questions (question_id TEXT, class_id TEXT, question TEXT, PRIMARY KEY (question_id, class_id), FOREIGN KEY (class_id) REFERENCES classes(class_id) ON DELETE CASCADE ON UPDATE CASCADE);').on('error', console.error).on('end', function(){
 	console.log('questions table successfully created');
 });
 
 
 // create an answers table
-conn.query('CREATE TABLE IF NOT EXISTS answers (answer_id INTEGER PRIMARY KEY AUTOINCREMENT, question_id INTEGER, correct INTEGER, answer TEXT, FOREIGN KEY (question_id) REFERENCES questions(question_id) ON DELETE CASCADE ON UPDATE CASCADE);').on('error', console.error).on('end', function(){
+conn.query('CREATE TABLE IF NOT EXISTS answers (answer_id INTEGER PRIMARY KEY AUTOINCREMENT, question_id TEXT, class_id TEXT, correct INTEGER, answer TEXT, FOREIGN KEY (question_id, class_id) REFERENCES questions(question_id, class_id) ON DELETE CASCADE ON UPDATE CASCADE);').on('error', console.error).on('end', function(){
 	console.log('answers table successfully created');
 });
 

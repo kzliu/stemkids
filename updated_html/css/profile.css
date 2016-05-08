@@ -113,6 +113,11 @@
 	width: 110px;
 }
 
+.header .nav #home:hover p, .header .nav #signout:hover p {
+	background-color: #fcb829;
+	color: white;
+}
+
 /* UI */
 .wrap1, html {
 	background: #da5215;
