@@ -144,6 +144,10 @@ io.sockets.on('connection', function(socket) {
 		});
 	});
 
+	socket.on('quiz', function(classId, callback) {
+
+	});
+
 
 	socket.on('fillCurrent', function(user, callback){
 		console.log("fillCurrent is being called");

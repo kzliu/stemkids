@@ -170,30 +170,20 @@ window.addEventListener('load', function(){
 			var class_id = classes[lecture_num].class_id;
 			var class_title = classes[lecture_num].class_title;
 			var addLecture = "";
-			if ((parseInt(lecture_num) == 0)) {
-				addLecture += '<div class="row">'
+
+			if ((parseInt(lecture_num)-1) == 0) {
+				addLecture += '<div class="row">';
 			} else if (((parseInt(lecture_num)-1) % 4) == 0) {
-				addLecture += '</div><div class="row">'
+				addLecture += '</div><div class="row">';
 			}
 			
 			addLecture += '<div class="three wide column"> <a href="' + class_id + '"> <div class="segment"> <div class="ui fluid card"> <div class="color"> <p class="number">' + lecture_num + '</p> </div> <div class="content"> <a class="header" href="' + class_id + '">' + class_title + '</a> </div> </div> </div> </a> </div>';
 
 			$("#lectures").append(addLecture);
 		}
-		// $('#messages').empty();
-	 //    for (var i in messages){
-	 //    	var newLi = document.createElement('li');
-	 //    	var nickname = messages[i].nickname; 
-		// 	var message = messages[i].body;  
-		// 	var time = messages[i].time;
-	 //        newLi.innerHTML = time + " <strong>"+nickname + "</strong> ";
-	 //        newLi.innerHTML += ": " + message;
-	 //        $('#messages').append(newLi);
-		// }
+		$("#lectures").append('</div>');
     });
 });
-
-// '<div class="three wide column"> <a href="#"> <div class="segment"> <div class="ui fluid card"> <div class="color"> <p class="number">1</p> </div> <div class="content"> <a class="header">Lecture 1</a> </div> </div> </div> </a> </div>'
 
 function meta(name) {
     var tag = document.querySelector('meta[name=' + name + ']');

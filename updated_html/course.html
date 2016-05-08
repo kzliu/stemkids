@@ -7,12 +7,15 @@
 	<meta name="description" content=""/>
 	<meta name="keywords" content=""/>
 
+	<meta name="classId" content="{{classId}}"/>
+
 	<title></title>
 
 	<link href="/favicon.ico" rel="icon"/>
 	<link href="apple-favicon.png" rel="apple-touch-icon"/>
 	<link href="css/new_main.css" type="text/css" rel="stylesheet" media="all"/>
 	<link href="css/course.css" type="text/css" rel="stylesheet" media="all"/>
+	<script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
 	<div class="header">
@@ -145,4 +148,22 @@
 <script src="js/jquery-2.2.0.min.js" type="text/javascript"></script>
 <script src="js/main.js" type="text/javascript"></script>
 </body>
+<script>
+var socket = io.connect();
+
+window.addEventListener('load', function(){
+    socket.emit('quiz', meta('classId'), function(questions) {
+
+
+    });
+});
+
+function meta(name) {
+    var tag = document.querySelector('meta[name=' + name + ']');
+    if (tag != null)
+        return tag.content;
+    return '';
+};
+
+</script>
 </html>
