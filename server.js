@@ -349,6 +349,7 @@ app.post('/addClass', function(request, response){
 	var courseId = request.body.courseId;
 	var summary = request.body.courseSummary;
 	var courseTitle = request.body.courseTitle;
+	var lecture_desc = request.body.lectureSummary;
 	var lecture_num = parseInt(request.body.lectureNum);
 	var lecture_id = '/l/' + courseId + lecture_num;
 	console.log(lecture_id);
@@ -366,7 +367,7 @@ app.post('/addClass', function(request, response){
 			var question_id = '/q/' + courseId + i;
 			console.log(question_id);
 			// insert values into questions table
-			conn.query('INSERT INTO questions (question_id, class_id, question) VALUES ($1, $2, $3);', [question_id, lecture_id, question]).on('error', console.error);
+			conn.query('INSERT INTO questions (question_id, class_id, question, class_description) VALUES ($1, $2, $3, $4);', [question_id, lecture_id, question, lecture_desc]).on('error', console.error);
 
 			// // retrieve the quiz answers
 			var answers = [];
