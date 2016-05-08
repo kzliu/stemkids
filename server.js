@@ -133,7 +133,7 @@ io.sockets.on('connection', function(socket) {
 			for (var i in data.rows){
 				// console.log(data.rows[i]);
 				var row = data.rows[i];
-				lectures[row.class_order] = {class_id: row.class_id, class_title: row.class_title}
+				lectures[row.class_order] = {class_id: row.class_id, class_title: row.class_title};
 			}
 			// console.log(obj);
 			callback(lectures);
@@ -141,7 +141,18 @@ io.sockets.on('connection', function(socket) {
 	});
 
 	socket.on('quiz', function(classId, callback) {
-
+		conn.query('SELECT * FROM questions AS q NATURAL JOIN answers AS a WHERE q.class_id = $1 AND q.class_id = a.class_id;', [classId], function(err, data){
+			if (err) throw err;
+			var lectures = {};
+			for (var i in data.rows){
+				// console.log(data.rows[i]);
+				var row = data.rows[i];
+				console.log(row);
+				// lectures[row.class_order] = {class_id: row.class_id, class_title: row.class_title};
+			}
+			// console.log(obj);
+			// callback(lectures);
+		});
 	});
 
 
