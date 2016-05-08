@@ -112,7 +112,7 @@ io.sockets.on('connection', function(socket) {
 
 	socket.on('fillCurrent', function(user, callback){
 		console.log("fillCurrent is being called");
-		conn.query('SELECT user_id FROM user_info WHERE login=$1', [user], function(err, data){
+		conn.query('SELECT user_id FROM user_info WHERE login=$1;', [user], function(err, data){
 			var userId = data.rows[0].user_id;
 			conn.query('SELECT * FROM courses;', function(err, data){
 				console.log("response from server: " + data.rows[0].course_description)
@@ -137,10 +137,20 @@ io.sockets.on('connection', function(socket) {
 
 	socket.on('fillFuture', function(user, callback){
 		console.log('fillFuture being called')
-		conn.query('SELECT user_id FROM user_info WHERE login=$1', [user], function(err, data){
+		conn.query('SELECT user_id FROM user_info WHERE login=$1;', [user], function(err, data){
 			var userId = data.rows[0].user_id;
 			console.log('user id in fillFuture function: ' + userId);
 			conn.query('SELECT * FROM courses WHERE NOT EXISTS (SELECT * FROM enrollment NATURAL JOIN course_history WHERE user_id=$1 AND active=$2);', [userId, 0], function(err, data){
+				callback(data.rows);
+			});
+		});
+	});
+
+
+	socket.on('fillAvailable', function(user, callback){
+		conn.query('SELECT user_id FROM user_info WHERE login=$1;', [user], function(err, data){
+			var userId = data.rows[0].user_id;
+			conn.query('SELECT * FROM courses WHERE NOT EXISTS (SELECT * FROM enrollment NATURAL JOIN course_history WHERE user_id=$1 AND active=$2);', [userId, 1], function(err, data){
 				callback(data.rows);
 			});
 		});
