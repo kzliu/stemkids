@@ -118,10 +118,12 @@ app.get('/createCourse', function(request, response) {
 
 
 // need to implement further login functionality
-app.get('/c/:courseCode', function(request, response) {
+app.get('/:username/c/:courseCode', function(request, response) {
 	console.log('- Request received:', request.method, request.url);
 	var courseCode = request.params.courseCode;
+	var username = request.params.username;
 	console.log("course code " + courseCode);
+	console.log("username: " + username);
 	// console.log(request);
 	conn.query('SELECT * FROM courses WHERE course_id = $1;', [courseCode], function(err, data){
 		if (err) throw err;
@@ -131,7 +133,7 @@ app.get('/c/:courseCode', function(request, response) {
 			var course_title =  data.rows[0].course_title;
 			// console.log(course_des, course_title, num_classes);
 
-			response.render('lecturelist.html',{ course_id: courseCode, courseTitle: course_title, courseSummary: course_des, numClasses:num_classes, root : __dirname});
+			response.render('lecturelist.html',{ course_id: courseCode, courseTitle: course_title, courseSummary: course_des, numClasses:num_classes, username: username, root : __dirname});
 		} else {
 			console.log("THIS IS A PROBLEM AND SHOULD NOT GET HERE.");
 		}
@@ -140,13 +142,15 @@ app.get('/c/:courseCode', function(request, response) {
 
 
 // need to implement further login function
-app.get('/l/:lectureId', function(request, response){
+app.get('/:username/l/:lectureId', function(request, response){
 	var classId = '/l/' + request.params.lectureId;
+	var username = request.params.username;
+	console.log("lecture: " + username);
 	conn.query('SELECT * FROM classes WHERE class_id=$1;', [classId], function(err, data){
 		var classTitle = data.rows[0].class_title;
 		var classDesc = data.rows[0].class_description;
 		console.log(data.rows[0].video);
-		response.render('course.html', {classTitle: classTitle, description: classDesc, classId: classId, video: data.rows[0].video, root : __dirname});
+		response.render('course.html', {classTitle: classTitle, description: classDesc, classId: classId, video: data.rows[0].video, username: username, root : __dirname});
 	});
 });
 
@@ -195,6 +199,47 @@ io.sockets.on('connection', function(socket) {
 			// console.log(questions);
 			// console.log(obj);
 			callback(questions);
+		});
+	});
+
+	socket.on('/quizResponse', function(questionId, username, answerId) {
+		conn.query('SELECT user_id FROM user_info WHERE login=$1', [username], function(err, data){
+			var userId = data.rows[0].user_id;
+			console.log(questionId, answerId, userId);
+			conn.query('INSERT INTO quiz_history VALUES ($1,$2,$3);', [userId, answerId, questionId]).on('error', console.error);
+		});
+	});
+
+	socket.on('/updateProgress', function(username, classId){
+		conn.query('SELECT user_id FROM user_info WHERE login=$1', [username], function(err, data){
+			var userId = data.rows[0].user_id;
+			// console.log(questionId, answerId, userId);
+			conn.query('INSERT INTO course_history VALUES ($1,$2);', [userId, classId]).on('error', console.error);
+			conn.query('SELECT course_id, num_classes FROM course_classes AS cc NATURAL JOIN courses AS c WHERE cc.class_id=$1 AND c.course_id = cc.course_id;', [classId], function(err, result) {
+				if (err) throw err;
+				if (data.rows.length == 0){
+					console.log("THIS SHOULDNT HAPPEN");
+				} else {
+					var courseId = result.rows[0].course_id;
+					var numClasses = result.rows[0].num_classes;
+					
+					conn.query('SELECT progress FROM enrollment WHERE user_id=$1 AND course_id=$2;', [userId, courseId], function(err, result){
+						if (err) throw err;
+						if (result.rows.length == 0){
+							console.log("meep");
+						} else {
+							var progress = result.rows[0].progress;
+							if (progress >= numClasses){
+								conn.query('UPDATE enrollment SET completed=1 WHERE user_id=$1 AND course_id=$2;', [userId, courseId]).on('error', console.error);
+							} else {
+								conn.query('UPDATE enrollment SET progress=progress+1 WHERE user_id=$1 AND course_id=$2;', [userId, courseId]).on('error', console.error);
+							}
+						}
+					});
+				}
+				
+			});
+			
 		});
 	});
 

@@ -19,6 +19,7 @@
 	<script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
+	<input hidden name="username" value="{{username}}"/>
 	<div class="main">
 		<div class="wrapper">
 			<h2>{{courseTitle}}</h2>
@@ -52,7 +53,7 @@ window.addEventListener('load', function(){
 				apndLecture = addLecture + '</div><div class="row">';
 			}
 			
-			addLecture += '<div class="three wide column"> <a href="' + class_id + '"> <div class="segment"> <div class="ui fluid card"> <div class="color"> <p class="number">' + lecture_num + '</p> </div> <div class="content"> <a class="header" href="' + class_id + '">' + class_title + '</a> </div> </div> </div> </a> </div>';
+			addLecture += '<div class="three wide column"> <a href="' + class_id + '"> <div class="segment"> <div class="ui fluid card"> <div class="color"> <p class="number">' + lecture_num + '</p> </div> <div class="content"> <a class="header" href="/{{username}}' + class_id + '">' + class_title + '</a> </div> </div> </div> </a> </div>';
 
 			$("#lectures").append(addLecture);
 		}

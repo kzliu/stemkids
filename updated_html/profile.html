@@ -169,7 +169,7 @@ function myFunction(courseCode){
 
 function add_course(course_title, course_description, course_code, parent_id, button_text) {
 		console.log(course_code);
-		$(parent_id).append('<div class="line" id="' + course_code + '"><div class="pic" id="currpic"><img src="/img/pics/1.jpg"/></div><div class="description" id="currDisc"><h5 class="title blue">' + course_title + '</h5><div class="brief"><br>' + course_description + '</div><a class="btn small yellow" href="/c/' + course_code + '"><p>' + button_text + '</p></a></div></div>');
+		$(parent_id).append('<div class="line" id="' + course_code + '"><div class="pic" id="currpic"><img src="/img/pics/1.jpg"/></div><div class="description" id="currDisc"><h5 class="title blue">' + course_title + '</h5><div class="brief"><br>' + course_description + '</div><a class="btn small yellow" href="{{username}}/c/' + course_code + '"><p>' + button_text + '</p></a></div></div>');
 };
 
 function enrollment(course_title, course_description, course_code, parent_id, button_text) {
