@@ -30,7 +30,7 @@ conn.query('CREATE TABLE IF NOT EXISTS course_classes (class_id TEXT, course_id 
 });
 
 // create class information table
-conn.query('CREATE TABLE IF NOT EXISTS enrollment (user_id INTEGER, course_id TEXT, active INTEGER, progress INTEGER, PRIMARY KEY (user_id, course_id), FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE ON UPDATE CASCADE, FOREIGN KEY (user_id) REFERENCES user_info(user_id) ON DELETE CASCADE ON UPDATE CASCADE);').on('error', console.error).on('end', function(){
+conn.query('CREATE TABLE IF NOT EXISTS enrollment (user_id INTEGER, course_id TEXT, completed INTEGER, progress INTEGER, PRIMARY KEY (user_id, course_id), FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE ON UPDATE CASCADE, FOREIGN KEY (user_id) REFERENCES user_info(user_id) ON DELETE CASCADE ON UPDATE CASCADE);').on('error', console.error).on('end', function(){
 	console.log('class_attendance table successfully created');
 });
 

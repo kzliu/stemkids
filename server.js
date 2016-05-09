@@ -4,6 +4,7 @@ var bodyParser = require('body-parser');
 var anyDB = require('any-db');
 var engines = require('consolidate');
 var crypto = require("crypto");
+var basicAuth = require('basicauth-middleware');
 
 var app = express();
 var server = http.createServer(app);
@@ -86,7 +87,7 @@ app.get('/createAccount', function(request, response){
 });
 
 
-app.get('/admin', function(request, response){
+app.get('/admin', basicAuth('yvonne', 'Stemkids1234'), function(request, response){
     console.log('- Request received:', request.method, request.url);
     response.render('adminhome.html',{ root : __dirname});
 });
@@ -290,10 +291,6 @@ app.post('/login', function(request, response){
 	var password = request.body.password;
 	var message = "success";
 	console.log('- Request received:', request.method, request.url);
-	if (loggedin.indexOf(username) > -1) {
-		response.render('profile.html', {username:username, firstname:firstname});
-		response.end();
-	}
 	// password = String(hash(password, username));
 	var q = conn.query("SELECT user_id, first_name, password FROM user_info WHERE login = $1;", [username], function(err, data){
 		// handle errors
