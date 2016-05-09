@@ -199,7 +199,6 @@ io.sockets.on('connection', function(socket) {
 							}
 							lectures[lectureNumber] = {class_id: row.class_id, class_title: row.class_title, available: available};
 						}
-						// console.log(obj);
 						callback(lectures);
 					});
 				}
@@ -212,7 +211,6 @@ io.sockets.on('connection', function(socket) {
 			if (err) throw err;
 			var questions = {};
 			for (var i in data.rows){
-				// console.log(data.rows[i]);
 
 				var row = data.rows[i];
 				if (!questions[row.question_id]){
@@ -229,8 +227,6 @@ io.sockets.on('connection', function(socket) {
 				questions[row.question_id]["answers"][row.answer_id]["correct"] = row.correct;
 				
 			}
-			// console.log(questions);
-			// console.log(obj);
 			callback(questions);
 		});
 	});
@@ -347,10 +343,9 @@ io.sockets.on('connection', function(socket) {
 						message = "Could not properly insert value into database.";
 						throw err;
 						// socket.emit('createAccountError', message);
-						response.render('account.html', {message:message, firstname:firstname, lastname:lastname, age:age, grade:grade, email:email, phone:phone, school:school});
+						response.render('account.html', {message:message, firstname:firstname, lastname:lastname, age:age, grade:grade, email:email, phone:phone, school:school, root : __dirname});
 					} else {
-			   			loggedin.push(username);
-						response.render('profile.html', {username:username, firstname:firstname});	
+						response.render('login.html', {root : __dirname});	
 					}
 				});
 			} else {
@@ -362,7 +357,7 @@ io.sockets.on('connection', function(socket) {
 				// response.redirect(request.get('referer'));
 				
 				//make it so all the preexisting information stays
-				response.render('account.html', {message:message, firstname:firstname, lastname:lastname, age:age, grade:grade, email:email, phone:phone, school:school});
+				response.render('account.html', {message:message, firstname:firstname, lastname:lastname, age:age, grade:grade, email:email, phone:phone, school:school, root : __dirname});
 			}
 		});
 	    response.on('close', function(){
