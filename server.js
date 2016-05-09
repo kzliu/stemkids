@@ -4,7 +4,7 @@ var bodyParser = require('body-parser');
 var anyDB = require('any-db');
 var engines = require('consolidate');
 var crypto = require("crypto");
-var basicAuth = require('basic-auth');
+var auth = require('basic-auth');
 
 var app = express();
 var server = http.createServer(app);
@@ -98,7 +98,7 @@ app.get('/createAccount', function(request, response){
 
 
 app.get('/admin', function(request, response){
-	credentials = basicAuth(request);
+	credentials = auth(request);
 	if (!credentials || credentials.name !== 'yvonne' || credentials.pass !== 'Stemkids1234') {
 		console.log('Not Authorised');
 	} else {
