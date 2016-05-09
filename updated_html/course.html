@@ -160,7 +160,7 @@ window.addEventListener('load', function(){
     socket.emit('quiz', meta('classId'), function(questions) {
     	console.log("here");
     	// $('#quiz').append('<form id="quizForm">');
-
+    	for (var qID in questions){
     		var task = questions[qID];
     		var question = task.question;
     		// console.log(question);
