@@ -406,6 +406,7 @@ io.sockets.on('connection', function(socket) {
 
 		username = request.body.username;
 		var index = loggedin.indexOf(username);
+		console.log(username);
 		console.log(loggedin);
 		if (index > -1) {
 			loggedin.splice(index, 1);
