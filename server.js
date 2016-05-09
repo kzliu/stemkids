@@ -153,7 +153,6 @@ io.sockets.on('connection', function(socket) {
 		conn.query('SELECT * FROM questions NATURAL JOIN answers WHERE class_id = $1;', [classId], function(err, data){
 			if (err) throw err;
 			var questions = {};
-			console.log("after query");
 			for (var i in data.rows){
 				// console.log(data.rows[i]);
 
@@ -163,7 +162,6 @@ io.sockets.on('connection', function(socket) {
 					questions[row.question_id]["question"] = row.question;
 				}
 				if (!questions[row.question_id]["answers"]) {
-					console.log("here");
 					questions[row.question_id]["answers"] = {};
 				} 
 				if (!questions[row.question_id]["answers"][row.answer_id]) {
@@ -173,7 +171,7 @@ io.sockets.on('connection', function(socket) {
 				questions[row.question_id]["answers"][row.answer_id]["correct"] = row.correct;
 				
 			}
-			console.log(questions);
+			// console.log(questions);
 			// console.log(obj);
 			callback(questions);
 		});
@@ -316,10 +314,10 @@ app.post('/login', function(request, response){
 	var password = request.body.password;
 	var message = "success";
 	console.log('- Request received:', request.method, request.url);
-	if (loggedin.indexOf(username) > -1) {
-		response.render('profile.html', {username:username, firstname:firstname});
-		response.end();
-	}
+	// if (loggedin.indexOf(username) > -1) {
+	// 	response.render('profile.html', {username:username, firstname:firstname});
+	// 	response.end();
+	// }
 	// password = String(hash(password, username));
 	var q = conn.query("SELECT user_id, first_name, password FROM user_info WHERE login = $1;", [username], function(err, data){
 		// handle errors

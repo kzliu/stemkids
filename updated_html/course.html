@@ -6,7 +6,7 @@
 	<!--meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1"/-->
 	<meta name="description" content=""/>
 	<meta name="keywords" content=""/>
-
+	<meta name="video" content="{{video}}"/>
 	<meta name="classId" content="{{classId}}"/>
 
 	<title></title>
@@ -48,7 +48,7 @@
 						<div class="content">
 							<h3>Lecture 1: HTML5</h3>
 							<div class="video">
-								<iframe width="640" height="360" src="{{video}}" frameborder="0" allowfullscreen></iframe>
+								<iframe width="640" height="360" frameborder="0" allowfullscreen id="lectureVideo"></iframe>
 							</div>
 						</div>
 					 <!-- </div> -->
@@ -153,10 +153,8 @@ var socket = io.connect();
 
 window.addEventListener('load', function(){
     socket.emit('quiz', meta('classId'), function(questions) {
-    	console.log("here");
-    	for (var qID in questions){
+       	for (var qID in questions){
     		var task = questions[qID];
-    		console.log(qID);
     		var question = task.question;
     		// console.log(question);
     		addQuizQuestion(qID, question, task.answers);
@@ -164,6 +162,8 @@ window.addEventListener('load', function(){
     	// console.log(questions);
 
     });
+
+    $("#lectureVideo").attr("src", "//" + meta("video").replace("watch?v=", "v/"));
 });
 
 function addQuizQuestion(questionID, question, answers) {
