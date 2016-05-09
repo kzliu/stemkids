@@ -172,9 +172,9 @@ window.addEventListener('load', function(){
 			var addLecture = "";
 
 			if ((lecture_num-1) == 0) {
-				addLecture += '<div class="row">';
+				apndLecture =  '<div class="row">' + addLecture;
 			} else if (((lecture_num-1) % 4) == 0) {
-				addLecture += '</div><div class="row">';
+				apndLecture = addLecture + '</div><div class="row">';
 			}
 			
 			addLecture += '<div class="three wide column"> <a href="' + class_id + '"> <div class="segment"> <div class="ui fluid card"> <div class="color"> <p class="number">' + lecture_num + '</p> </div> <div class="content"> <a class="header" href="' + class_id + '">' + class_title + '</a> </div> </div> </div> </a> </div>';
