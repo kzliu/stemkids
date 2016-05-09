@@ -26,6 +26,9 @@
 				<a class="btn orange" href="/login.html">
 					<p>Log In</p>
 				</a>
+				<a class="btn yellow" id="admin">
+					<p>Admin</p>
+				</a>
 			</div>
 		</div>
 	</div>
@@ -33,4 +36,13 @@
 	<script src="/js/jquery-2.2.0.min.js" type="text/javascript"></script>
 	<script src="/js/main.js" type="text/javascript"></script>
 </body>
+<script type="text/javascript">
+$(function(){
+	$('#admin').click(function(){
+		var url = window.location.href.replace('/login', '');
+		console.log(url + '/admin');
+		window.location.replace(url + '/admin');
+	});
+});
+</script>
 </html>
