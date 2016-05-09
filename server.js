@@ -69,8 +69,15 @@ function isCourse(id){
 };
 
 
-var loggedin = []; // initialize logged in list
+function getUserId(username) {
+	conn.query('SELECT user_id FROM user_info WHERE login=$1', [username], function(error, result){
+		return (result.rows[0].user_id);
+	});
+}
 
+
+var loggedin = []; // initialize logged in list
+var credentials = null;
 
 app.get('/', function(request, response){
     console.log('- Request received:', request.method, request.url);
@@ -91,7 +98,7 @@ app.get('/createAccount', function(request, response){
 
 
 app.get('/admin', function(request, response){
-	var credentials = basicAuth(request);
+	credentials = basicAuth(request);
 	if (!credentials || credentials.name !== 'yvonne' || credentials.pass !== 'Stemkids1234') {
 		console.log('Not Authorised');
 	} else {
@@ -102,7 +109,6 @@ app.get('/admin', function(request, response){
 
 
 app.get('/createCourse', function(request, response) {
-	var credentials = basicAuth(request);
 	if (!credentials || credentials.name !== 'yvonne' || credentials.pass !== 'Stemkids1234') {
 		console.log('Not Authorised');
 	} else {
@@ -122,22 +128,27 @@ app.get('/:username/c/:courseCode', function(request, response) {
 	console.log('- Request received:', request.method, request.url);
 	var courseCode = request.params.courseCode;
 	var username = request.params.username;
-	console.log("course code " + courseCode);
-	console.log("username: " + username);
-	// console.log(request);
-	conn.query('SELECT * FROM courses WHERE course_id = $1;', [courseCode], function(err, data){
-		if (err) throw err;
-		if (data.rows.length > 0){
-			var num_classes = data.rows[0].num_classes;
-			var course_des =  data.rows[0].course_description;
-			var course_title =  data.rows[0].course_title;
-			// console.log(course_des, course_title, num_classes);
+	var index = loggedin.indexOf(username);
+	if (index > -1) {
+		console.log("course code " + courseCode);
+		console.log("username: " + username);
+		// console.log(request);
+		conn.query('SELECT * FROM courses WHERE course_id = $1;', [courseCode], function(err, data){
+			if (err) throw err;
+			if (data.rows.length > 0){
+				var num_classes = data.rows[0].num_classes;
+				var course_des =  data.rows[0].course_description;
+				var course_title =  data.rows[0].course_title;
+				// console.log(course_des, course_title, num_classes);
 
-			response.render('lecturelist.html',{ course_id: courseCode, courseTitle: course_title, courseSummary: course_des, numClasses:num_classes, username: username, root : __dirname});
-		} else {
-			console.log("THIS IS A PROBLEM AND SHOULD NOT GET HERE.");
-		}
-	}); 
+				response.render('lecturelist.html',{ course_id: courseCode, courseTitle: course_title, courseSummary: course_des, numClasses:num_classes, username: username, root : __dirname});
+			} else {
+				console.log("THIS IS A PROBLEM AND SHOULD NOT GET HERE.");
+			}
+		}); 
+	} else {
+		response.render('index.html',{ root : __dirname});
+	}
 });
 
 
@@ -145,13 +156,18 @@ app.get('/:username/c/:courseCode', function(request, response) {
 app.get('/:username/l/:lectureId', function(request, response){
 	var classId = '/l/' + request.params.lectureId;
 	var username = request.params.username;
-	console.log("lecture: " + username);
-	conn.query('SELECT * FROM classes WHERE class_id=$1;', [classId], function(err, data){
-		var classTitle = data.rows[0].class_title;
-		var classDesc = data.rows[0].class_description;
-		console.log(data.rows[0].video);
-		response.render('course.html', {classTitle: classTitle, description: classDesc, classId: classId, video: data.rows[0].video, username: username, root : __dirname});
-	});
+	var index = loggedin.indexOf(username);
+	if (index > -1) {
+		console.log("lecture: " + username);
+		conn.query('SELECT * FROM classes WHERE class_id=$1;', [classId], function(err, data){
+			var classTitle = data.rows[0].class_title;
+			var classDesc = data.rows[0].class_description;
+			console.log(data.rows[0].video);
+			response.render('course.html', {classTitle: classTitle, description: classDesc, classId: classId, video: data.rows[0].video, username: username, root : __dirname});
+		});
+	} else {
+		response.render('index.html',{ root : __dirname});
+	}
 });
 
 
