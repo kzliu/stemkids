@@ -276,7 +276,14 @@ io.sockets.on('connection', function(socket) {
 	    });
 	});
 
-
+	socket.on('enroll', function(username, course_id) {
+		conn.query('SELECT user_id FROM user_info WHERE login=$1;', [username], function(err, data){
+			console.log("here");
+			var userId = data.rows[0].user_id;
+			console.log("userid: "+ userId);
+			conn.query('INSERT INTO enrollment VALUES ($1, $2, $3, $4);', [userId, course_id, 0, 1]).on('error', console.error);
+		});
+	})
 	
 	
 
