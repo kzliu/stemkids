@@ -20,6 +20,26 @@
 	<script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
+	<div class="header">
+		<img class="logo" src="/img/logo-small.png">
+		<div class="user">
+			<span id="username">{{ username }}</span>
+			<img class="userpic" src="/img/avatar-small.png">
+		</div>
+		<a id="nav-btn" href="#"></a>
+		<div class="nav">
+			<form action="/loggedin" method="post" name="goHome">
+				<a onclick="document.goHome.submit();" >Home</a>
+				<input type="hidden" name="username" value="{{username}}">
+			</form>
+			<span class="sep"></span>
+			<form action="/logout" method="post" name="logoff">
+				<a onclick="document.logoff.submit();" id="signout"><p>Sign out</p></a>
+				<input type="hidden" name="username" value="{{username}}">
+			</form>
+		</div>
+	</div>
+
 	<input hidden name="username" value="{{username}}"/>
 	<div class="main">
 		<div class="wrapper">
