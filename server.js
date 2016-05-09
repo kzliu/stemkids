@@ -4,7 +4,7 @@ var bodyParser = require('body-parser');
 var anyDB = require('any-db');
 var engines = require('consolidate');
 var crypto = require("crypto");
-var auth = require('basic-auth');
+var basicAuth = require('basicauth-middleware');
 
 var app = express();
 var server = http.createServer(app);
@@ -77,7 +77,7 @@ function getUserId(username) {
 
 
 var loggedin = []; // initialize logged in list
-var credentials = null;
+var authorised = false;
 
 app.get('/', function(request, response){
     console.log('- Request received:', request.method, request.url);
@@ -97,19 +97,15 @@ app.get('/createAccount', function(request, response){
 });
 
 
-app.get('/admin', function(request, response){
-	credentials = auth(request);
-	if (!credentials || credentials.name !== 'yvonne' || credentials.pass !== 'Stemkids1234') {
-		console.log('Not Authorised');
-	} else {
-	    console.log('- Request received:', request.method, request.url);
-	    response.render('adminhome.html',{ root : __dirname});
-	}
+app.get('/admin', basicAuth('yvonne', 'Stemkids1234'), function(request, response){
+	authorised = true;
+	console.log('- Request received:', request.method, request.url);
+	response.render('adminhome.html',{ root : __dirname});
 });
 
 
 app.get('/createCourse', function(request, response) {
-	if (!credentials || credentials.name !== 'yvonne' || credentials.pass !== 'Stemkids1234') {
+	if (!authorised) {
 		console.log('Not Authorised');
 	} else {
 		console.log('- Request received:', request.method, request.url);
