@@ -19,6 +19,7 @@
   "dependencies": {
     "any-db": "^2.1.0",
     "any-db-sqlite3": "^2.1.4",
+    "basic-auth": "^1.0.3",
     "basicauth-middleware": "^1.1.0",
     "body-parser": "^1.15.0",
     "consolidate": "^0.14.0",
