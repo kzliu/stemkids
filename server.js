@@ -103,7 +103,7 @@ app.get('/createCourse',function(request, response) {
     response.render('createcourse.html',{ root : __dirname, course_id: courseCode});
 });
 
-app.get('/:courseCode', function(request, response) {
+app.get('/c/:courseCode', function(request, response) {
 	console.log('- Request received:', request.method, request.url);
 	var courseCode = request.params.courseCode;
 	console.log("course code " + courseCode);
@@ -120,12 +120,12 @@ app.get('/:courseCode', function(request, response) {
 });
 
 app.get('/l/:lectureId', function(request, response){
-	var classId = request.params.lectureId;
+	var classId = '/l/' + request.params.lectureId;
 	conn.query('SELECT * FROM classes WHERE class_id=$1;', [classId], function(err, data){
 		var classTitle = data.rows[0].class_title;
 		var classDesc = data.rows[0].class_description;
-		response.render('course.html', {classTitle: classTitle, description: classDesc});
-		response.end();
+		console.log(data.rows[0].video);
+		response.render('course.html', {classTitle: classTitle, description: classDesc, classId: classId, video: data.rows[0].video, root : __dirname});
 	});
 });
 
@@ -143,7 +143,7 @@ io.sockets.on('connection', function(socket) {
 			for (var i in data.rows){
 				// console.log(data.rows[i]);
 				var row = data.rows[i];
-				lectures[row.class_order] = {class_id: row.class_id, class_title: row.class_title}
+				lectures[parseInt(row.class_order)] = {class_id: row.class_id, class_title: row.class_title};
 			}
 			// console.log(obj);
 			callback(lectures);
@@ -151,7 +151,31 @@ io.sockets.on('connection', function(socket) {
 	});
 
 	socket.on('quiz', function(classId, callback) {
+		conn.query('SELECT * FROM questions NATURAL JOIN answers WHERE class_id = $1;', [classId], function(err, data){
+			if (err) throw err;
+			var questions = {};
+			for (var i in data.rows){
+				// console.log(data.rows[i]);
 
+				var row = data.rows[i];
+				if (!questions[row.question_id]){
+					questions[row.question_id] = {};
+					questions[row.question_id]["question"] = row.question;
+				}
+				if (!questions[row.question_id]["answers"]) {
+					questions[row.question_id]["answers"] = {};
+				} 
+				if (!questions[row.question_id]["answers"][row.answer_id]) {
+					questions[row.question_id]["answers"][row.answer_id] = {};
+				}
+				questions[row.question_id]["answers"][row.answer_id]["answer"] = row.answer;
+				questions[row.question_id]["answers"][row.answer_id]["correct"] = row.correct;
+				
+			}
+			// console.log(questions);
+			// console.log(obj);
+			callback(questions);
+		});
 	});
 
 
@@ -291,6 +315,12 @@ app.post('/login', function(request, response){
 	var password = request.body.password;
 	var message = "success";
 	console.log('- Request received:', request.method, request.url);
+
+	// if (loggedin.indexOf(username) > -1) {
+	// 	response.render('profile.html', {username:username, firstname:firstname});
+	// 	response.end();
+	// }
+
 	// password = String(hash(password, username));
 	var q = conn.query("SELECT user_id, first_name, password FROM user_info WHERE login = $1;", [username], function(err, data){
 		// handle errors
