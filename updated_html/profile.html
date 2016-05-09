@@ -86,18 +86,6 @@
 var socket = io.connect();
 window.addEventListener('load', function(){
 
-
-	function add_course(course_title, course_description, course_code, parent_id, button_text) {
-		console.log(course_code);
-		$(parent_id).append('<div class="line"><div class="pic" id="currpic"><img src="/img/pics/1.jpg"/></div><div class="description" id="currDisc"><h5 class="title blue">' + course_title + '</h5><div class="brief"><br>' + course_description + '</div><a class="btn small yellow" href="/c/' + course_code + '"><p>' + button_text + '</p></a></div></div>');
-	};
-
-
-	function add_future_courses(course_title, course_description, course_code, parent_id, button_text){
-		$(parent_id).append('<div class="line"><div class="pic"><img src="img/pics/5.jpg"/></div><div class="description"><h5 class="title green">' + course_title + '</h5><div class="brief"><br>' + course_description + '</div><a class="btn small yellow disabled"><p>' + button_text + '</p></a></div></div>');
-	};
-
-
 	var user = meta('username');
 	socket.emit('fillHistory', user, function(dataList){
 		$.each(dataList, function(index, value){
@@ -137,7 +125,7 @@ window.addEventListener('load', function(){
 			var courseTitle = value.course_title;
 			var courseDesc = value.course_description;
 			var courseCode = value.course_id;
-			add_course(courseTitle, courseDesc, courseCode, '#availPanel', 'Enroll');
+			enrollment(courseTitle, courseDesc, courseCode, '#availPanel', 'Enroll');
 		});
 	});
 
@@ -146,6 +134,8 @@ window.addEventListener('load', function(){
 		//this needs to be rendered in html
 		console.log(username);
 	});
+
+	
 
 	// implement logout functionality on the client side
 	$('#signout').click(function(e){
@@ -158,6 +148,26 @@ window.addEventListener('load', function(){
 		e.preventDefault();
 	});
 }, false);
+
+function myFunction(courseCode){
+	socket.emit('enroll', meta('username'), courseCode);
+	console.log("clicked button" + courseCode);
+	location.reload();
+};
+
+function add_course(course_title, course_description, course_code, parent_id, button_text) {
+		console.log(course_code);
+		$(parent_id).append('<div class="line" id="' + course_code + '"><div class="pic" id="currpic"><img src="/img/pics/1.jpg"/></div><div class="description" id="currDisc"><h5 class="title blue">' + course_title + '</h5><div class="brief"><br>' + course_description + '</div><a class="btn small yellow" href="/c/' + course_code + '"><p>' + button_text + '</p></a></div></div>');
+};
+
+function enrollment(course_title, course_description, course_code, parent_id, button_text) {
+	console.log(course_code);
+	$(parent_id).append('<div class="line"><div class="pic" id="currpic"><img src="/img/pics/1.jpg"/></div><div class="description" id="currDisc"><h5 class="title blue">' + course_title + '</h5><div class="brief"><br>' + course_description + '</div><button class="btn small yellow enrollment" onclick="myFunction(\'' + course_code + '\')"><p>' + button_text + '</p></button></div></div>');
+};
+
+function add_future_courses(course_title, course_description, course_code, parent_id, button_text){
+	$(parent_id).append('<div class="line"><div class="pic"><img src="img/pics/5.jpg"/></div><div class="description"><h5 class="title green">' + course_title + '</h5><div class="brief"><br>' + course_description + '</div><a class="btn small yellow disabled"><p>' + button_text + '</p></a></div></div>');
+};
 
 function meta(name) {
     var tag = document.querySelector('meta[name=' + name + ']');
