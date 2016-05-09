@@ -327,28 +327,7 @@ io.sockets.on('connection', function(socket) {
 
 });
 
-app.get('/:username/loggedin', function(request, response){
-	var username = request.params.username;
-	var index = loggedin.indexOf(username);
-	if (index > -1) {
-		var fistname = ""
-		conn.query('SELECT first_name FROM user_info WHERE login = $1', [username], function(err, data){
-			var fistname = data.rows[0].first_name;
-		});
-		// handle the case where no logins are found
-		if (firstname === "") {
-			message = "No user/password combination found";
-			response.render('login.html', {message:message});
-		} else {
-			response.render('profile.html', {username:username, firstname:firstname});
-		// socket.emit("loggedIn", username); // emit a signal to indicate a successful connection
-		}
-	} else {
-		response.render('login.html',{root : __dirname});
-	}
-});
-
-app.post('/:username/loggedin', function(request, response){
+app.post('/loggedin', function(request, response){
 	var username = request.body.username;
 	var password = request.body.password;
 	var message = "success";
