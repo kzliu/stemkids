@@ -90,21 +90,32 @@ app.get('/createAccount', function(request, response){
 });
 
 
-app.get('/admin', basicAuth('yvonne', 'Stemkids1234'), function(request, response){
-    console.log('- Request received:', request.method, request.url);
-    response.render('adminhome.html',{ root : __dirname});
-});
-
-
-app.get('/createCourse',function(request, response) {
-	console.log('- Request received:', request.method, request.url);
-	var courseCode = generateCourseCode();
-	while (isCourse(courseCode)) {
-		courseCode = generateCourseCode();
+app.get('/admin', function(request, response){
+	var credentials = basicAuth(request);
+	if (!credentials || credentials.name !== 'yvonne' || credentials.pass !== 'Stemkids1234') {
+		console.log('Not Authorised');
+	} else {
+	    console.log('- Request received:', request.method, request.url);
+	    response.render('adminhome.html',{ root : __dirname});
 	}
-	console.log("course code " + courseCode);
-    response.render('createcourse.html',{ root : __dirname, course_id: courseCode});
 });
+
+
+app.get('/createCourse', function(request, response) {
+	var credentials = basicAuth(request);
+	if (!credentials || credentials.name !== 'yvonne' || credentials.pass !== 'Stemkids1234') {
+		console.log('Not Authorised');
+	} else {
+		console.log('- Request received:', request.method, request.url);
+		var courseCode = generateCourseCode();
+		while (isCourse(courseCode)) {
+			courseCode = generateCourseCode();
+		}
+		console.log("course code " + courseCode);
+	    response.render('createcourse.html',{ root : __dirname, course_id: courseCode});
+	}
+});
+
 
 // need to implement further login functionality
 app.get('/c/:courseCode', function(request, response) {
@@ -236,7 +247,7 @@ io.sockets.on('connection', function(socket) {
 	});
 
 
-	app.post('/createAccount', function(request, response) {
+	app.post('/createNewAccount', function(request, response) {
 		var username = request.body.username;
 		console.log('- Request received:', request.method, request.url);
 		var message = "success";
@@ -327,28 +338,8 @@ io.sockets.on('connection', function(socket) {
 
 });
 
-app.get('/:username/loggedin', function(request, response){
-	var username = request.params.username;
-	var index = loggedin.indexOf(username);
-	if (index > -1) {
-		var fistname = ""
-		conn.query('SELECT first_name FROM user_info WHERE login = $1', [username], function(err, data){
-			var fistname = data.rows[0].first_name;
-		});
-		// handle the case where no logins are found
-		if (firstname === "") {
-			message = "No user/password combination found";
-			response.render('login.html', {message:message});
-		} else {
-			response.render('profile.html', {username:username, firstname:firstname});
-		// socket.emit("loggedIn", username); // emit a signal to indicate a successful connection
-		}
-	} else {
-		response.render('login.html',{root : __dirname});
-	}
-});
 
-app.post('/:username/loggedin', function(request, response){
+app.post('/loggedin', function(request, response){
 	var username = request.body.username;
 	var password = request.body.password;
 	var message = "success";
@@ -482,7 +473,7 @@ app.post('/addClass', function(request, response){
 	}
 });
 
-// retrieve profile information
+// retrieve profile information (redundant)
 app.get('/profile/:identifyer', function(request, response){
 	var identifyer = request.params.identifyer;
 	// select elements for profile
