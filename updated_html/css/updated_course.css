@@ -103,7 +103,6 @@
 	text-align: center;
 	text-decoration: none;
 	width: 110px;
-	/*padding-top: 10px;*/
 }
 
 .header .nav .sep
@@ -146,9 +145,17 @@
 	margin: auto;
 }
 
+#lecture, #data2, #data3 {
+	margin-bottom: 10px;
+}
+
 /* lecture */
 .lecture.content {
 	text-align: center;
+}
+
+#grid .column {
+	width: 800px;	
 }
 
 #lecture .video {
@@ -156,6 +163,7 @@
 	padding-bottom: 56.25%; /* 16:9 */
 	padding-top: 25px;
 	height: 0;
+	width: 100%;
 }
 
 #lecture .video iframe {
