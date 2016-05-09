@@ -24,7 +24,10 @@
 		</div>
 		<a id="nav-btn" href="#"></a>
 		<div class="nav">
-			<a href="#" id="home"><p>Home</p></a>
+			<form action="/loggedin" method="post" name="goHome">
+				<a onclick="document.goHome.submit();" >Home</a>
+				<input type="hidden" name="username" value="{{username}}">
+			</form>
 			<span class="sep"></span>
 			<form action="/logout" method="post" name="logoff">
 				<a onclick="document.logoff.submit();" id="signout"><p>Sign out</p></a>

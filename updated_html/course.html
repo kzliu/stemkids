@@ -28,7 +28,10 @@
 		</div>
 		<a id="nav-btn" href="#"></a>
 		<div class="nav">
-			<a href="#">Home</a>
+			<form action="/loggedin" method="post" name="goHome">
+				<a onclick="document.goHome.submit();" >Home</a>
+				<input type="hidden" name="username" value="{{username}}">
+			</form>
 			<span class="sep"></span>
 			<form action="/logout" method="post" name="logoff">
 				<a onclick="document.logoff.submit();" id="signout"><p>Sign out</p></a>
@@ -45,18 +48,12 @@
 			<div class="tabs">
 				<div class="tab lectures current">
 					<a class="caption" href="#">lecture</a>
-					<!-- <div class="lecture-module" href="#">
-						<ul class ="Lecture-List">
-							<li> Lecture 1 </li>
-							<li> Lecture 2 </li>
-							<li> Lecture 3 </li> -->
 						<div class="content">
-							<h3>Lecture 1: HTML5</h3>
+							<h3>Video Lecture</h3>
 							<div class="video">
 								<iframe width="640" height="360" frameborder="0" allowfullscreen id="lectureVideo"></iframe>
 							</div>
 						</div>
-					 <!-- </div> -->
 				</div>
 				<div class="tab handouts">
 					<a class="caption" href="#">handouts</a>
@@ -118,7 +115,9 @@ window.addEventListener('load', function(){
     	// addSubmitButton();
     	// $('#quiz').append('</form>')
     });
-   
+   function submitQuiz() {
+
+   }
    $("#submitQuiz").click(function(){
 		console.log("U clicked my button.");
 		for (var questionId in myAnswers){
@@ -126,6 +125,7 @@ window.addEventListener('load', function(){
 			for (i = 0; i < currQ.length; i++){
 				var current = document.getElementById(currQ[i]);
 				current.disabled = true;
+
 				if (current.checked === true){
 					console.log("This is Checked!");
 					var myElement = document.getElementById(current.id+current.name);

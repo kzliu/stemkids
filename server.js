@@ -173,7 +173,6 @@ io.sockets.on('connection', function(socket) {
 	});
 
 	socket.on('lectures', function(courseId, numClasses, username, callback) {
-		console.log(username);
 		conn.query('SELECT user_id FROM user_info WHERE login=$1', [username], function(err, data){
 			var userId = data.rows[0].user_id;
 			conn.query('SELECT progress FROM enrollment WHERE user_id=$1 AND course_id=$2;', [userId, courseId], function(err, result){
@@ -186,11 +185,12 @@ io.sockets.on('connection', function(socket) {
 						if (err) throw err;
 						var lectures = {};
 						for (var i in classData.rows){
-							// console.log(data.rows[i]);
 							var row = classData.rows[i];
 							var lectureNumber = parseInt(row.class_order);
 							var available = 0;
-							if (lectureNumber <= progress) {
+							if (lectureNumber < progress) {
+								available = 1;
+							} if (lectureNumber == progress){
 								available = 1;
 							}
 							lectures[lectureNumber] = {class_id: row.class_id, class_title: row.class_title, available: available};
@@ -230,7 +230,6 @@ io.sockets.on('connection', function(socket) {
 	socket.on('/quizResponse', function(questionId, username, answerId) {
 		conn.query('SELECT user_id FROM user_info WHERE login=$1', [username], function(err, data){
 			var userId = data.rows[0].user_id;
-			console.log(questionId, answerId, userId);
 			conn.query('INSERT INTO quiz_history VALUES ($1,$2,$3);', [userId, answerId, questionId]).on('error', console.error);
 		});
 	});
@@ -238,7 +237,7 @@ io.sockets.on('connection', function(socket) {
 	socket.on('/updateProgress', function(username, classId){
 		conn.query('SELECT user_id FROM user_info WHERE login=$1', [username], function(err, data){
 			var userId = data.rows[0].user_id;
-			// console.log(questionId, answerId, userId);
+
 			conn.query('INSERT INTO course_history VALUES ($1,$2);', [userId, classId]).on('error', console.error);
 			conn.query('SELECT course_id, num_classes FROM course_classes AS cc NATURAL JOIN courses AS c WHERE cc.class_id=$1 AND c.course_id = cc.course_id;', [classId], function(err, result) {
 				if (err) throw err;
@@ -274,7 +273,6 @@ io.sockets.on('connection', function(socket) {
 		conn.query('SELECT user_id FROM user_info WHERE login=$1;', [user], function(err, data){
 			var userId = data.rows[0].user_id;
 			conn.query('SELECT * FROM courses AS c, enrollment AS e WHERE e.user_id=$1 AND c.active=$2 AND e.completed=$3 AND c.course_id = e.course_id;',[userId, 1, 0], function(err, data){
-				// console.log("response from server: " + data.rows[0].course_description)
 				if (err) throw err;
 				callback(data.rows);
 			});
@@ -296,7 +294,7 @@ io.sockets.on('connection', function(socket) {
 		console.log('fillFuture being called')
 		conn.query('SELECT user_id FROM user_info WHERE login=$1;', [user], function(err, data){
 			var userId = data.rows[0].user_id;
-			console.log('user id in fillFuture function: ' + userId);
+
 			conn.query('SELECT * FROM courses WHERE active=$1;', [0], function(err, data){
 				callback(data.rows);
 			});
@@ -307,7 +305,7 @@ io.sockets.on('connection', function(socket) {
 	socket.on('fillAvailable', function(user, callback){
 		conn.query('SELECT user_id FROM user_info WHERE login=$1;', [user], function(err, data){
 			var userId = data.rows[0].user_id;
-			console.log("userid: "+ userId);
+
 			conn.query('SELECT * FROM courses AS c WHERE NOT EXISTS (SELECT * FROM enrollment AS e WHERE e.user_id=$1 AND c.course_id = e.course_id) AND c.active=$2;', [userId, 1], function(err, data){
 				// console.log("available: " + data.rows);
 				if (err) throw err;
@@ -347,10 +345,6 @@ io.sockets.on('connection', function(socket) {
 			} else {
 				message = "That username is already taken!";
 				console.log(message);
-				// response.redirect({message:message}, 'account.html');
-				// socket.emit('createAccountError', message);
-				// repsonse.end();
-				// response.redirect(request.get('referer'));
 				
 				//make it so all the preexisting information stays
 				response.render('account.html', {message:message, firstname:firstname, lastname:lastname, age:age, grade:grade, email:email, phone:phone, school:school, root : __dirname});
@@ -363,9 +357,7 @@ io.sockets.on('connection', function(socket) {
 
 	socket.on('enroll', function(username, course_id) {
 		conn.query('SELECT user_id FROM user_info WHERE login=$1;', [username], function(err, data){
-			console.log("here");
 			var userId = data.rows[0].user_id;
-			console.log("userid: "+ userId);
 			conn.query('INSERT INTO enrollment VALUES ($1, $2, $3, $4);', [userId, course_id, 0, 1]).on('error', console.error);
 		});
 	})
@@ -414,57 +406,60 @@ app.post('/loggedin', function(request, response){
 	var password = request.body.password;
 	var message = "success";
 	console.log('- Request received:', request.method, request.url);
-	// if (loggedin.indexOf(username) > -1) {
-		// response.render('profile.html', {username:username, firstname:firstname});
-		// response.end();
-	// }
-	// password = String(hash(password, username));
-	var q = conn.query("SELECT user_id, first_name, password FROM user_info WHERE login = $1;", [username], function(err, data){
-		// handle errors
-		if (err) {
-			// generate message
-			message = "Server encountered an error while attempting to retrieve";
-			throw err;
-			response.render('login.html', {message:message});
-		}
-		// if the data element returned is empty, indicate to the user that no password and username combination was found
-		if (data.rows.length == 0){
-			message = "No user/password combination found";
-			console.log(message + password);
-			// socket.emit('loginError', message);
-			response.render('login.html', {message:message});
-		} else {
-			// iterate through the set of elements returned (to handle the case where more than one is returned)
-			var rows = data.rows;
-			var firstname = "";
-			for (var i = 0; i < data.rows.length; i++) {
-				var password2 = data.rows[i].password;
-				password = hash(password, username);
-				var match = compare_hash(password, password2);
-				console.log(password);
-
-				if (match) {
-					firstname = rows[i].first_name;
-				}
+	if (loggedin.indexOf(username) > -1){
+		var q = conn.query("SELECT first_name FROM user_info WHERE login = $1;", [username], function(err, data){
+			if (data.rows.length == 0){
+				response.render('index.html',{ message:"Error going home. Please log back in.", root : __dirname});
+			} else {
+				response.render('profile.html', {username:username, firstname:data.rows[0].first_name});
 			}
-			// handle the case where no logins are found
-			if (firstname === "") {
+		});
+	} else {
+		var q = conn.query("SELECT user_id, first_name, password FROM user_info WHERE login = $1;", [username], function(err, data){
+			// handle errors
+			if (err) {
+				// generate message
+				message = "Server encountered an error while attempting to retrieve";
+				throw err;
+				response.render('login.html', {message:message});
+			}
+			// if the data element returned is empty, indicate to the user that no password and username combination was found
+			if (data.rows.length == 0){
 				message = "No user/password combination found";
-				console.log(message);
+				console.log(message + password);
+				// socket.emit('loginError', message);
 				response.render('login.html', {message:message});
 			} else {
-				var index = loggedin.indexOf(username);
-				if (index > -1) {
-					loggedin.push(username);
+				// iterate through the set of elements returned (to handle the case where more than one is returned)
+				var rows = data.rows;
+				var firstname = "";
+				for (var i = 0; i < data.rows.length; i++) {
+					var password2 = data.rows[i].password;
+					password = hash(password, username);
+					var match = compare_hash(password, password2);
+					if (match) {
+						firstname = rows[i].first_name;
+					}
 				}
-				response.render('profile.html', {username:username, firstname:firstname});
-			// socket.emit("loggedIn", username); // emit a signal to indicate a successful connection
+				// handle the case where no logins are found
+				if (firstname === "") {
+					message = "No user/password combination found";
+					console.log(message);
+					response.render('login.html', {message:message});
+				} else {
+					var index = loggedin.indexOf(username);
+					if (index == -1) {
+						loggedin.push(username);
+					}
+					response.render('profile.html', {username:username, firstname:firstname});
+				// socket.emit("loggedIn", username); // emit a signal to indicate a successful connection
+				}
 			}
-		}
-	});
-	q.on('end', function(){
-		console.log('login function executed');
-	});
+		});
+		q.on('end', function(){
+			console.log('login function executed');
+		});
+	}
 });
 
 // add class to the database
@@ -479,12 +474,6 @@ app.post('/addClass', function(request, response){
 	var lecture_desc = request.body.lectureSummary;
 	var lecture_num = parseInt(request.body.lectureNum);
 	var lecture_id = '/l/' + courseId + lecture_num;
-	console.log(lecture_id);
-
-	console.log(lectureTitle);
-	console.log(video);
-	console.log(courseId);
-	console.log(courseTitle);
 	
 	for (var i = 1; i <=10; i++) {
 		var question = request.body["question" + i];
@@ -511,8 +500,6 @@ app.post('/addClass', function(request, response){
 					correct.push(0);
 				}
 			}
-			console.log(answers);
-			console.log(correct);
 
 			// insert values into answers table
 			for (var j = 0; j < 4; j++) {
