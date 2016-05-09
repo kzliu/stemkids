@@ -76,6 +76,7 @@
 				<div class="tab quizzes">
 				<a class="caption" href="#">quiz</a>
 				<div class="content" id="quiz">
+					<!-- <form action="/submitQuiz" method="post"> -->
 					<h3>Quiz 1</h3>
 			<!-- 		<div class="question">
 						<div class="task">
@@ -136,6 +137,8 @@
 						</div>
 					</div> -->
 				</div>
+				<button class="btn orange" type="submit" id="submitQuiz"><p> Submit! </p></button>
+			<!-- </form> -->
 				</div> 
 			</div>
 
@@ -151,35 +154,79 @@
 <script>
 var socket = io.connect();
 
+var myAnswers= {};
+
 window.addEventListener('load', function(){
     socket.emit('quiz', meta('classId'), function(questions) {
     	console.log("here");
+    	// $('#quiz').append('<form id="quizForm">');
     	for (var qID in questions){
     		var task = questions[qID];
     		console.log(qID);
     		var question = task.question;
     		// console.log(question);
     		addQuizQuestion(qID, question, task.answers);
+    		// myAnswers[question] = task.answers;
     	}
     	// console.log(questions);
-
+    	// addSubmitButton();
+    	// $('#quiz').append('</form>')
     });
 });
+
 
 function addQuizQuestion(questionID, question, answers) {
 	var quizHTML = '<div class="question" id="' + questionID + '"><div class="task">' + question + '</div><div class="answers"><div class="row c2"><div class="col">'
 		// console.log(quizHTML);
-		// var count = 1;
+		// var count = 1;]
+		myAnswers[questionID] = [];
 		for (var a in answers){
-			// console.log(a);
+			//console.log(a);
+			myAnswers[questionID].push(a);
 			var answer = answers[a]["answer"];
 			var correct = answers[a]["correct"];
-			quizHTML += '<div class="field"><input type="radio" name="' + a + '" value="' + correct + '"/><span>' + answer + '</span></div>';
+			quizHTML += '<div class="field" id="'+ a + questionID +'"><input type="radio" name="' + questionID + '" id="' + a + '" value="' + correct + '"/><span>' + answer + '</span></div>';
 			// count ++;
 		}
 		quizHTML += "</div> </div> </div> </div>";
 		$('#quiz').append(quizHTML);
 }
+
+$("#submitQuiz").click(function(){
+	console.log("U clicked my button.");
+	for (var questionId in myAnswers){
+		var currQ = myAnswers[questionId];
+		for (i = 0; i < currQ.length; i++){
+			var current = document.getElementById(currQ[i]);
+			current.disabled = true;
+			if (current.checked === true){
+				console.log("This is Checked!");
+				var myElement = document.getElementById(current.id+current.name);
+				console.log(current);
+				console.log(current.value);
+				if(current.value == 1){
+					console.log("Tô Aqui");
+					myElement.style.backgroundColor= "rgb(91,189,92)"
+				} else {
+					myElement.style.backgroundColor= "rgb(219,20,20)"
+					for (i = 0; i < currQ.length; i++){
+						var current = document.getElementById(currQ[i]);
+						if(current.value == 1){
+							var myElement = document.getElementById(current.id+current.name);
+							myElement.style.backgroundColor = "rgb(91,189,92)"
+						}
+					}
+				}
+			}
+		}
+		
+		// console.log($("input:checked").val());
+	}
+});
+// function addSubmitButton(){
+// 	var buttonHTML = ''
+// 	$('#quiz').append(buttonHTML);
+// }
 
 function meta(name) {
     var tag = document.querySelector('meta[name=' + name + ']');
@@ -187,6 +234,8 @@ function meta(name) {
         return tag.content;
     return '';
 };
+
+
 
 </script>
 </html>
