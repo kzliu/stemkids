@@ -4,6 +4,7 @@ var bodyParser = require('body-parser');
 var anyDB = require('any-db');
 var engines = require('consolidate');
 var crypto = require("crypto");
+var basicAuth = require('basicauth-middleware');
 
 var app = express();
 var server = http.createServer(app);
@@ -68,6 +69,9 @@ function isCourse(id){
 };
 
 
+var loggedin = []; // initialize logged in list
+
+
 app.get('/', function(request, response){
     console.log('- Request received:', request.method, request.url);
     response.render('index.html',{ root : __dirname});
@@ -86,7 +90,7 @@ app.get('/createAccount', function(request, response){
 });
 
 
-app.get('/admin', function(request, response){
+app.get('/admin', basicAuth('yvonne', 'Stemkids1234'), function(request, response){
     console.log('- Request received:', request.method, request.url);
     response.render('adminhome.html',{ root : __dirname});
 });
@@ -102,6 +106,7 @@ app.get('/createCourse',function(request, response) {
     response.render('createcourse.html',{ root : __dirname, course_id: courseCode});
 });
 
+// need to implement further login functionality
 app.get('/c/:courseCode', function(request, response) {
 	console.log('- Request received:', request.method, request.url);
 	var courseCode = request.params.courseCode;
@@ -109,15 +114,21 @@ app.get('/c/:courseCode', function(request, response) {
 	// console.log(request);
 	conn.query('SELECT * FROM courses WHERE course_id = $1;', [courseCode], function(err, data){
 		if (err) throw err;
-		var num_classes = data.rows[0].num_classes;
-		var course_des =  data.rows[0].course_description;
-		var course_title =  data.rows[0].course_title;
-		// console.log(course_des, course_title, num_classes);
+		if (data.rows.length > 0){
+			var num_classes = data.rows[0].num_classes;
+			var course_des =  data.rows[0].course_description;
+			var course_title =  data.rows[0].course_title;
+			// console.log(course_des, course_title, num_classes);
 
-		response.render('lecturelist.html',{ course_id: courseCode, courseTitle: course_title, courseSummary: course_des, numClasses:num_classes, root : __dirname});
+			response.render('lecturelist.html',{ course_id: courseCode, courseTitle: course_title, courseSummary: course_des, numClasses:num_classes, root : __dirname});
+		} else {
+			console.log("THIS IS A PROBLEM AND SHOULD NOT GET HERE.");
+		}
 	}); 
 });
 
+
+// need to implement further login function
 app.get('/l/:lectureId', function(request, response){
 	var classId = '/l/' + request.params.lectureId;
 	conn.query('SELECT * FROM classes WHERE class_id=$1;', [classId], function(err, data){
@@ -128,7 +139,6 @@ app.get('/l/:lectureId', function(request, response){
 	});
 });
 
-var loggedin = [];
 
 io.sockets.on('connection', function(socket) {
 	socket.on('existingUser', function(userID, callback) {
@@ -153,7 +163,6 @@ io.sockets.on('connection', function(socket) {
 		conn.query('SELECT * FROM questions NATURAL JOIN answers WHERE class_id = $1;', [classId], function(err, data){
 			if (err) throw err;
 			var questions = {};
-			console.log("after query");
 			for (var i in data.rows){
 				// console.log(data.rows[i]);
 
@@ -163,7 +172,6 @@ io.sockets.on('connection', function(socket) {
 					questions[row.question_id]["question"] = row.question;
 				}
 				if (!questions[row.question_id]["answers"]) {
-					console.log("here");
 					questions[row.question_id]["answers"] = {};
 				} 
 				if (!questions[row.question_id]["answers"][row.answer_id]) {
@@ -173,7 +181,7 @@ io.sockets.on('connection', function(socket) {
 				questions[row.question_id]["answers"][row.answer_id]["correct"] = row.correct;
 				
 			}
-			console.log(questions);
+			// console.log(questions);
 			// console.log(obj);
 			callback(questions);
 		});
@@ -184,13 +192,11 @@ io.sockets.on('connection', function(socket) {
 		console.log("fillCurrent is being called");
 		conn.query('SELECT user_id FROM user_info WHERE login=$1;', [user], function(err, data){
 			var userId = data.rows[0].user_id;
-			conn.query('SELECT * FROM courses;', function(err, data){
-				console.log("response from server: " + data.rows[0].course_description)
-;				callback(data.rows);
+			conn.query('SELECT * FROM courses AS c, enrollment AS e WHERE e.user_id=$1 AND c.active=$2 AND e.completed=$3 AND c.course_id = e.course_id;',[userId, 1, 0], function(err, data){
+				// console.log("response from server: " + data.rows[0].course_description)
+				if (err) throw err;
+				callback(data.rows);
 			});
-			// conn.query('SELECT * FROM enrollment AS e, courses AS c WHERE e.user_id=$1 AND e.course_id = c.course_id AND c.active=$2;', [userId, 1], function(err, data){
-			// 	callback(data.rows);
-			// });
 		});
 	});
 
@@ -198,7 +204,7 @@ io.sockets.on('connection', function(socket) {
 	socket.on('fillHistory', function(user, callback){
 		conn.query('SELECT user_id FROM user_info WHERE login=$1', [user], function(err, data){
 			var userId = data.rows[0].user_id;
-			conn.query('SELECT * FROM courses NATURAL JOIN course_history WHERE user_id=$1 AND active=$2;', [userId, 0], function(err, data){
+			conn.query('SELECT * FROM courses AS c, enrollment AS e WHERE e.course_id=c.course_id AND e.user_id=$1 AND e.completed=$2;', [userId, 1], function(err, data){
 				callback(data.rows);
 			});
 		});
@@ -210,7 +216,7 @@ io.sockets.on('connection', function(socket) {
 		conn.query('SELECT user_id FROM user_info WHERE login=$1;', [user], function(err, data){
 			var userId = data.rows[0].user_id;
 			console.log('user id in fillFuture function: ' + userId);
-			conn.query('SELECT * FROM courses WHERE NOT EXISTS (SELECT * FROM enrollment NATURAL JOIN course_history WHERE user_id=$1 AND active=$2);', [userId, 0], function(err, data){
+			conn.query('SELECT * FROM courses WHERE active=$1;', [0], function(err, data){
 				callback(data.rows);
 			});
 		});
@@ -220,7 +226,10 @@ io.sockets.on('connection', function(socket) {
 	socket.on('fillAvailable', function(user, callback){
 		conn.query('SELECT user_id FROM user_info WHERE login=$1;', [user], function(err, data){
 			var userId = data.rows[0].user_id;
-			conn.query('SELECT * FROM courses WHERE NOT EXISTS (SELECT * FROM enrollment NATURAL JOIN course_history WHERE user_id=$1 AND active=$2);', [userId, 1], function(err, data){
+			console.log("userid: "+ userId);
+			conn.query('SELECT * FROM courses AS c WHERE NOT EXISTS (SELECT * FROM enrollment AS e WHERE e.user_id=$1 AND c.course_id = e.course_id) AND c.active=$2;', [userId, 1], function(err, data){
+				// console.log("available: " + data.rows);
+				if (err) throw err;
 				callback(data.rows);
 			});
 		});
@@ -272,7 +281,14 @@ io.sockets.on('connection', function(socket) {
 	    });
 	});
 
-
+	socket.on('enroll', function(username, course_id) {
+		conn.query('SELECT user_id FROM user_info WHERE login=$1;', [username], function(err, data){
+			console.log("here");
+			var userId = data.rows[0].user_id;
+			console.log("userid: "+ userId);
+			conn.query('INSERT INTO enrollment VALUES ($1, $2, $3, $4);', [userId, course_id, 0, 1]).on('error', console.error);
+		});
+	})
 	
 	
 
@@ -311,7 +327,28 @@ io.sockets.on('connection', function(socket) {
 
 });
 
-app.post('/login', function(request, response){
+app.get('/:username/loggedin', function(request, response){
+	var username = request.params.username;
+	var index = loggedin.indexOf(username);
+	if (index > -1) {
+		var fistname = ""
+		conn.query('SELECT first_name FROM user_info WHERE login = $1', [username], function(err, data){
+			var fistname = data.rows[0].first_name;
+		});
+		// handle the case where no logins are found
+		if (firstname === "") {
+			message = "No user/password combination found";
+			response.render('login.html', {message:message});
+		} else {
+			response.render('profile.html', {username:username, firstname:firstname});
+		// socket.emit("loggedIn", username); // emit a signal to indicate a successful connection
+		}
+	} else {
+		response.render('login.html',{root : __dirname});
+	}
+});
+
+app.post('/:username/loggedin', function(request, response){
 	var username = request.body.username;
 	var password = request.body.password;
 	var message = "success";
