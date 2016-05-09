@@ -4,7 +4,7 @@ var bodyParser = require('body-parser');
 var anyDB = require('any-db');
 var engines = require('consolidate');
 var crypto = require("crypto");
-var basicAuth = require('basicauth-middleware');
+var basicAuth = require('basic-auth');
 
 var app = express();
 var server = http.createServer(app);
@@ -394,7 +394,7 @@ io.sockets.on('connection', function(socket) {
 			loggedin.splice(index, 1);
 		}
 		console.log(loggedin);
-		response.render('index.html',{ root : __dirname});
+		// response.render('index.html',{ root : __dirname});
 	});
 
 });
@@ -444,7 +444,10 @@ app.post('/loggedin', function(request, response){
 				console.log(message);
 				response.render('login.html', {message:message});
 			} else {
-				loggedin.push(username);
+				var index = loggedin.indexOf(username);
+				if (index > -1) {
+					loggedin.push(username);
+				}
 				response.render('profile.html', {username:username, firstname:firstname});
 			// socket.emit("loggedIn", username); // emit a signal to indicate a successful connection
 			}
