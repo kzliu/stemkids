@@ -29,7 +29,10 @@
 		<div class="nav">
 			<a href="#">Home</a>
 			<span class="sep"></span>
-			<a href="#">Sign out</a>
+			<form action="/logout" method="post" name="logoff">
+				<a onclick="document.logoff.submit();" id="signout"><p>Sign out</p></a>
+				<input type="hidden" name="username" value="{{username}}">
+			</form>
 		</div>
 	</div>
 
