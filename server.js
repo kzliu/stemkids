@@ -327,64 +327,77 @@ io.sockets.on('connection', function(socket) {
 
 });
 
-app.post('/login', function(request, response){
+app.get('/:username/loggedin', function(request, response){
+	var username = request.params.username;
+	var index = loggedin.indexOf(username);
+	if (index > -1) {
+		var fistname = ""
+		conn.query('SELECT first_name FROM user_info WHERE login = $1', [username], function(err, data){
+			var fistname = data.rows[0].first_name;
+		});
+		// handle the case where no logins are found
+		if (firstname === "") {
+			message = "No user/password combination found";
+			response.render('login.html', {message:message});
+		} else {
+			response.render('profile.html', {username:username, firstname:firstname});
+		// socket.emit("loggedIn", username); // emit a signal to indicate a successful connection
+		}
+	} else {
+		response.render('login.html',{root : __dirname});
+	}
+});
+
+app.post('/:username/loggedin', function(request, response){
 	var username = request.body.username;
 	var password = request.body.password;
 	var message = "success";
 	console.log('- Request received:', request.method, request.url);
 
-	if (loggedin.indexOf(username) > -1) {
-		conn.query('SELECT first_name FROM user_info WHERE login=$1;', [username], function(err, data){
-			var firstname = data.rows[0].first_name;
-			response.render('profile.html', {username:username, firstname:firstname});
-			response.end();	
-		});
-	} else {
-		// password = String(hash(password, username));
-		var q = conn.query("SELECT user_id, first_name, password FROM user_info WHERE login = $1;", [username], function(err, data){
-			// handle errors
-			if (err) {
-				// generate message
-				message = "Server encountered an error while attempting to retrieve";
-				throw err;
-				response.render('login.html', {message:message});
+	// password = String(hash(password, username));
+	var q = conn.query("SELECT user_id, first_name, password FROM user_info WHERE login = $1;", [username], function(err, data){
+		// handle errors
+		if (err) {
+			// generate message
+			message = "Server encountered an error while attempting to retrieve";
+			throw err;
+			response.render('login.html', {message:message});
+		}
+		// if the data element returned is empty, indicate to the user that no password and username combination was found
+		if (data.rows.length == 0){
+			message = "No user/password combination found";
+			console.log(message + password);
+			// socket.emit('loginError', message);
+			response.render('login.html', {message:message});
+		} else {
+			// iterate through the set of elements returned (to handle the case where more than one is returned)
+			var rows = data.rows;
+			var firstname = "";
+			for (var i = 0; i < data.rows.length; i++) {
+				var password2 = data.rows[i].password;
+				password = hash(password, username);
+				var match = compare_hash(password, password2);
+				console.log(password);
+
+				if (match) {
+					firstname = rows[i].first_name;
+				}
 			}
-			// if the data element returned is empty, indicate to the user that no password and username combination was found
-			if (data.rows.length == 0){
+			// handle the case where no logins are found
+			if (firstname === "") {
 				message = "No user/password combination found";
-				console.log(message + password);
-				// socket.emit('loginError', message);
+				console.log(message);
 				response.render('login.html', {message:message});
 			} else {
-				// iterate through the set of elements returned (to handle the case where more than one is returned)
-				var rows = data.rows;
-				var firstname = "";
-				for (var i = 0; i < data.rows.length; i++) {
-					var password2 = data.rows[i].password;
-					password = hash(password, username);
-					var match = compare_hash(password, password2);
-					console.log(password);
-
-					if (match) {
-						firstname = rows[i].first_name;
-					}
-				}
-				// handle the case where no logins are found
-				if (firstname === "") {
-					message = "No user/password combination found";
-					console.log(message);
-					response.render('login.html', {message:message});
-				} else {
-					loggedin.push(username);
-					response.render('profile.html', {username:username, firstname:firstname});
-				// socket.emit("loggedIn", username); // emit a signal to indicate a successful connection
-				}
+				loggedin.push(username);
+				response.render('profile.html', {username:username, firstname:firstname});
+			// socket.emit("loggedIn", username); // emit a signal to indicate a successful connection
 			}
-		});
-		q.on('end', function(){
-			console.log('login function executed');
-		});
-	}
+		}
+	});
+	q.on('end', function(){
+		console.log('login function executed');
+	});
 });
 
 // add class to the database
