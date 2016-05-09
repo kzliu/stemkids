@@ -159,7 +159,7 @@ app.get('/:username/l/:lectureId', function(request, response){
 			var classTitle = data.rows[0].class_title;
 			var classDesc = data.rows[0].class_description;
 			console.log(data.rows[0].video);
-			response.render('course.html', {classTitle: classTitle, description: classDesc, classId: classId, video: data.rows[0].video, username: username, root : __dirname});
+			response.render('updated_course.html', {classTitle: classTitle, description: classDesc, classId: classId, video: data.rows[0].video, username: username, root : __dirname});
 		});
 	} else {
 		response.render('index.html',{ root : __dirname});
