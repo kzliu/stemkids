@@ -228,7 +228,8 @@ io.sockets.on('connection', function(socket) {
 	});
 
 	socket.on('/quizResponse', function(questionId, username, answerId) {
-		conn.query('SELECT user_id FROM user_info WHERE login=$1', [username], function(err, data){
+		console.log(username);
+		conn.query('SELECT user_id FROM user_info WHERE login=$1;', [username], function(err, data){
 			var userId = data.rows[0].user_id;
 			conn.query('INSERT INTO quiz_history VALUES ($1,$2,$3);', [userId, answerId, questionId]).on('error', console.error);
 		});
@@ -483,7 +484,7 @@ app.post('/addClass', function(request, response){
 			var question_id = '/q/' + courseId + i;
 			console.log(question_id);
 			// insert values into questions table
-			conn.query('INSERT INTO questions (question_id, class_id, question, class_description) VALUES ($1, $2, $3, $4);', [question_id, lecture_id, question, lecture_desc]).on('error', console.error);
+			conn.query('INSERT INTO questions (question_id, class_id, question) VALUES ($1, $2, $3);', [question_id, lecture_id, question]).on('error', console.error);
 
 			// // retrieve the quiz answers
 			var answers = [];
@@ -511,7 +512,7 @@ app.post('/addClass', function(request, response){
 	//add this class to the course_class table
 	conn.query('INSERT INTO course_classes (class_id, course_id, class_order) VALUES ($1, $2, $3);', [lecture_id, courseId, lecture_num]).on('error', console.error);
 
-	conn.query('INSERT INTO classes (class_id, class_title, video) VALUES ($1, $2, $3);', [lecture_id, lectureTitle, video]).on('error', console.error);
+	conn.query('INSERT INTO classes (class_id, class_title, video, class_description) VALUES ($1, $2, $3, $4);', [lecture_id, lectureTitle, video, lecture_desc]).on('error', console.error);
 
 	// get current number of classes
 	conn.query('SELECT num_classes FROM courses WHERE course_id = $1', [courseId], function(err, data) {

@@ -8,6 +8,7 @@
 	<meta name="keywords" content=""/>
 	<meta name="video" content="{{video}}"/>
 	<meta name="classId" content="{{classId}}"/>
+	<meta name="username" content="{{username}}"/>
 
 	<title></title>
 
@@ -28,7 +29,7 @@
 		<a id="nav-btn" href="#"></a>
 		<div class="nav">
 			<form action="/loggedin" method="post" name="goHome">
-				<a onclick="document.goHome.submit();" id="hm">Home</a>
+				<a onclick="document.goHome.submit();" id="home"><p>Home</p></a>
 				<input type="hidden" name="username" value="{{username}}">
 			</form>
 

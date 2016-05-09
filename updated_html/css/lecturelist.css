@@ -104,7 +104,7 @@
 	font-family: 'Lato';
 	font-size: 16px;
 	font-weight: 700;
-	line-height: 25px;
+	line-height: 50px;
 	text-align: center;
 	text-decoration: none;
 	width: 110px;
@@ -122,6 +122,12 @@
 .header .nav #home:hover p, .header .nav #signout:hover p {
 	background-color: #fcb829;
 	color: white;
+	/*margin:0px;*/
+	/*line-height: 25px;*/
+	padding-top: 10px;
+	margin-top: -13px;
+	padding-bottom: 5px;
+
 }
 /* Fonts */
 @font-face

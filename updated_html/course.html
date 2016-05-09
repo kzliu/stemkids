@@ -29,7 +29,7 @@
 		<a id="nav-btn" href="#"></a>
 		<div class="nav">
 			<form action="/loggedin" method="post" name="goHome">
-				<a onclick="document.goHome.submit();" >Home</a>
+				<a onclick="document.goHome.submit();" id="home"><p>Home</p></a>
 				<input type="hidden" name="username" value="{{username}}">
 			</form>
 			<span class="sep"></span>
@@ -111,6 +111,7 @@ window.addEventListener('load', function(){
     		addQuizQuestion(qID, question, task.answers);
     		// myAnswers[question] = task.answers;
     	}
+    	// console.log("username: " + meta('username'));
     	// console.log(questions);
     	// addSubmitButton();
     	// $('#quiz').append('</form>')
@@ -144,6 +145,7 @@ window.addEventListener('load', function(){
 							}
 						}
 					}
+
 					socket.emit('/quizResponse', questionId, meta('username'), current.id);
 					console.log(questionId, current.id);
 				}
