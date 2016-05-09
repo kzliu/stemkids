@@ -160,17 +160,34 @@ io.sockets.on('connection', function(socket) {
 		checkUsername(userID, callback);
 	});
 
-	socket.on('lectures', function(courseCode, numClasses, username, callback) {
-		conn.query('SELECT class_id, class_title, class_order FROM course_classes NATURAL JOIN classes WHERE course_id = $1;', [courseCode], function(err, data){
-			if (err) throw err;
-			var lectures = {};
-			for (var i in data.rows){
-				// console.log(data.rows[i]);
-				var row = data.rows[i];
-				lectures[parseInt(row.class_order)] = {class_id: row.class_id, class_title: row.class_title};
-			}
-			// console.log(obj);
-			callback(lectures);
+	socket.on('lectures', function(courseId, numClasses, username, callback) {
+		console.log(username);
+		conn.query('SELECT user_id FROM user_info WHERE login=$1', [username], function(err, data){
+			var userId = data.rows[0].user_id;
+			conn.query('SELECT progress FROM enrollment WHERE user_id=$1 AND course_id=$2;', [userId, courseId], function(err, result){
+				if (err) throw err;
+				if (result.rows.length == 0){
+					console.log("THIS SHOULDN'T HAPPEN");
+				} else {
+					var progress = result.rows[0].progress;
+					conn.query('SELECT class_id, class_title, class_order FROM course_classes NATURAL JOIN classes WHERE course_id = $1;', [courseId], function(err, classData){
+						if (err) throw err;
+						var lectures = {};
+						for (var i in classData.rows){
+							// console.log(data.rows[i]);
+							var row = classData.rows[i];
+							var lectureNumber = parseInt(row.class_order);
+							var available = 0;
+							if (lectureNumber <= progress) {
+								available = 1;
+							}
+							lectures[lectureNumber] = {class_id: row.class_id, class_title: row.class_title, available: available};
+						}
+						// console.log(obj);
+						callback(lectures);
+					});
+				}
+			});
 		});
 	});
 

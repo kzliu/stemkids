@@ -8,6 +8,7 @@
 
 	<meta name="numClasses" content="{{numClasses}}"/>
 	<meta name="courseCode" content="{{course_id}}"/>
+	<meta name="username" content="{{username}}"/>
 
 	<title>Course {{course_id}} Lectures</title>
 
@@ -39,7 +40,7 @@
 var socket = io.connect();
 
 window.addEventListener('load', function(){
-    socket.emit('lectures', meta('courseCode'), meta('numClasses'), null, function(classes) {
+    socket.emit('lectures', meta('courseCode'), meta('numClasses'), meta('username'), function(classes) {
 		// renderUsers(users);
 		// console.log(classes);
 		for (var lecture_num in classes) {
@@ -52,8 +53,11 @@ window.addEventListener('load', function(){
 			} else if (((lecture_num-1) % 4) == 0) {
 				apndLecture = addLecture + '</div><div class="row">';
 			}
-			
-			addLecture += '<div class="three wide column"> <a href="' + class_id + '"> <div class="segment"> <div class="ui fluid card"> <div class="color"> <p class="number">' + lecture_num + '</p> </div> <div class="content"> <a class="header" href="/{{username}}' + class_id + '">' + class_title + '</a> </div> </div> </div> </a> </div>';
+			if (classes[lecture_num].available == 1) {
+				addLecture += '<div class="three wide column"> <a href="/{{username}}' + class_id + '"> <div class="segment"> <div class="ui fluid card"> <div class="color"> <p class="number">' + lecture_num + '</p> </div> <div class="content"> <a class="header" href="/{{username}}' + class_id + '">' + class_title + '</a> </div> </div> </div> </a> </div>';
+			} else {
+				addLecture += '<div class="three wide column"> <a> <div class="segment"> <div class="ui fluid card"> <div class="colordisable"> <p class="number">' + lecture_num + '</p> </div> <div class="content"> <a class="header" disabled>' + class_title + '</a> </div> </div></a> </div></div>';
+			}
 
 			$("#lectures").append(addLecture);
 		}
