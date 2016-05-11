@@ -19,6 +19,7 @@ Server Issues:
 The program has been deployed on Heroku which has a minor issue of sleeping after 30 minutes of inactivity and must sleep for 6 hours in a 24-hour-period.
 When someone accesses the app, the server will automatically wake up to run the web process type. This causes a short delay for this first request, but subsequent requests perform normally.
 
+
 Aspects that can be Improved:
 =============================
 Due to a lack of time, we were unable to finish the update course methods.
@@ -27,3 +28,14 @@ Due to a lack of time, we were unable to finish the update course methods.
 Project Usage:
 ==============
 At the moment, all one needs to do to run the program is to run the server using the command "node server.js" and go to the respective local host in a browser.
+
+
+Node Modules:
+=============
+express
+http
+body-parser
+any-db
+consolidate
+crypto
+basicauth-middleware
