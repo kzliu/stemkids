@@ -102,19 +102,11 @@ window.addEventListener('load', function(){
 	 $("#lectureVideo").attr("src", "//" + meta("video").replace("watch?v=", "v/"));
 
     socket.emit('quiz', meta('classId'), function(questions) {
-<<<<<<< HEAD
-    	console.log("here");
-=======
->>>>>>> c0521b957ddeedf81027242df6c1afa2ddcf68a1
     	for (var qID in questions){
     		var task = questions[qID];
     		var question = task.question;
     		addQuizQuestion(qID, question, task.answers);
     	}
-<<<<<<< HEAD
-=======
-
->>>>>>> c0521b957ddeedf81027242df6c1afa2ddcf68a1
     });
 
     //Function that checks the correct answers and compares them to submitted answers on a click. 
@@ -156,11 +148,7 @@ window.addEventListener('load', function(){
 //Realizes Quiz questions from database to webpage
 
 function addQuizQuestion(questionID, question, answers) {
-<<<<<<< HEAD
-	var quizHTML = '<div class="question" id="' + questionID + '"><div class="task">' + question + '</div><div class="answers"><div class="row c2"><div class="col">'
-=======
 	var quizHTML = '<div class="question" id="' + questionID + '"><div class="task">' + question + '</div><div class="answers"><div class="row c2"><div class="col">';
->>>>>>> c0521b957ddeedf81027242df6c1afa2ddcf68a1
 		myAnswers[questionID] = [];
 		for (var a in answers){
 			myAnswers[questionID].push(a);

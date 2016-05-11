@@ -113,13 +113,8 @@ window.addEventListener('load', function(){
 		}
 	});
 
-<<<<<<< HEAD
 	//Fills list of future classes
-
-
-=======
 	// emit a signal to fill the future classes panel
->>>>>>> c0521b957ddeedf81027242df6c1afa2ddcf68a1
 	socket.emit('fillFuture', user, function(dataList){
 		$.each(dataList, function(index, value){
 			var courseId = value.course_title;
@@ -132,13 +127,8 @@ window.addEventListener('load', function(){
 		}
 	});
 
-<<<<<<< HEAD
 	//Fills list of current class window
-	
-=======
-
 	// emit a signal to fill the current classes panel
->>>>>>> c0521b957ddeedf81027242df6c1afa2ddcf68a1
 	socket.emit('fillCurrent', user, function(dataList){
 		$.each(dataList, function(index, value){
 			var courseId = value.course_title;
@@ -165,15 +155,7 @@ window.addEventListener('load', function(){
 			$('#availPanel').append("<p>There are no courses available to enroll in at the moment.</p>");
 		}
 	});
-<<<<<<< HEAD
 
-
-	socket.on('loggedIn', function(username) {
-		//this needs to be rendered in html
-	});
-
-=======
->>>>>>> c0521b957ddeedf81027242df6c1afa2ddcf68a1
 }, false);
 
 
