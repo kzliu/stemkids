@@ -11,8 +11,8 @@
 
 	<link href="/favicon.ico" rel="icon"/>
 	<link href="apple-favicon.png" rel="apple-touch-icon"/>
-	<link href="css/new_main.css" type="text/css" rel="stylesheet" media="all"/>
-	<link href="css/account.css" type="text/css" rel="stylesheet" media="all"/>
+	<link href="/css/new_main.css" type="text/css" rel="stylesheet" media="all"/>
+	<link href="/css/account.css" type="text/css" rel="stylesheet" media="all"/>
 	<script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
@@ -93,8 +93,8 @@
 		</div>
 	</div>
 
-	<script src="js/jquery-2.2.0.min.js" type="text/javascript"></script>
-	<script src="js/main.js" type="text/javascript"></script>
+	<script src="/js/jquery-2.2.0.min.js" type="text/javascript"></script>
+	<script src="/js/main.js" type="text/javascript"></script>
 </body>
 <script>
 var socket = io.connect();
@@ -102,7 +102,6 @@ var socket = io.connect();
 window.addEventListener('load', function(){
 
 	$('#username').keyup(function() {
-		console.log($("#username").val());
 		socket.emit('existingUser', $("#username").val(), function(isUsername) {
         	if (isUsername == 1) {
         		$('#username').css('background', 'red');
@@ -112,12 +111,6 @@ window.addEventListener('load', function(){
     	});
 	}); 
 
-
-	// socket.on('createAccountError', function(message) {
-	// 	console.log(message);
-	// 	$("#errorMessage").html(message);
-	// 	$('#username').val('');
-	// });
 }, false);
 
 

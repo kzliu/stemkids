@@ -61,8 +61,6 @@ var socket = io.connect();
 
 window.addEventListener('load', function(){
     socket.emit('lectures', meta('courseCode'), meta('numClasses'), meta('username'), function(classes) {
-		// renderUsers(users);
-		// console.log(classes);
 		for (var lecture_num in classes) {
 			var class_id = classes[lecture_num].class_id;
 			var class_title = classes[lecture_num].class_title;

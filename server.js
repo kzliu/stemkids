@@ -125,7 +125,6 @@ app.get('/createCourse', function(request, response) {
 		while (isCourse(courseCode)) {
 			courseCode = generateCourseCode();
 		}
-		console.log("course code " + courseCode);
 	    response.render('createcourse.html',{ root : __dirname, course_id: courseCode});
 	}
 });
@@ -138,16 +137,12 @@ app.get('/:username/c/:courseCode', function(request, response) {
 	var username = request.params.username;
 	var index = loggedin.indexOf(username);
 	if (index > -1) {
-		console.log("course code " + courseCode);
-		console.log("username: " + username);
-		// console.log(request);
 		conn.query('SELECT * FROM courses WHERE course_id = $1;', [courseCode], function(err, data){
 			if (err) throw err;
 			if (data.rows.length > 0){
 				var num_classes = data.rows[0].num_classes;
 				var course_des =  data.rows[0].course_description;
 				var course_title =  data.rows[0].course_title;
-				// console.log(course_des, course_title, num_classes);
 
 				response.render('lecturelist.html',{ course_id: courseCode, courseTitle: course_title, courseSummary: course_des, numClasses:num_classes, username: username, root : __dirname});
 			} else {
@@ -166,11 +161,9 @@ app.get('/:username/l/:lectureId', function(request, response){
 	var username = request.params.username;
 	var index = loggedin.indexOf(username);
 	if (index > -1) {
-		console.log("lecture: " + username);
 		conn.query('SELECT * FROM classes WHERE class_id=$1;', [classId], function(err, data){
 			var classTitle = data.rows[0].class_title;
 			var classDesc = data.rows[0].class_description;
-			console.log(data.rows[0].video);
 			response.render('updated_course.html', {classTitle: classTitle, description: classDesc, classId: classId, video: data.rows[0].video, username: username, root : __dirname});
 		});
 	} else {
@@ -240,7 +233,6 @@ io.sockets.on('connection', function(socket) {
 	});
 
 	socket.on('/quizResponse', function(questionId, username, answerId) {
-		console.log(username);
 		conn.query('SELECT user_id FROM user_info WHERE login=$1;', [username], function(err, data){
 			var userId = data.rows[0].user_id;
 			conn.query('INSERT INTO quiz_history VALUES ($1,$2,$3);', [userId, answerId, questionId]).on('error', console.error);
@@ -282,7 +274,6 @@ io.sockets.on('connection', function(socket) {
 
 
 	socket.on('fillCurrent', function(user, callback){
-		console.log("fillCurrent is being called");
 		conn.query('SELECT user_id FROM user_info WHERE login=$1;', [user], function(err, data){
 			var userId = data.rows[0].user_id;
 			conn.query('SELECT * FROM courses AS c, enrollment AS e WHERE e.user_id=$1 AND c.active=$2 AND e.completed=$3 AND c.course_id = e.course_id;',[userId, 1, 0], function(err, data){
@@ -304,7 +295,6 @@ io.sockets.on('connection', function(socket) {
 
 
 	socket.on('fillFuture', function(user, callback){
-		console.log('fillFuture being called')
 		conn.query('SELECT user_id FROM user_info WHERE login=$1;', [user], function(err, data){
 			var userId = data.rows[0].user_id;
 
@@ -320,7 +310,6 @@ io.sockets.on('connection', function(socket) {
 			var userId = data.rows[0].user_id;
 
 			conn.query('SELECT * FROM courses AS c WHERE NOT EXISTS (SELECT * FROM enrollment AS e WHERE e.user_id=$1 AND c.course_id = e.course_id) AND c.active=$2;', [userId, 1], function(err, data){
-				// console.log("available: " + data.rows);
 				if (err) throw err;
 				callback(data.rows);
 			});
@@ -345,12 +334,10 @@ io.sockets.on('connection', function(socket) {
 			var password = request.body.password;
 			if (isUser != 1) {
 				password = hash(password, username);
-				console.log("password " + password);
 				conn.query('INSERT INTO user_info (user_id, login, first_name, last_name, age, grade, school, gender, email, phone_num, password) VALUES (null, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10);', [username, firstname, lastname, age, grade, school, gender, email, phone, password], function(err, res) {
 					if (err) {
 						message = "Could not properly insert value into database.";
 						throw err;
-						// socket.emit('createAccountError', message);
 						response.render('account.html', {message:message, firstname:firstname, lastname:lastname, age:age, grade:grade, email:email, phone:phone, school:school, root : __dirname});
 					} else {
 						response.render('login.html', {root : __dirname});	
@@ -358,7 +345,6 @@ io.sockets.on('connection', function(socket) {
 				});
 			} else {
 				message = "That username is already taken!";
-				console.log(message);
 				
 				//make it so all the preexisting information stays
 				response.render('account.html', {message:message, firstname:firstname, lastname:lastname, age:age, grade:grade, email:email, phone:phone, school:school, root : __dirname});
@@ -385,12 +371,10 @@ app.post('/logout', function(request, response){
 
 	username = request.body.username;
 	var index = loggedin.indexOf(username);
-	console.log(username);
-	console.log(loggedin);
+
 	if (index > -1) {
 		loggedin.splice(index, 1);
 	}
-	console.log(loggedin);
 	response.render('index.html',{ root : __dirname});
 });
 
@@ -457,7 +441,6 @@ app.post('/loggedin', function(request, response){
 				// handle the case where no logins are found
 				if (firstname === "") {
 					message = "No user/password combination found";
-					console.log(message);
 					response.render('login.html', {message:message});
 				} else {
 					var index = loggedin.indexOf(username);
@@ -465,7 +448,6 @@ app.post('/loggedin', function(request, response){
 						loggedin.push(username);
 					}
 					response.render('profile.html', {username:username, firstname:firstname});
-				// socket.emit("loggedIn", username); // emit a signal to indicate a successful connection
 				}
 			}
 		});
@@ -494,7 +476,6 @@ app.post('/addClass', function(request, response){
 		if (question){
 
 			var question_id = '/q/' + courseId + i;
-			console.log(question_id);
 			// insert values into questions table
 			conn.query('INSERT INTO questions (question_id, class_id, question) VALUES ($1, $2, $3);', [question_id, lecture_id, question]).on('error', console.error);
 
@@ -535,7 +516,6 @@ app.post('/addClass', function(request, response){
 			console.log("THERE HAS BEEN AN ERROR UPLOADING CLASS");
 		}
 		num_classes++;
-		console.log("the current number of classes in " + courseId + " is: " + num_classes);
 		// update the courses table to include an additional class
 		conn.query('UPDATE courses SET num_classes = $1 WHERE course_id = $2;', [num_classes, courseId]);
 	});
@@ -556,14 +536,12 @@ app.get('/profile/:identifyer', function(request, response){
 	var q = conn.query("SELECT * FROM user_info, classes, class_attendance WHERE user_info.user_id = $1", [identifyer], function(err, data){
 		// send data to the front end as a response
 		response.json(data.rows);
-		// print response to console (should be unique)
-		console.log(data.rows);
 		// finish and close response
 		response.end();
 	});
 	// print to console upon successful query completion
 	q.on('end', function(){
-		console.log('data successfuly sent')
+		console.log('data successfuly sent');
 	});
 });
 

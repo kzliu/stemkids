@@ -137,24 +137,16 @@ window.addEventListener('load', function(){
 	 $("#lectureVideo").attr("src", "//" + meta("video").replace("watch?v=", "v/"));
 
     socket.emit('quiz', meta('classId'), function(questions) {
-    	console.log("here");
-    	// $('#quiz').append('<form id="quizForm">');
     	for (var qID in questions){
     		var task = questions[qID];
     		var question = task.question;
-    		// console.log(question);
     		addQuizQuestion(qID, question, task.answers);
-    		// myAnswers[question] = task.answers;
     	}
-    	// console.log(questions);
-    	// addSubmitButton();
-    	// $('#quiz').append('</form>')
     });
    function submitQuiz() {
 
    }
    $("#submitQuiz").click(function(){
-		console.log("U clicked my button.");
 		for (var questionId in myAnswers){
 			var currQ = myAnswers[questionId];
 			for (i = 0; i < currQ.length; i++){
@@ -162,12 +154,8 @@ window.addEventListener('load', function(){
 				current.disabled = true;
 
 				if (current.checked === true){
-					console.log("This is Checked!");
 					var myElement = document.getElementById(current.id+current.name);
-					console.log(current);
-					console.log(current.value);
 					if(current.value == 1){
-						console.log("Tô Aqui");
 						myElement.style.backgroundColor= "rgb(91,189,92)"
 					} else {
 						myElement.style.backgroundColor= "rgb(219,20,20)"
@@ -180,7 +168,6 @@ window.addEventListener('load', function(){
 						}
 					}
 					socket.emit('/quizResponse', questionId, meta('username'), current.id);
-					console.log(questionId, current.id);
 				}
 			}
 		}
@@ -191,17 +178,13 @@ window.addEventListener('load', function(){
 
 
 function addQuizQuestion(questionID, question, answers) {
-	var quizHTML = '<div class="question" id="' + questionID + '"><div class="task">' + question + '</div><div class="answers"><div class="row c2"><div class="col">'
-		// console.log(quizHTML);
-		// var count = 1;]
+	var quizHTML = '<div class="question" id="' + questionID + '"><div class="task">' + question + '</div><div class="answers"><div class="row c2"><div class="col">';
 		myAnswers[questionID] = [];
 		for (var a in answers){
-			//console.log(a);
 			myAnswers[questionID].push(a);
 			var answer = answers[a]["answer"];
 			var correct = answers[a]["correct"];
 			quizHTML += '<div class="field" id="'+ a + questionID +'"><input type="radio" name="' + questionID + '" id="' + a + '" value="' + correct + '"/><span>' + answer + '</span></div>';
-			// count ++;
 		}
 		quizHTML += "</div> </div> </div> </div>";
 		$('.quiz.content').append(quizHTML);

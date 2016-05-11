@@ -122,11 +122,9 @@ window.addEventListener('load', function(){
 
 	// emit a signal to fill the current classes panel
 	socket.emit('fillCurrent', user, function(dataList){
-		console.log('data list: ' + dataList)
 		$.each(dataList, function(index, value){
 			var courseId = value.course_title;
 			var courseCode = value.course_id;
-			console.log('course description: ' + value.coures_description);
 			var courseDesc = value.course_description;
 			add_course(courseId, courseDesc, courseCode, '#currPanel', 'Continue');
 		});
@@ -148,31 +146,21 @@ window.addEventListener('load', function(){
 			$('#availPanel').append("<p>There are no courses available to enroll in at the moment.</p>");
 		}
 	});
-
-	// redundant function to retrieve the username and print it to the console
-	socket.on('loggedIn', function(username) {
-		//this needs to be rendered in html
-		console.log(username);
-	});
-
 }, false);
 
 
 // function to input courses the user enrolls in to the current courses panel 
 function myFunction(courseCode){
 	socket.emit('enroll', meta('username'), courseCode);
-	console.log("clicked button" + courseCode);
 	location.reload();
 };
 
 // functions to add a course to a specific panel
 function add_course(course_title, course_description, course_code, parent_id, button_text) {
-		console.log(course_code);
 		$(parent_id).append('<div class="line" id="' + course_code + '"><div class="pic" id="currpic"><img src="/img/pics/1.jpg"/></div><div class="description" id="currDisc"><h5 class="title blue">' + course_title + '</h5><div class="brief"><br>' + course_description + '</div><a class="btn small yellow" href="{{username}}/c/' + course_code + '"><p>' + button_text + '</p></a></div></div>');
 };
 
 function enrollment(course_title, course_description, course_code, parent_id, button_text) {
-	console.log(course_code);
 	$(parent_id).append('<div class="line"><div class="pic" id="currpic"><img src="/img/pics/1.jpg"/></div><div class="description" id="currDisc"><h5 class="title blue">' + course_title + '</h5><div class="brief"><br>' + course_description + '</div><button class="btn small yellow enrollment" onclick="myFunction(\'' + course_code + '\')"><p>' + button_text + '</p></button></div></div>');
 };
 
