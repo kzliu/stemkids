@@ -23,6 +23,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
 
+// function to create a hash for the value and salt inserted
 function hash(value, salt) {
 	// function creates a hash from the inputted value and salt
 	var secret = 'stemkids'; // private key for encryption purposes (note: for RSA, this will need to be made a significantly larger random integer)
@@ -32,6 +33,7 @@ function hash(value, salt) {
 }
 
 
+// function to compare two hashes
 function compare_hash(hash1, hash2) {
 	if (hash1 === hash2)
 		return true;
@@ -40,6 +42,7 @@ function compare_hash(hash1, hash2) {
 }
 
 
+// function to check user name validity
 function checkUsername(userID, callback){
 	var query = 'SELECT * FROM user_info WHERE login=$1;';
 	conn.query(query,[userID], function(error, result) {
@@ -53,6 +56,7 @@ function checkUsername(userID, callback){
 };
 
 
+// function to generate course code
 function generateCourseCode() {
     var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     var result = '';
@@ -62,6 +66,7 @@ function generateCourseCode() {
 };
 
 
+// function to determine if the course in question is a course currently in the database
 function isCourse(id){
     conn.query('SELECT * FROM courses where course_id=$1', [id], function(error,result) {
         return (result.rows.length != 0);
@@ -69,6 +74,7 @@ function isCourse(id){
 };
 
 
+// function to generate a user id
 function getUserId(username) {
 	conn.query('SELECT user_id FROM user_info WHERE login=$1', [username], function(error, result){
 		return (result.rows[0].user_id);
@@ -79,24 +85,28 @@ function getUserId(username) {
 var loggedin = []; // initialize logged in list
 var authorised = false;
 
+// get request handler to render the initial html page
 app.get('/', function(request, response){
     console.log('- Request received:', request.method, request.url);
     response.render('index.html',{ root : __dirname});
 });
 
 
+// get request handler to render the login page
 app.get('/login', function(request, response){
     console.log('- Request received:', request.method, request.url);
     response.render('login.html',{ root : __dirname});
 });
 
 
+// get request handler to render the page for users to create an account
 app.get('/createAccount', function(request, response){
     console.log('- Request received:', request.method, request.url);
     response.render('account.html',{ root : __dirname});
 });
 
 
+// get request handler to render admin page and to ensure basic authentication
 app.get('/admin', basicAuth('yvonne', 'Stemkids1234'), function(request, response){
 	authorised = true;
 	console.log('- Request received:', request.method, request.url);
@@ -104,6 +114,7 @@ app.get('/admin', basicAuth('yvonne', 'Stemkids1234'), function(request, respons
 });
 
 
+// get request to render page necessary to create course
 app.get('/createCourse', function(request, response) {
 	if (!authorised) {
 		console.log('Not Authorised');
@@ -316,6 +327,7 @@ io.sockets.on('connection', function(socket) {
 	});
 
 
+	// post request handler to create a new account
 	app.post('/createNewAccount', function(request, response) {
 		var username = request.body.username;
 		console.log('- Request received:', request.method, request.url);
@@ -356,6 +368,7 @@ io.sockets.on('connection', function(socket) {
 	    });
 	});
 
+	// signal handler to handle users who wish to enroll in a course
 	socket.on('enroll', function(username, course_id) {
 		conn.query('SELECT user_id FROM user_info WHERE login=$1;', [username], function(err, data){
 			var userId = data.rows[0].user_id;
@@ -399,6 +412,7 @@ app.post('/addLecture', function(request, response){
 });
 
 
+// post request to handle login capabilities
 app.post('/loggedin', function(request, response){
 	var username = request.body.username;
 	var password = request.body.password;

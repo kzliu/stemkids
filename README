@@ -14,6 +14,11 @@ Known Bugs:
 There are a few known minor bugs with the program. Due to the current method in which we are handling user information some of the pages rendered by a user who is not logged in may render incorrectly (this, of course, does not diminish program functionality). Also, for an unknown reason, the prompt for a username and password while attempting to access the admin page only appears once before rendering the page.
 
 
+Aspects that can be Improved:
+=============================
+Due to a lack of time, we were unable to finish the update course methods.
+
+
 Project Usage:
 ==============
 At the moment, all one needs to do to run the program is to run the server using the command "node server.js" and go to the respective local host in a browser.
