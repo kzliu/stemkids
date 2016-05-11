@@ -11,6 +11,7 @@ var server = http.createServer(app);
 var conn = anyDB.createConnection('sqlite3://stemkids.sqlite3');
 
 var io = require('socket.io').listen(server);
+var port = process.env.PORT || 1234;
 
 app.engine('html', engines.hogan);
 app.set('views', __dirname + '/updated_html'); // tell Express where to find templates
@@ -554,6 +555,6 @@ app.get('/profile/:identifyer', function(request, response){
 
 
 // set the app's server to listen on a given port
-server.listen(1234, function(){
+server.listen(port, function(){
 	console.log('- Server listening on given port 1234');
 });
