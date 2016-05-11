@@ -383,25 +383,6 @@ app.post('/createNewAccount', function(request, response) {
     });
 });
 
-// add lecture and render lecture and quiz page
-app.post('/addLecture', function(request, response){
-	console.log('- Request received:', request.method, request.url);
-	var code = request.body.courseId; 
-	var title = request.body.courseTitle;
-	var summary = request.body.courseSummary;
-
-	// // note: need to check to see if the course in question doesn't already exist (might want to add funtionality for course title)
-	conn.query('SELECT * FROM courses WHERE course_id = $1;', [code], function(err, data){
-		if (data.rows.length == 0) {
-			conn.query('INSERT INTO courses (course_id, num_classes, course_title, course_description, active) VALUES ($1, $2, $3, $4, $5);', [code, 0, title, summary, 0]);
-		} else { // handle the case where the course already exists
-			console.log('course exists already');
-		}
-		response.render('addLecture.html',{ root : __dirname, courseId: code, courseTitle: title, courseSummary: summary, lectureNum: 1});
-	});
-});
-
-
 // post request to handle login capabilities
 app.post('/loggedin', function(request, response){
 	var username = request.body.username;
@@ -458,6 +439,25 @@ app.post('/loggedin', function(request, response){
 			console.log('login function executed');
 		});
 	}
+});
+
+
+// add lecture and render lecture and quiz page
+app.post('/addLecture', function(request, response){
+	console.log('- Request received:', request.method, request.url);
+	var code = request.body.courseId; 
+	var title = request.body.courseTitle;
+	var summary = request.body.courseSummary;
+
+	// // note: need to check to see if the course in question doesn't already exist (might want to add funtionality for course title)
+	conn.query('SELECT * FROM courses WHERE course_id = $1;', [code], function(err, data){
+		if (data.rows.length == 0) {
+			conn.query('INSERT INTO courses (course_id, num_classes, course_title, course_description, active) VALUES ($1, $2, $3, $4, $5);', [code, 0, title, summary, 0]);
+		} else { // handle the case where the course already exists
+			console.log('course exists already');
+		}
+		response.render('addLecture.html',{ root : __dirname, courseId: code, courseTitle: title, courseSummary: summary, lectureNum: 1});
+	});
 });
 
 // add class to the database
@@ -531,23 +531,6 @@ app.post('/addClass', function(request, response){
 		response.render('addLecture.html',{ root : __dirname, courseId: courseId, courseTitle: courseTitle, courseSummary: summary, lectureNum: lecture_num+1});
 	}
 });
-
-// retrieve profile information (redundant)
-app.get('/profile/:identifyer', function(request, response){
-	var identifyer = request.params.identifyer;
-	// select elements for profile
-	var q = conn.query("SELECT * FROM user_info, classes, class_attendance WHERE user_info.user_id = $1", [identifyer], function(err, data){
-		// send data to the front end as a response
-		response.json(data.rows);
-		// finish and close response
-		response.end();
-	});
-	// print to console upon successful query completion
-	q.on('end', function(){
-		console.log('data successfuly sent');
-	});
-});
-
 
 // set the app's server to listen on a given port
 server.listen(port, function(){

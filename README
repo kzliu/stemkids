@@ -1,7 +1,31 @@
 README
 ======
 Project: STEM Kids NYC
-Authors: Katie Liu, Daniel Chimes, Asha Owens, Aditya Bathla
+Authors: Katie Liu, Daniel Chimes, Asha Owens, Aditya Bathla, Greg Cho
+
+Necessary Node Modules
+======================
+They are listed in the package.json:
+    "any-db": "^2.1.0",
+    "any-db-sqlite3": "^2.1.4",
+    "basic-auth": "^1.0.3",
+    "basicauth-middleware": "^1.1.0",
+    "body-parser": "^1.15.0",
+    "consolidate": "^0.14.0",
+    "express": "^4.13.4",
+    "hogan": "^1.0.2",
+    "semantic": "0.0.1",
+    "socket.io": "^1.4.5",
+    "sqlite3": "^3.1.3"
+
+Running the web app
+===================
+Our project is hosted on Heroku at the following url: https://stemkidslms.herokuapp.com/
+
+It can also be run from the command line using: node server.js
+This starts the server so a user can navigate to localhost:1234 and explore our project!
+
+For detailed information about current implementation and future functionality, please see the stemkidsLMSmanual in this directory.
 
 
 Project Design:
