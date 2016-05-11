@@ -27,7 +27,7 @@ Due to a lack of time, we were unable to finish the update course methods.
 
 Project Usage:
 ==============
-At the moment, all one needs to do to run the program is to run the server using the command "node server.js" and go to the respective local host in a browser.
+At the moment, all one needs to do to run the program is to run the server using the command "node server.js" and go to the respective local host in a browser (may need to edit the server.js file to accomodate for this as it currently runs on heroku). There is a loader file that creates the necessary database schema.
 
 
 Node Modules:
