@@ -1,3 +1,5 @@
+
+
 .wrapper {
 	vertical-align: initial !important;
 	padding-top: 15px;
@@ -64,6 +66,10 @@
 	left: -5px;
 	top: 5px;
 	bottom: 5px;
+}
+
+.content {
+	height: 100%;
 }
 
 .header #nav-btn:after
@@ -204,6 +210,7 @@ h2 {
 	background-color: gray;
 	border-color: #ef7914; 
 }
+
 
 .row {
 	margin-bottom: 15px;

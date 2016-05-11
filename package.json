@@ -1,6 +1,10 @@
 {
   "name": "stemkids",
   "version": "1.0.0",
+  "engines": {
+    "node": "4.3.1",
+    "npm": "3.7.5"
+  },
   "description": "\"cs132 implementation of sample stemkids course pages for online learning\"",
   "main": "loader.js",
   "scripts": {
