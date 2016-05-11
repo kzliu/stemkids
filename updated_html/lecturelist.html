@@ -2,13 +2,14 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-	<!--meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1"/-->
 	<meta name="description" content=""/>
 	<meta name="keywords" content=""/>
 
 	<meta name="numClasses" content="{{numClasses}}"/>
 	<meta name="courseCode" content="{{course_id}}"/>
 	<meta name="username" content="{{username}}"/>
+
+	<!-- The page within a course that holds individual lessons -->
 
 	<title>Course {{course_id}} Lectures</title>
 
@@ -59,8 +60,11 @@
 <script>
 var socket = io.connect();
 
+//Function that loads and adds list of lessons to the page.
+
 window.addEventListener('load', function(){
     socket.emit('lectures', meta('courseCode'), meta('numClasses'), meta('username'), function(classes) {
+
 		for (var lecture_num in classes) {
 			var class_id = classes[lecture_num].class_id;
 			var class_title = classes[lecture_num].class_title;

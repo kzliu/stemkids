@@ -3,10 +3,15 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-	<!--meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1"/-->
 	<meta name="description" content=""/>
 	<meta name="keywords" content=""/>
 	<meta name="username" content="{{username}}"/>
+
+	<!-- Profile Page for Individual User -->
+	<title></title>
+
+
+	<link href="img/favicon.ico" rel="icon"/>
 	<meta name="firstname" content="{{firstname}}"/>
 	<title>Profile {{username}}</title>
 
@@ -108,7 +113,13 @@ window.addEventListener('load', function(){
 		}
 	});
 
+<<<<<<< HEAD
+	//Fills list of future classes
+
+
+=======
 	// emit a signal to fill the future classes panel
+>>>>>>> c0521b957ddeedf81027242df6c1afa2ddcf68a1
 	socket.emit('fillFuture', user, function(dataList){
 		$.each(dataList, function(index, value){
 			var courseId = value.course_title;
@@ -121,8 +132,13 @@ window.addEventListener('load', function(){
 		}
 	});
 
+<<<<<<< HEAD
+	//Fills list of current class window
+	
+=======
 
 	// emit a signal to fill the current classes panel
+>>>>>>> c0521b957ddeedf81027242df6c1afa2ddcf68a1
 	socket.emit('fillCurrent', user, function(dataList){
 		$.each(dataList, function(index, value){
 			var courseId = value.course_title;
@@ -135,6 +151,7 @@ window.addEventListener('load', function(){
 		}
 	});
 
+	//Fills list of available class window
 
 	// emit a signal to fill available courses panel
 	socket.emit('fillAvailable', user, function(dataList){
@@ -148,6 +165,15 @@ window.addEventListener('load', function(){
 			$('#availPanel').append("<p>There are no courses available to enroll in at the moment.</p>");
 		}
 	});
+<<<<<<< HEAD
+
+
+	socket.on('loggedIn', function(username) {
+		//this needs to be rendered in html
+	});
+
+=======
+>>>>>>> c0521b957ddeedf81027242df6c1afa2ddcf68a1
 }, false);
 
 
