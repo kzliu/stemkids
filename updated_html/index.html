@@ -35,9 +35,11 @@
 						<p>Log In</p>
 					</button>
 				</form>
-				<button class="btn yellow" id="admin">
-					<p>Admin</p>
-				</button>
+				<form method="get" action="/admin">
+					<button class="btn yellow" id="admin">
+						<p>Admin</p>
+					</button>
+				</form>
 			</div>
 		</div>
 	</div>
@@ -47,13 +49,13 @@
 	<script src="/js/main.js" type="text/javascript"></script>
 </body>
 <script type="text/javascript">
-$(function(){
+// $(function(){
 
-	$('#admin').click(function(){
-		var url = window.location.href.replace('/login', '');
-		console.log(url + 'admin');
-		window.location.replace(url + 'admin');
-	});
-});
+// 	$('#admin').click(function(){
+// 		var url = window.location.href.replace('/login', '');
+// 		console.log(url + 'admin');
+// 		window.location.replace(url + 'admin');
+// 	});
+// });
 </script>
 </html>

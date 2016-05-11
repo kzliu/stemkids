@@ -11,6 +11,7 @@ var server = http.createServer(app);
 var conn = anyDB.createConnection('sqlite3://stemkids.sqlite3');
 
 var io = require('socket.io').listen(server);
+var port = process.env.PORT || 1234;
 
 app.engine('html', engines.hogan);
 app.set('views', __dirname + '/updated_html'); // tell Express where to find templates
@@ -23,6 +24,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
 
+// function to create a hash for the value and salt inserted
 function hash(value, salt) {
 	// function creates a hash from the inputted value and salt
 	var secret = 'stemkids'; // private key for encryption purposes (note: for RSA, this will need to be made a significantly larger random integer)
@@ -32,6 +34,7 @@ function hash(value, salt) {
 }
 
 
+// function to compare two hashes
 function compare_hash(hash1, hash2) {
 	if (hash1 === hash2)
 		return true;
@@ -40,6 +43,7 @@ function compare_hash(hash1, hash2) {
 }
 
 
+// function to check user name validity
 function checkUsername(userID, callback){
 	var query = 'SELECT * FROM user_info WHERE login=$1;';
 	conn.query(query,[userID], function(error, result) {
@@ -53,6 +57,7 @@ function checkUsername(userID, callback){
 };
 
 
+// function to generate course code
 function generateCourseCode() {
     var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     var result = '';
@@ -62,6 +67,7 @@ function generateCourseCode() {
 };
 
 
+// function to determine if the course in question is a course currently in the database
 function isCourse(id){
     conn.query('SELECT * FROM courses where course_id=$1', [id], function(error,result) {
         return (result.rows.length != 0);
@@ -69,6 +75,7 @@ function isCourse(id){
 };
 
 
+// function to generate a user id
 function getUserId(username) {
 	conn.query('SELECT user_id FROM user_info WHERE login=$1', [username], function(error, result){
 		return (result.rows[0].user_id);
@@ -79,24 +86,34 @@ function getUserId(username) {
 var loggedin = []; // initialize logged in list
 var authorised = false;
 
+app.get('/loggedin', function(request, response){
+    var firstname = request.body.firstname;
+    var username = request.body.username;
+    response.render('profile.html', {username:username, firstname:firstname, root : __dirname});
+});
+
+// get request handler to render the initial html page
 app.get('/', function(request, response){
     console.log('- Request received:', request.method, request.url);
     response.render('index.html',{ root : __dirname});
 });
 
 
+// get request handler to render the login page
 app.get('/login', function(request, response){
     console.log('- Request received:', request.method, request.url);
     response.render('login.html',{ root : __dirname});
 });
 
 
+// get request handler to render the page for users to create an account
 app.get('/createAccount', function(request, response){
     console.log('- Request received:', request.method, request.url);
     response.render('account.html',{ root : __dirname});
 });
 
 
+// get request handler to render admin page and to ensure basic authentication
 app.get('/admin', basicAuth('yvonne', 'Stemkids1234'), function(request, response){
 	authorised = true;
 	console.log('- Request received:', request.method, request.url);
@@ -104,6 +121,7 @@ app.get('/admin', basicAuth('yvonne', 'Stemkids1234'), function(request, respons
 });
 
 
+// get request to render page necessary to create course
 app.get('/createCourse', function(request, response) {
 	if (!authorised) {
 		console.log('Not Authorised');
@@ -113,7 +131,6 @@ app.get('/createCourse', function(request, response) {
 		while (isCourse(courseCode)) {
 			courseCode = generateCourseCode();
 		}
-		console.log("course code " + courseCode);
 	    response.render('createcourse.html',{ root : __dirname, course_id: courseCode});
 	}
 });
@@ -126,16 +143,12 @@ app.get('/:username/c/:courseCode', function(request, response) {
 	var username = request.params.username;
 	var index = loggedin.indexOf(username);
 	if (index > -1) {
-		console.log("course code " + courseCode);
-		console.log("username: " + username);
-		// console.log(request);
 		conn.query('SELECT * FROM courses WHERE course_id = $1;', [courseCode], function(err, data){
 			if (err) throw err;
 			if (data.rows.length > 0){
 				var num_classes = data.rows[0].num_classes;
 				var course_des =  data.rows[0].course_description;
 				var course_title =  data.rows[0].course_title;
-				// console.log(course_des, course_title, num_classes);
 
 				response.render('lecturelist.html',{ course_id: courseCode, courseTitle: course_title, courseSummary: course_des, numClasses:num_classes, username: username, root : __dirname});
 			} else {
@@ -154,11 +167,9 @@ app.get('/:username/l/:lectureId', function(request, response){
 	var username = request.params.username;
 	var index = loggedin.indexOf(username);
 	if (index > -1) {
-		console.log("lecture: " + username);
 		conn.query('SELECT * FROM classes WHERE class_id=$1;', [classId], function(err, data){
 			var classTitle = data.rows[0].class_title;
 			var classDesc = data.rows[0].class_description;
-			console.log(data.rows[0].video);
 			response.render('updated_course.html', {classTitle: classTitle, description: classDesc, classId: classId, video: data.rows[0].video, username: username, root : __dirname});
 		});
 	} else {
@@ -228,7 +239,6 @@ io.sockets.on('connection', function(socket) {
 	});
 
 	socket.on('/quizResponse', function(questionId, username, answerId) {
-		console.log(username);
 		conn.query('SELECT user_id FROM user_info WHERE login=$1;', [username], function(err, data){
 			var userId = data.rows[0].user_id;
 			conn.query('INSERT INTO quiz_history VALUES ($1,$2,$3);', [userId, answerId, questionId]).on('error', console.error);
@@ -270,7 +280,6 @@ io.sockets.on('connection', function(socket) {
 
 
 	socket.on('fillCurrent', function(user, callback){
-		console.log("fillCurrent is being called");
 		conn.query('SELECT user_id FROM user_info WHERE login=$1;', [user], function(err, data){
 			var userId = data.rows[0].user_id;
 			conn.query('SELECT * FROM courses AS c, enrollment AS e WHERE e.user_id=$1 AND c.active=$2 AND e.completed=$3 AND c.course_id = e.course_id;',[userId, 1, 0], function(err, data){
@@ -292,7 +301,6 @@ io.sockets.on('connection', function(socket) {
 
 
 	socket.on('fillFuture', function(user, callback){
-		console.log('fillFuture being called')
 		conn.query('SELECT user_id FROM user_info WHERE login=$1;', [user], function(err, data){
 			var userId = data.rows[0].user_id;
 
@@ -308,54 +316,13 @@ io.sockets.on('connection', function(socket) {
 			var userId = data.rows[0].user_id;
 
 			conn.query('SELECT * FROM courses AS c WHERE NOT EXISTS (SELECT * FROM enrollment AS e WHERE e.user_id=$1 AND c.course_id = e.course_id) AND c.active=$2;', [userId, 1], function(err, data){
-				// console.log("available: " + data.rows);
 				if (err) throw err;
 				callback(data.rows);
 			});
 		});
 	});
 
-
-	app.post('/createNewAccount', function(request, response) {
-		var username = request.body.username;
-		console.log('- Request received:', request.method, request.url);
-		var message = "success";
-		checkUsername(username, function(isUser) {
-			var firstname = request.body.firstname;
-			var lastname = request.body.lastname;
-			var age = request.body.age;
-			var grade = request.body.grade;
-			var school = request.body.school;
-			var email = request.body.email;
-			var gender = request.body.gender;
-			var phone = request.body.phone;
-			var password = request.body.password;
-			if (isUser != 1) {
-				password = hash(password, username);
-				console.log("password " + password);
-				conn.query('INSERT INTO user_info (user_id, login, first_name, last_name, age, grade, school, gender, email, phone_num, password) VALUES (null, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10);', [username, firstname, lastname, age, grade, school, gender, email, phone, password], function(err, res) {
-					if (err) {
-						message = "Could not properly insert value into database.";
-						throw err;
-						// socket.emit('createAccountError', message);
-						response.render('account.html', {message:message, firstname:firstname, lastname:lastname, age:age, grade:grade, email:email, phone:phone, school:school, root : __dirname});
-					} else {
-						response.render('login.html', {root : __dirname});	
-					}
-				});
-			} else {
-				message = "That username is already taken!";
-				console.log(message);
-				
-				//make it so all the preexisting information stays
-				response.render('account.html', {message:message, firstname:firstname, lastname:lastname, age:age, grade:grade, email:email, phone:phone, school:school, root : __dirname});
-			}
-		});
-	    response.on('close', function(){
-	        console.log("Close received for create account.");
-	    });
-	});
-
+	// signal handler to handle users who wish to enroll in a course
 	socket.on('enroll', function(username, course_id) {
 		conn.query('SELECT user_id FROM user_info WHERE login=$1;', [username], function(err, data){
 			var userId = data.rows[0].user_id;
@@ -371,13 +338,49 @@ app.post('/logout', function(request, response){
 
 	username = request.body.username;
 	var index = loggedin.indexOf(username);
-	console.log(username);
-	console.log(loggedin);
+
 	if (index > -1) {
 		loggedin.splice(index, 1);
 	}
-	console.log(loggedin);
 	response.render('index.html',{ root : __dirname});
+});
+
+// post request handler to create a new account
+app.post('/createNewAccount', function(request, response) {
+	var username = request.body.username;
+	console.log('- Request received:', request.method, request.url);
+	var message = "success";
+	checkUsername(username, function(isUser) {
+		var firstname = request.body.firstname;
+		var lastname = request.body.lastname;
+		var age = request.body.age;
+		var grade = request.body.grade;
+		var school = request.body.school;
+		var email = request.body.email;
+		var gender = request.body.gender;
+		var phone = request.body.phone;
+		var password = request.body.password;
+		if (isUser != 1) {
+			password = hash(password, username);
+			conn.query('INSERT INTO user_info (user_id, login, first_name, last_name, age, grade, school, gender, email, phone_num, password) VALUES (null, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10);', [username, firstname, lastname, age, grade, school, gender, email, phone, password], function(err, res) {
+				if (err) {
+					message = "Could not properly insert value into database.";
+					throw err;
+					response.render('account.html', {message:message, firstname:firstname, lastname:lastname, age:age, grade:grade, email:email, phone:phone, school:school, root : __dirname});
+				} else {
+					response.render('login.html', {root : __dirname});	
+				}
+			});
+		} else {
+			message = "That username is already taken!";
+			
+			//make it so all the preexisting information stays
+			response.render('account.html', {message:message, firstname:firstname, lastname:lastname, age:age, grade:grade, email:email, phone:phone, school:school, root : __dirname});
+		}
+	});
+    response.on('close', function(){
+        console.log("Close received for create account.");
+    });
 });
 
 // add lecture and render lecture and quiz page
@@ -399,6 +402,7 @@ app.post('/addLecture', function(request, response){
 });
 
 
+// post request to handle login capabilities
 app.post('/loggedin', function(request, response){
 	var username = request.body.username;
 	var password = request.body.password;
@@ -409,7 +413,7 @@ app.post('/loggedin', function(request, response){
 			if (data.rows.length == 0){
 				response.render('index.html',{ message:"Error going home. Please log back in.", root : __dirname});
 			} else {
-				response.render('profile.html', {username:username, firstname:data.rows[0].first_name});
+				response.render('profile.html', {username:username, firstname:data.rows[0].first_name, root : __dirname});
 			}
 		});
 	} else {
@@ -424,8 +428,6 @@ app.post('/loggedin', function(request, response){
 			// if the data element returned is empty, indicate to the user that no password and username combination was found
 			if (data.rows.length == 0){
 				message = "No user/password combination found";
-				console.log(message + password);
-				// socket.emit('loginError', message);
 				response.render('login.html', {message:message});
 			} else {
 				// iterate through the set of elements returned (to handle the case where more than one is returned)
@@ -442,7 +444,6 @@ app.post('/loggedin', function(request, response){
 				// handle the case where no logins are found
 				if (firstname === "") {
 					message = "No user/password combination found";
-					console.log(message);
 					response.render('login.html', {message:message});
 				} else {
 					var index = loggedin.indexOf(username);
@@ -450,7 +451,6 @@ app.post('/loggedin', function(request, response){
 						loggedin.push(username);
 					}
 					response.render('profile.html', {username:username, firstname:firstname});
-				// socket.emit("loggedIn", username); // emit a signal to indicate a successful connection
 				}
 			}
 		});
@@ -479,7 +479,6 @@ app.post('/addClass', function(request, response){
 		if (question){
 
 			var question_id = '/q/' + courseId + i;
-			console.log(question_id);
 			// insert values into questions table
 			conn.query('INSERT INTO questions (question_id, class_id, question) VALUES ($1, $2, $3);', [question_id, lecture_id, question]).on('error', console.error);
 
@@ -520,7 +519,6 @@ app.post('/addClass', function(request, response){
 			console.log("THERE HAS BEEN AN ERROR UPLOADING CLASS");
 		}
 		num_classes++;
-		console.log("the current number of classes in " + courseId + " is: " + num_classes);
 		// update the courses table to include an additional class
 		conn.query('UPDATE courses SET num_classes = $1 WHERE course_id = $2;', [num_classes, courseId]);
 	});
@@ -541,19 +539,17 @@ app.get('/profile/:identifyer', function(request, response){
 	var q = conn.query("SELECT * FROM user_info, classes, class_attendance WHERE user_info.user_id = $1", [identifyer], function(err, data){
 		// send data to the front end as a response
 		response.json(data.rows);
-		// print response to console (should be unique)
-		console.log(data.rows);
 		// finish and close response
 		response.end();
 	});
 	// print to console upon successful query completion
 	q.on('end', function(){
-		console.log('data successfuly sent')
+		console.log('data successfuly sent');
 	});
 });
 
 
 // set the app's server to listen on a given port
-server.listen(1234, function(){
+server.listen(port, function(){
 	console.log('- Server listening on given port 1234');
 });
