@@ -362,27 +362,6 @@ io.sockets.on('connection', function(socket) {
 			conn.query('INSERT INTO enrollment VALUES ($1, $2, $3, $4);', [userId, course_id, 0, 1]).on('error', console.error);
 		});
 	})
-	
-	
-
-	// add lecture and render lecture and quiz page
-	app.post('/addLecture', function(request, response){
-		console.log('- Request received:', request.method, request.url);
-		var code = request.body.courseId; 
-		var title = request.body.courseTitle;
-		var summary = request.body.courseSummary;
-
-		// // note: need to check to see if the course in question doesn't already exist (might want to add funtionality for course title)
-		conn.query('SELECT * FROM courses WHERE course_id = $1;', [code], function(err, data){
-			if (data.rows.length == 0) {
-				conn.query('INSERT INTO courses (course_id, num_classes, course_title, course_description, active) VALUES ($1, $2, $3, $4, $5);', [code, 0, title, summary, 0]);
-			} else { // handle the case where the course already exists
-				console.log('course exists already');
-			}
-		});
-    	response.render('addLecture.html',{ root : __dirname, courseId: code, courseTitle: title, courseSummary: summary, lectureNum: 1});
-	});
-
 
 	// handle post request to deal with logout
 	app.post('/logout', function(request, response){
@@ -399,6 +378,24 @@ io.sockets.on('connection', function(socket) {
 		response.render('index.html',{ root : __dirname});
 	});
 
+});
+
+// add lecture and render lecture and quiz page
+app.post('/addLecture', function(request, response){
+	console.log('- Request received:', request.method, request.url);
+	var code = request.body.courseId; 
+	var title = request.body.courseTitle;
+	var summary = request.body.courseSummary;
+
+	// // note: need to check to see if the course in question doesn't already exist (might want to add funtionality for course title)
+	conn.query('SELECT * FROM courses WHERE course_id = $1;', [code], function(err, data){
+		if (data.rows.length == 0) {
+			conn.query('INSERT INTO courses (course_id, num_classes, course_title, course_description, active) VALUES ($1, $2, $3, $4, $5);', [code, 0, title, summary, 0]);
+		} else { // handle the case where the course already exists
+			console.log('course exists already');
+		}
+		response.render('addLecture.html',{ root : __dirname, courseId: code, courseTitle: title, courseSummary: summary, lectureNum: 1});
+	});
 });
 
 
