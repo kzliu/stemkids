@@ -86,6 +86,12 @@ function getUserId(username) {
 var loggedin = []; // initialize logged in list
 var authorised = false;
 
+app.get('/loggedin', function(request, response){
+    var firstname = request.body.firstname;
+    var username = request.body.username;
+    response.render('profile.html', {username:username, firstname:firstname, root : __dirname});
+});
+
 // get request handler to render the initial html page
 app.get('/', function(request, response){
     console.log('- Request received:', request.method, request.url);
@@ -316,45 +322,6 @@ io.sockets.on('connection', function(socket) {
 		});
 	});
 
-
-	// post request handler to create a new account
-	app.post('/createNewAccount', function(request, response) {
-		var username = request.body.username;
-		console.log('- Request received:', request.method, request.url);
-		var message = "success";
-		checkUsername(username, function(isUser) {
-			var firstname = request.body.firstname;
-			var lastname = request.body.lastname;
-			var age = request.body.age;
-			var grade = request.body.grade;
-			var school = request.body.school;
-			var email = request.body.email;
-			var gender = request.body.gender;
-			var phone = request.body.phone;
-			var password = request.body.password;
-			if (isUser != 1) {
-				password = hash(password, username);
-				conn.query('INSERT INTO user_info (user_id, login, first_name, last_name, age, grade, school, gender, email, phone_num, password) VALUES (null, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10);', [username, firstname, lastname, age, grade, school, gender, email, phone, password], function(err, res) {
-					if (err) {
-						message = "Could not properly insert value into database.";
-						throw err;
-						response.render('account.html', {message:message, firstname:firstname, lastname:lastname, age:age, grade:grade, email:email, phone:phone, school:school, root : __dirname});
-					} else {
-						response.render('login.html', {root : __dirname});	
-					}
-				});
-			} else {
-				message = "That username is already taken!";
-				
-				//make it so all the preexisting information stays
-				response.render('account.html', {message:message, firstname:firstname, lastname:lastname, age:age, grade:grade, email:email, phone:phone, school:school, root : __dirname});
-			}
-		});
-	    response.on('close', function(){
-	        console.log("Close received for create account.");
-	    });
-	});
-
 	// signal handler to handle users who wish to enroll in a course
 	socket.on('enroll', function(username, course_id) {
 		conn.query('SELECT user_id FROM user_info WHERE login=$1;', [username], function(err, data){
@@ -376,6 +343,44 @@ app.post('/logout', function(request, response){
 		loggedin.splice(index, 1);
 	}
 	response.render('index.html',{ root : __dirname});
+});
+
+// post request handler to create a new account
+app.post('/createNewAccount', function(request, response) {
+	var username = request.body.username;
+	console.log('- Request received:', request.method, request.url);
+	var message = "success";
+	checkUsername(username, function(isUser) {
+		var firstname = request.body.firstname;
+		var lastname = request.body.lastname;
+		var age = request.body.age;
+		var grade = request.body.grade;
+		var school = request.body.school;
+		var email = request.body.email;
+		var gender = request.body.gender;
+		var phone = request.body.phone;
+		var password = request.body.password;
+		if (isUser != 1) {
+			password = hash(password, username);
+			conn.query('INSERT INTO user_info (user_id, login, first_name, last_name, age, grade, school, gender, email, phone_num, password) VALUES (null, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10);', [username, firstname, lastname, age, grade, school, gender, email, phone, password], function(err, res) {
+				if (err) {
+					message = "Could not properly insert value into database.";
+					throw err;
+					response.render('account.html', {message:message, firstname:firstname, lastname:lastname, age:age, grade:grade, email:email, phone:phone, school:school, root : __dirname});
+				} else {
+					response.render('login.html', {root : __dirname});	
+				}
+			});
+		} else {
+			message = "That username is already taken!";
+			
+			//make it so all the preexisting information stays
+			response.render('account.html', {message:message, firstname:firstname, lastname:lastname, age:age, grade:grade, email:email, phone:phone, school:school, root : __dirname});
+		}
+	});
+    response.on('close', function(){
+        console.log("Close received for create account.");
+    });
 });
 
 // add lecture and render lecture and quiz page
@@ -408,7 +413,7 @@ app.post('/loggedin', function(request, response){
 			if (data.rows.length == 0){
 				response.render('index.html',{ message:"Error going home. Please log back in.", root : __dirname});
 			} else {
-				response.render('profile.html', {username:username, firstname:data.rows[0].first_name});
+				response.render('profile.html', {username:username, firstname:data.rows[0].first_name, root : __dirname});
 			}
 		});
 	} else {
@@ -423,8 +428,6 @@ app.post('/loggedin', function(request, response){
 			// if the data element returned is empty, indicate to the user that no password and username combination was found
 			if (data.rows.length == 0){
 				message = "No user/password combination found";
-				console.log(message + password);
-				// socket.emit('loginError', message);
 				response.render('login.html', {message:message});
 			} else {
 				// iterate through the set of elements returned (to handle the case where more than one is returned)
