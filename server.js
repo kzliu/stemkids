@@ -363,21 +363,21 @@ io.sockets.on('connection', function(socket) {
 		});
 	})
 
-	// handle post request to deal with logout
-	app.post('/logout', function(request, response){
-		console.log('- Request received:', request.method, request.url);
+});
 
-		username = request.body.username;
-		var index = loggedin.indexOf(username);
-		console.log(username);
-		console.log(loggedin);
-		if (index > -1) {
-			loggedin.splice(index, 1);
-		}
-		console.log(loggedin);
-		response.render('index.html',{ root : __dirname});
-	});
+// handle post request to deal with logout
+app.post('/logout', function(request, response){
+	console.log('- Request received:', request.method, request.url);
 
+	username = request.body.username;
+	var index = loggedin.indexOf(username);
+	console.log(username);
+	console.log(loggedin);
+	if (index > -1) {
+		loggedin.splice(index, 1);
+	}
+	console.log(loggedin);
+	response.render('index.html',{ root : __dirname});
 });
 
 // add lecture and render lecture and quiz page
