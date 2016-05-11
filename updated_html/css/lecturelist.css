@@ -1,10 +1,141 @@
+.wrapper {
+	vertical-align: initial !important;
+	padding-top: 15px;
+}
+
+/* Header */
+
+.header
+{
+	height: 75px;
+	position: relative;
+	padding-bottom: 0.5%;
+	width:100%;
+}
+
+.header .logo
+{
+	float: left;
+	display: block;
+	height: 70px;
+	margin-left: 2%;
+	margin-top: 2px;
+}
+
+.header .user
+{
+	display: block;
+	position: absolute;
+	right: 80px;
+}
+
+.header .user #username
+{
+	color: #f7c263;
+	font-size: 22px;
+	line-height: 75px;
+	margin-right: 25px;
+}
+
+.header .user .userpic
+{
+	float: right;
+	display: block;
+	margin: 2.5px 15px 0 0;
+}
+
+.header #nav-btn
+{
+	float: right;
+	display: block;
+	width: 75px;
+	height: 75px;
+	position: absolute;
+	right: 0;
+}
+
+.header #nav-btn:before
+{
+	background: #fcb829;
+	display: block;
+	content: '';
+	width: 5px;
+	position: absolute;
+	left: -5px;
+	top: 5px;
+	bottom: 5px;
+}
+
+.header #nav-btn:after
+{
+	display: block;
+	content: '';
+	width: 0;
+	height: 0;
+	border-style: solid;
+	border-width: 20px 14px 0 14px;
+	border-color: #fcb829 transparent transparent transparent;
+	margin: -10px 0 0 -14px;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+}
+
+.header .nav
+{
+	display: none;
+	background: #fff;
+	border: 4px solid #fcb829;
+	position: absolute;
+	right: 0;
+	top: 75px;
+	z-index: 9999;
+}
+
+.header .nav.show
+{
+	display: block;
+}
+
+.header .nav a
+{
+	display: block;
+	color: #f7c263;
+	font-family: 'Lato';
+	font-size: 16px;
+	font-weight: 700;
+	line-height: 50px;
+	text-align: center;
+	text-decoration: none;
+	width: 110px;
+	padding-top: 10px;
+}
+
+.header .nav .sep
+{
+	display: block;
+	background: #fcb829;
+	height: 4px;
+	width: 110px;
+}
+
+.header .nav #home:hover p, .header .nav #signout:hover p {
+	background-color: #fcb829;
+	color: white;
+	/*margin:0px;*/
+	/*line-height: 25px;*/
+	padding-top: 10px;
+	margin-top: -13px;
+	padding-bottom: 5px;
+
+}
 /* Fonts */
 @font-face
 {
 	font-family: 'Bebas Neue';
 	font-style: normal;
 	font-weight: 400;
-	src: local('Bebas Neue'), local('BebasNeue'), url('fonts/BebasNeue.woff2') format('woff2');
+	src: local('Bebas Neue'), local('BebasNeue'), url('/fonts/BebasNeue.woff2') format('woff2');
 }
 
 @font-face
@@ -12,7 +143,7 @@
 	font-family: 'Lato';
 	font-style: normal;
 	font-weight: 700;
-	src: local('Lato Bold'), local('Lato-Bold'), url('fonts/Lato-Bold.woff2') format('woff2');
+	src: local('Lato Bold'), local('Lato-Bold'), url('/fonts/Lato-Bold.woff2') format('woff2');
 	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
 
@@ -65,6 +196,12 @@ h2 {
 .color {
 	height: 130px;
 	background-color: #ef7914;
+	border-color: #ef7914; 
+}
+
+.colordisable {
+	height: 130px;
+	background-color: gray;
 	border-color: #ef7914; 
 }
 

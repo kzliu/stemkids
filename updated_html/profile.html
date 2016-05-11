@@ -24,9 +24,15 @@
 		</div>
 		<a id="nav-btn" href="#"></a>
 		<div class="nav">
-			<a href="#" id="home"><p>Home</p></a>
+			<form action="/loggedin" method="post" name="goHome">
+				<a onclick="document.goHome.submit();" id="home"><p>Home</p></a>
+				<input type="hidden" name="username" value="{{username}}">
+			</form>
 			<span class="sep"></span>
-			<a href="#" id="signout"><p>Sign out</p></a>
+			<form action="/logout" method="post" name="logoff">
+				<a onclick="document.logoff.submit();" id="signout"><p>Sign out</p></a>
+				<input type="hidden" name="username" value="{{username}}">
+			</form>
 		</div>
 	</div>
 
@@ -94,6 +100,9 @@ window.addEventListener('load', function(){
 			var courseCode = value.course_id;
 			add_course(courseId, courseDesc, courseCode, '#classHist', 'Do Again');
 		});
+		if (dataList.length == 0){
+			$('#classHist').append("<p>You have no courses in your course history yet.</p>");
+		}
 	});
 
 
@@ -104,6 +113,9 @@ window.addEventListener('load', function(){
 			var courseCode = value.course_id;
 			add_future_courses(courseId, courseDesc, courseCode, '#futureClasses', 'Coming Soon');
 		});
+		if (dataList.length == 0){
+			$('#futureClasses').append("<p>There are no new upcoming courses at the moment. Stay tuned!</p>");
+		}
 	});
 
 
@@ -117,6 +129,9 @@ window.addEventListener('load', function(){
 			var courseDesc = value.course_description;
 			add_course(courseId, courseDesc, courseCode, '#currPanel', 'Continue');
 		});
+		if (dataList.length == 0){
+			$('#currPanel').append("<p>You are not currently enrolled in any courses.</p>");
+		}
 	});
 
 
@@ -127,6 +142,9 @@ window.addEventListener('load', function(){
 			var courseCode = value.course_id;
 			enrollment(courseTitle, courseDesc, courseCode, '#availPanel', 'Enroll');
 		});
+		if (dataList.length == 0){
+			$('#availPanel').append("<p>There are no courses available to enroll in at the moment.</p>");
+		}
 	});
 
 
@@ -135,18 +153,6 @@ window.addEventListener('load', function(){
 		console.log(username);
 	});
 
-	
-
-	// implement logout functionality on the client side
-	$('#signout').click(function(e){
-		$.post('/logout', {username: user});
-		var url = window.location.href;
-		url = url.replace('/login', '');
-		url = url.replace('/createAccount', '');
-		window.location.replace(url);
-		console.log(url);
-		e.preventDefault();
-	});
 }, false);
 
 function myFunction(courseCode){
@@ -157,7 +163,7 @@ function myFunction(courseCode){
 
 function add_course(course_title, course_description, course_code, parent_id, button_text) {
 		console.log(course_code);
-		$(parent_id).append('<div class="line" id="' + course_code + '"><div class="pic" id="currpic"><img src="/img/pics/1.jpg"/></div><div class="description" id="currDisc"><h5 class="title blue">' + course_title + '</h5><div class="brief"><br>' + course_description + '</div><a class="btn small yellow" href="/c/' + course_code + '"><p>' + button_text + '</p></a></div></div>');
+		$(parent_id).append('<div class="line" id="' + course_code + '"><div class="pic" id="currpic"><img src="/img/pics/1.jpg"/></div><div class="description" id="currDisc"><h5 class="title blue">' + course_title + '</h5><div class="brief"><br>' + course_description + '</div><a class="btn small yellow" href="{{username}}/c/' + course_code + '"><p>' + button_text + '</p></a></div></div>');
 };
 
 function enrollment(course_title, course_description, course_code, parent_id, button_text) {

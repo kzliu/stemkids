@@ -46,17 +46,19 @@
 	<script src="js/main.js" type="text/javascript"></script>
 </body>
 <script type="text/javascript">
-$(function(){
 
-	$("#login_form").submit(function(event){
-		var username = this.username.value;
-		var password = this.password.value;
-		var obj = {username: username, password: password}
-		$.post('/' + username + '/loggedin', obj);
-		event.preventDefault();
-	});
+// $(function(){
 
-});
+// 	$("#login_form").submit(function(event){
+// 		var username = this.username.value;
+// 		var password = this.password.value;
+// 		var obj = {username: username, password: password}
+// 		$.post('/' + username + '/loggedin', obj);
+// 		event.preventDefault();
+// 	});
+
+// });
+
 // var socket = io.connect();
 // window.addEventListener('load', function(){
 	// $("#errorMessage").html("");

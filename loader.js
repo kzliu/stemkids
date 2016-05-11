@@ -35,7 +35,7 @@ conn.query('CREATE TABLE IF NOT EXISTS enrollment (user_id INTEGER, course_id TE
 });
 
 //quiz history for a user
-conn.query('CREATE TABLE IF NOT EXISTS quiz_history (user_id INTEGER, answer_id INTEGER, FOREIGN KEY (user_id) REFERENCES user_info(user_id) ON DELETE CASCADE ON UPDATE CASCADE, FOREIGN KEY (answer_id) REFERENCES answers(answer_id) ON DELETE CASCADE ON UPDATE CASCADE);').on('error', console.error).on('end', function(){
+conn.query('CREATE TABLE IF NOT EXISTS quiz_history (user_id INTEGER, answer_id INTEGER, question_id INTEGER, FOREIGN KEY (user_id) REFERENCES user_info(user_id) ON DELETE CASCADE ON UPDATE CASCADE, FOREIGN KEY (answer_id) REFERENCES answers(answer_id) ON DELETE CASCADE ON UPDATE CASCADE, FOREIGN KEY (question_id) REFERENCES questions(question_id) ON DELETE CASCADE ON UPDATE CASCADE);').on('error', console.error).on('end', function(){
 	console.log('quiz_history table successfully created');
 });
 

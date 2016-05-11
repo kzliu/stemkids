@@ -8,6 +8,7 @@
 
 	<meta name="numClasses" content="{{numClasses}}"/>
 	<meta name="courseCode" content="{{course_id}}"/>
+	<meta name="username" content="{{username}}"/>
 
 	<title>Course {{course_id}} Lectures</title>
 
@@ -19,6 +20,27 @@
 	<script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
+	<div class="header">
+		<img class="logo" src="/img/logo-small.png">
+		<div class="user">
+			<span id="username">{{ username }}</span>
+			<img class="userpic" src="/img/avatar-small.png">
+		</div>
+		<a id="nav-btn" href="#"></a>
+		<div class="nav">
+			<form action="/loggedin" method="post" name="goHome">
+				<a onclick="document.goHome.submit();" id="home"><p>Home</p></a>
+				<input type="hidden" name="username" value="{{username}}">
+			</form>
+			<span class="sep"></span>
+			<form action="/logout" method="post" name="logoff">
+				<a onclick="document.logoff.submit();" id="signout"><p>Sign out</p></a>
+				<input type="hidden" name="username" value="{{username}}">
+			</form>
+		</div>
+	</div>
+
+	<input hidden name="username" value="{{username}}"/>
 	<div class="main">
 		<div class="wrapper">
 			<h2>{{courseTitle}}</h2>
@@ -26,131 +48,6 @@
 
 			<div class="ui four column centered padded grid" id=
 			"lectures">
-<!-- 				<div class="row">
-					<div class="three wide column">
-						<a href="#">
-						    <div class="segment">
-								<div class="ui fluid card">
-							       <div class="color">
-							       		<p class="number">1</p>
-							       	</div>
-							       <div class="content">
-							       	 <a class="header">Lecture 1</a>
-							       </div>
-							    </div>
-						    </div>
-					  	</a>
-					  </div>
-
-					  <div class="three wide column">
-					  	<a href="#">
-						    <div class="segment">
-								<div class="ui fluid card">
-							       <div class="color">
-							       		<p class="number">2</p>
-							       	</div>
-							       <div class="content">
-							       	 <a class="header">Lecture 2</a>
-							       </div>
-							    </div>
-						    </div>
-					  	</a>
-					  </div>
-
-					  <div class="three wide column">
-					  	<a href="#">
-						    <div class="segment">
-								<div class="ui fluid card">
-							       <div class="color">
-							       		<p class="number">3</p>
-							       	</div>
-							       <div class="content">
-							       	 <a class="header">Lecture 3</a>
-							       </div>
-							    </div>
-						    </div>
-					  	</a>
-					  </div>
-
-					  <div class="three wide column">
-					  	<a href="#">
-						    <div class="segment">
-								<div class="ui fluid card">
-							       <div class="color">
-							       		<p class="number">4</p>
-							       	</div>
-							       <div class="content">
-							       	 <a class="header">Lecture 4</a>
-							       </div>
-							    </div>
-						    </div>
-					  	</a>
-					  </div>
-				</div>
-
-
-				<div class="row">
-					<div class="three wide column">
-						<a href="#">
-						    <div class="segment">
-								<div class="ui fluid card">
-							       <div class="color">
-							       		<p class="number">5</p>
-							       	</div>
-							       <div class="content">
-							       	 <a class="header">Lecture 5</a>
-							       </div>
-							    </div>
-						    </div>
-					  	</a>
-					  </div>
-
-					  <div class="three wide column">
-					  	<a href="#">
-						    <div class="segment">
-								<div class="ui fluid card">
-							       <div class="color">
-							       		<p class="number">6</p>
-							       	</div>
-							       <div class="content">
-							       	 <a class="header">Lecture 6</a>
-							       </div>
-							    </div>
-						    </div>
-					  	</a>
-					  </div>
-
-					  <div class="three wide column">
-					  	<a href="#">
-						    <div class="segment">
-								<div class="ui fluid card">
-							       <div class="color">
-							       		<p class="number">7</p>
-							       	</div>
-							       <div class="content">
-							       	 <a class="header">Lecture 7</a>
-							       </div>
-							    </div>
-						    </div>
-					  	</a>
-					  </div>
-
-					  <div class="three wide column" disabled="">
-					  	<a href="#">
-						    <div class="segment">
-								<div class="ui fluid card">
-							       <div class="color">
-							       		<p class="number">8</p>
-							       	</div>
-							       <div class="content">
-							       	 <a class="header">Lecture 8</a>
-							       </div>
-							    </div>
-						    </div>
-					  	</a>
-					  </div>
-				</div> -->
-				<!-- </div> -->
 			</div>
         </div>	
     </div>
@@ -163,7 +60,7 @@
 var socket = io.connect();
 
 window.addEventListener('load', function(){
-    socket.emit('lectures', meta('courseCode'), meta('numClasses'), null, function(classes) {
+    socket.emit('lectures', meta('courseCode'), meta('numClasses'), meta('username'), function(classes) {
 		// renderUsers(users);
 		// console.log(classes);
 		for (var lecture_num in classes) {
@@ -176,8 +73,11 @@ window.addEventListener('load', function(){
 			} else if (((lecture_num-1) % 4) == 0) {
 				apndLecture = addLecture + '</div><div class="row">';
 			}
-			
-			addLecture += '<div class="three wide column"> <a href="' + class_id + '"> <div class="segment"> <div class="ui fluid card"> <div class="color"> <p class="number">' + lecture_num + '</p> </div> <div class="content"> <a class="header" href="' + class_id + '">' + class_title + '</a> </div> </div> </div> </a> </div>';
+			if (classes[lecture_num].available == 1) {
+				addLecture += '<div class="three wide column"> <a href="/{{username}}' + class_id + '"> <div class="segment"> <div class="ui fluid card"> <div class="color"> <p class="number">' + lecture_num + '</p> </div> <div class="content"> <a class="header" href="/{{username}}' + class_id + '">' + class_title + '</a> </div> </div> </div> </a> </div>';
+			} else {
+				addLecture += '<div class="three wide column"> <a> <div class="segment"> <div class="ui fluid card"> <div class="colordisable"> <p class="number">' + lecture_num + '</p> </div> <div class="content"> <a class="header" disabled>' + class_title + '</a> </div> </div></a> </div></div>';
+			}
 
 			$("#lectures").append(addLecture);
 		}

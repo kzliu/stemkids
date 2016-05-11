@@ -1,0 +1,19 @@
+README
+======
+Project: STEM Kids NYC
+Authors: Katie Liu, Daniel Chimes, Asha Owens, Aditya Bathla
+
+
+Project Design:
+===============
+All necessary front end elements regarding this project can be found in the updated_html folder. Most if not all javascript front end elements are located in their respective html files. The two major elements relating to backend functionality are the server, which handles backend/frontend interaction, and the loader file which maintains the database schema. The admin page can be accessed from the applicant home page and is protected by basic authentication middleware with a set username, password combination that can be changed on the server.
+
+
+Known Bugs:
+===========
+There are a few known minor bugs with the program. Due to the current method in which we are handling user information some of the pages rendered by a user who is not logged in may render incorrectly (this, of course, does not diminish program functionality). Also, for an unknown reason, the prompt for a username and password while attempting to access the admin page only appears once before rendering the page.
+
+
+Project Usage:
+==============
+At the moment, all one needs to do to run the program is to run the server using the command "node server.js" and go to the respective local host in a browser.
