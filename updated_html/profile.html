@@ -3,11 +3,13 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-	<!--meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1"/-->
 	<meta name="description" content=""/>
 	<meta name="keywords" content=""/>
 	<meta name="username" content="{{username}}"/>
+
+	<!-- Profile Page for Individual User -->
 	<title></title>
+
 
 	<link href="img/favicon.ico" rel="icon"/>
 	<link href="apple-favicon.png" rel="apple-touch-icon"/>
@@ -105,6 +107,8 @@ window.addEventListener('load', function(){
 		}
 	});
 
+	//Fills list of future classes
+
 
 	socket.emit('fillFuture', user, function(dataList){
 		$.each(dataList, function(index, value){
@@ -118,7 +122,7 @@ window.addEventListener('load', function(){
 		}
 	});
 
-
+	//Fills list of current class window
 	
 	socket.emit('fillCurrent', user, function(dataList){
 		console.log('data list: ' + dataList)
@@ -134,6 +138,7 @@ window.addEventListener('load', function(){
 		}
 	});
 
+	//Fills list of available class window
 
 	socket.emit('fillAvailable', user, function(dataList){
 		$.each(dataList, function(index, value){
@@ -150,7 +155,6 @@ window.addEventListener('load', function(){
 
 	socket.on('loggedIn', function(username) {
 		//this needs to be rendered in html
-		console.log(username);
 	});
 
 }, false);

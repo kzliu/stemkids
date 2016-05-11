@@ -3,10 +3,9 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-	<!--meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1"/-->
 	<meta name="description" content=""/>
 	<meta name="keywords" content=""/>
-
+	<!-- This is the Create an Account Page. The user goes through this form and fills out personal information to create an account -->
 	<title>Create an Account</title>
 
 	<link href="/favicon.ico" rel="icon"/>
@@ -59,7 +58,7 @@
 							<div class="field">
 								<div class="wrap">
 										<select class= "gender_menu" name ="Gender">
-											<option value= "Gender"> Gender*</option>
+											<option value= "Gender"> Gender</option>
 											<option value= "Male"> Male </option>
 											<option value= "Female">Female </option>
 											<option value= "Other"> Other</option>
@@ -99,6 +98,8 @@
 <script>
 var socket = io.connect();
 
+// Function that checks the validity of the username and if the username has been used before
+
 window.addEventListener('load', function(){
 
 	$('#username').keyup(function() {
@@ -113,11 +114,6 @@ window.addEventListener('load', function(){
 	}); 
 
 
-	// socket.on('createAccountError', function(message) {
-	// 	console.log(message);
-	// 	$("#errorMessage").html(message);
-	// 	$('#username').val('');
-	// });
 }, false);
 
 
